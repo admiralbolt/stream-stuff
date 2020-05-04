@@ -35,6 +35,8 @@
     "ember-cli-sass": "^10.0.1",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-uglify": "^3.0.0",
+    "ember-css-modules": "^1.3.0",
+    "ember-css-modules-sass": "^1.1.0",
     "ember-data": "~3.17.0",
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^7.0.1",

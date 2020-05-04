@@ -1,0 +1,122 @@
+$background: rgb(70, 70, 85);
+$p1: rgb(250, 90, 90);
+$p2: rgb(90, 90, 250);
+$p3: rgb(240, 240, 0);
+$p4: rgb(110, 200, 110);
+
+.melee-layout {
+  border: 5px solid $background;
+  display: flex;
+
+  flex-direction: row;
+  height: 1070px;
+  width: 1910px;
+
+
+  .vidja-game {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 1313px;
+
+    .name-space {
+      height: 1030px;
+    }
+
+    .name-plates {
+      background-color: $background;
+      display: flex;
+      flex-direction: row;
+      height: 40px;
+
+      .name-plate-spacer {
+        width: 50px;
+      }
+
+      .name-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 200px;
+        height: 100%;
+        padding: 0.1rem;
+
+        &:not(:last-child) {
+          margin-right: 110px;
+        }
+
+        .player {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-right: 1rem;
+
+          &.p1 {
+            border-bottom: 2px solid $p1;
+            color: $p1;
+          }
+
+          &.p2 {
+            border-bottom: 2px solid $p2;
+            color: $p2;
+          }
+
+          &.p3 {
+            border-bottom: 2px solid $p3;
+            color: $p3;
+          }
+
+          &.p4 {
+            border-bottom: 2px solid $p4;
+            color: $p4;
+          }
+        }
+
+        .name {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: .25rem;
+          color: white;
+          font-size: 2.5rem;
+          padding: .3rem;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-grow: 1;
+    width: 607px;
+
+    .vertical-spacer {
+      background-color: $background;
+      height: 30px;
+    }
+
+    .web-cam {
+      height: 406px;
+      display: flex;
+      flex-direction: row;
+
+      .spacer {
+        background-color: $background;
+        width: 34px;
+        height: 100%;
+      }
+
+      .camera-box {
+        background: none;
+        width: 549px;
+      }
+    }
+
+    .the-rest {
+      background-color: $background;
+      flex-grow: 1;
+    }
+  }
+}
