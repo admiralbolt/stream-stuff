@@ -4,20 +4,28 @@
     <div local-class="name-plates">
       <div local-class="name-plate-spacer"></div>
       <div local-class="name-wrapper">
-        <span local-class="player p1">P1</span>
-        <span local-class="name">Me</span>
+        {{#if playerNames.player1}}
+          <span local-class="player p1">P1</span>
+          <span local-class="name">{{playerNames.player1}}</span>
+        {{/if}}
       </div>
       <div local-class="name-wrapper">
-        <span local-class="player p2">P2</span>
-        <span local-class="name">BrickLee</span>
+        {{#if playerNames.player2}}
+          <span local-class="player p2">P2</span>
+          <span local-class="name">{{playerNames.player2}}</span>
+        {{/if}}
       </div>
       <div local-class="name-wrapper">
-        <span local-class="player p3">P3</span>
-        <span local-class="name">Noah</span>
+        {{#if playerNames.player3}}
+          <span local-class="player p3">P3</span>
+          <span local-class="name">{{playerNames.player3}}</span>
+        {{/if}}
       </div>
       <div local-class="name-wrapper">
-        <span local-class="player p4">P4</span>
-        <span local-class="name">Bee Yee</span>
+        {{#if playerNames.player4}}
+          <span local-class="player p4">P4</span>
+          <span local-class="name">{{playerNames.player4}}</span>
+        {{/if}}
       </div>
     </div>
   </div>
