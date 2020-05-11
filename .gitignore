@@ -6,7 +6,7 @@
 
 # dependencies
 /bower_components/
-/node_modules/
+/overlay/node_modules/
 
 # misc
 /.env*
