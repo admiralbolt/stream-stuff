@@ -1,0 +1,14 @@
+:global(.btn) {
+  background-color: #fafafa;
+  border: 0;
+  border-radius: .25rem;
+  cursor: pointer;
+  font-weight: bold;
+  padding: .5rem;
+}
+
+:global(.input) {
+  padding: .3rem;
+  border-radius: .25rem;
+  border: 0;
+}

@@ -97,7 +97,76 @@
   flex-grow: 1;
 }
 
+/* styles for stream-stuff/components/sound-board/board-item/styles.scss */
+._sound_4cr6zd {
+  width: 40%;
+  height: 3.4rem;
+  background-color: #0060aa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-bottom: 0.1rem;
+}
+._sound_4cr6zd ._add-new-sound_4cr6zd {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+._sound_4cr6zd ._add-new-sound_4cr6zd ._sound-name-input_4cr6zd {
+  width: 10rem;
+}
+._sound_4cr6zd ._add-new-sound_4cr6zd ._upload-button_4cr6zd {
+  white-space: nowrap;
+}
+._sound_4cr6zd ._sound-display_4cr6zd {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+._sound_4cr6zd ._sound-display_4cr6zd ._sound-name_4cr6zd {
+  font-weight: bold;
+  color: white;
+}
+._sound_4cr6zd ._actions_4cr6zd {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+._sound_4cr6zd ._actions_4cr6zd a._action_4cr6zd {
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+}
+._sound_4cr6zd ._actions_4cr6zd a._action_4cr6zd svg {
+  cursor: pointer;
+  color: white;
+}
+
+/* styles for stream-stuff/components/sound-board/styles.scss */
+._sound-board_14nb1x {
+  margin-top: 1rem;
+}
+
+._create-new_14nb1x {
+  height: 3.4rem;
+  margin-bottom: 0.6rem;
+}
+
 /* styles for stream-stuff/styles/app.scss */
+.btn {
+  background-color: #fafafa;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+.input {
+  padding: 0.3rem;
+  border-radius: 0.25rem;
+  border: 0;
+}
+
 /* styles for stream-stuff/styles/colors.scss */
 
 /*# sourceMappingURL=stream-stuff.css.map */

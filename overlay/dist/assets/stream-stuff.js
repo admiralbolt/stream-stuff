@@ -83,7 +83,7 @@
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _temp;
+  var _class, _descriptor, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -100,8 +100,6 @@
 
       _initializerDefineProperty(this, "websockets", _descriptor, this);
 
-      _initializerDefineProperty(this, "store", _descriptor2, this);
-
       _defineProperty(this, "socket", null);
 
       _defineProperty(this, "sounds", null);
@@ -114,7 +112,6 @@
 
       _defineProperty(this, "player4", '');
 
-      this.sounds = this.store.findAll('sound');
       const socket = this.websockets.socketFor('ws://localhost:7000/');
       socket.on('open', this.openHandler, this);
       socket.on('close', this.closeHandler, this);
@@ -145,21 +142,12 @@
       }, true);
     }
 
-    playSound(soundId) {
-      fetch(`${_environment.default.host}/play_sound/?sound_id=${soundId}`);
-    }
-
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "websockets", [Ember.inject.service], {
     configurable: true,
     enumerable: true,
     writable: true,
     initializer: null
-  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "store", [Ember.inject.service], {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    initializer: null
-  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "playSound", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "playSound"), _class.prototype)), _class);
+  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype)), _class);
   _exports.default = ControlPanelComponent;
 });
 ;define("stream-stuff/components/control-panel/styles", ["exports"], function (_exports) {
@@ -181,14 +169,27 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "7MeC6p+y",
-    "block": "{\"symbols\":[\"sound\"],\"statements\":[[1,0,0,0,[31,2,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,2,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,39,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,76,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,5,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,113,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,6,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n\"],[9,\"button\",false],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,7,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n\\n\\n\"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound-board\"],[[\"from\"],[\"stream-stuff/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,10,\"BlockHead\"],[]],[[31,0,0,[27,[26,9,\"CallHead\"],[]],[[31,0,0,[27,[26,9,\"CallHead\"],[]],[[27,[26,8,\"Expression\"],[]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound\"],[[\"from\"],[\"stream-stuff/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n      \"],[9,\"p\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound-name\"],[[\"from\"],[\"stream-stuff/components/control-panel/styles\"]]]]],null],[10],[1,0,0,0,[27,[24,1],[\"name\"]]],[11],[1,1,0,0,\"\\n      \"],[9,\"button\",false],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[]],\"playSound\",[27,[24,1],[\"id\"]]],null],[10],[1,1,0,0,\"Play\"],[11],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"action\",\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"sounds\",\"-track-array\",\"each\"]}",
+    "id": "78XJ7bqv",
+    "block": "{\"symbols\":[],\"statements\":[[1,0,0,0,[31,2,5,[27,[26,1,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,0,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,39,5,[27,[26,1,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,2,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,76,5,[27,[26,1,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,3,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\"],[1,0,0,0,[31,113,5,[27,[26,1,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n\"],[9,\"button\",false],[3,0,0,[27,[26,6,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,5,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n\\n\"],[7,\"sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"action\"]}",
     "meta": {
       "moduleName": "stream-stuff/components/control-panel/template.hbs"
     }
   });
 
   _exports.default = _default;
+});
+;define("stream-stuff/components/fa-icon", ["exports", "@fortawesome/ember-fontawesome/components/fa-icon"], function (_exports, _faIcon) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _faIcon.default;
+    }
+  });
 });
 ;define("stream-stuff/components/file-dropzone", ["exports", "ember-file-upload/components/file-dropzone/component"], function (_exports, _component) {
   "use strict";
@@ -337,6 +338,305 @@
 
   _exports.default = _default;
 });
+;define("stream-stuff/components/sound-board/board-item/component", ["exports", "@glimmer/component", "stream-stuff/config/environment"], function (_exports, _component, _environment) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _dec, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let BoardItemComponent = (_dec = Ember.inject.service('file-queue'), (_class = (_temp = class BoardItemComponent extends _component.default {
+    constructor() {
+      super(...arguments);
+
+      _initializerDefineProperty(this, "store", _descriptor, this);
+
+      _initializerDefineProperty(this, "queue", _descriptor2, this);
+
+      _initializerDefineProperty(this, "sound", _descriptor3, this);
+
+      _initializerDefineProperty(this, "isEditing", _descriptor4, this);
+
+      _initializerDefineProperty(this, "isNew", _descriptor5, this);
+
+      _defineProperty(this, "cancelCallback", null);
+
+      _defineProperty(this, "createCallback", null);
+
+      _initializerDefineProperty(this, "sound_name", _descriptor6, this);
+
+      _initializerDefineProperty(this, "sound_file", _descriptor7, this);
+
+      this.sound = this.args.sound;
+      this.isEditing = this.args.isEditing;
+      this.isNew = this.args.isNew;
+    }
+
+    uploadFile(id) {
+      console.log('why?');
+      let headers = {
+        Accept: 'application/vnd.api+json'
+      };
+      headers['Content-Disposition'] = `attachment; filename=${this.sound_file.name}`;
+      return this.sound_file.upload(`${_environment.default.host}/sounds/upload/?id=${id}`, {
+        headers: headers
+      });
+    }
+
+    addSoundFile(soundFile) {
+      this.sound_file = soundFile;
+    }
+
+    get soundFileName() {
+      // The regex is os.path.basename()
+      return Ember.isNone(this.sound) || Ember.isNone(this.sound.sound_file) ? 'No file selected' : this.sound.sound_file.split(/(\\|\/)/g).pop();
+    }
+
+    play() {
+      fetch(`${_environment.default.host}/play_sound/?sound_id=${this.sound.id}`);
+    }
+
+    save() {
+      if (!this.sound_name || this.isNew && Ember.isNone(this.sound_file)) return;
+      let sound = this.sound;
+
+      if (sound == null) {
+        sound = this.store.createRecord('sound', {
+          name: this.sound_name
+        });
+      } else {
+        sound.set('name', this.sound_name);
+      }
+
+      sound.save().then(function (response) {
+        if (this.sound_file == null) {
+          this.isEditing = false;
+          return;
+        }
+
+        this.uploadFile(response.id).then(function () {
+          sound.reload();
+          this.sound_name = '';
+          this.sound_file = null;
+
+          if (this.isEditing) {
+            this.isEditing = false;
+          } else if (this.isNew) {
+            this.args.createCallback();
+          }
+        }.bind(this));
+      }.bind(this), function () {
+        sound.rollbackAttributes();
+      }.bind(this));
+    }
+
+    edit() {
+      this.sound_name = this.sound.name;
+      this.isEditing = true;
+    }
+
+    cancel() {
+      this.sound_name = '';
+      this.queue.find('sound_file').set('files', Ember.A());
+      this.sound_file = null;
+      if (this.isNew) this.args.cancelCallback();
+      this.isEditing = false;
+    }
+
+    delete() {
+      this.sound.deleteRecord();
+      this.sound.save();
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "store", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "queue", [_dec], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "sound", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "isEditing", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return false;
+    }
+  }), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "isNew", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return false;
+    }
+  }), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, "sound_name", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return '';
+    }
+  }), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, "sound_file", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "addSoundFile", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "addSoundFile"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "play", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "play"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "save", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "save"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "edit", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "edit"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "cancel", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "cancel"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "delete", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "delete"), _class.prototype)), _class));
+  _exports.default = BoardItemComponent;
+  ;
+});
+;define("stream-stuff/components/sound-board/board-item/styles", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  var _default = {
+    "sound": "_sound_4cr6zd",
+    "add-new-sound": "_add-new-sound_4cr6zd",
+    "sound-name-input": "_sound-name-input_4cr6zd",
+    "upload-button": "_upload-button_4cr6zd",
+    "sound-display": "_sound-display_4cr6zd",
+    "sound-name": "_sound-name_4cr6zd",
+    "actions": "_actions_4cr6zd",
+    "action": "_action_4cr6zd"
+  };
+  _exports.default = _default;
+});
+;define("stream-stuff/components/sound-board/board-item/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "5hRECXso",
+    "block": "{\"symbols\":[\"queue\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,7,\"BlockHead\"],[]],[[31,36,2,[27,[26,10,\"CallHead\"],[]],[[27,[26,9,\"Expression\"],[]],[27,[26,8,\"Expression\"],[]]],null]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"add-new-sound\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n      \"],[1,0,0,0,[31,106,5,[27,[26,6,\"CallHead\"],[]],null,[[\"type\",\"value\",\"class\"],[\"text\",[27,[26,5,\"Expression\"],[]],[31,0,0,[27,[26,4,\"CallHead\"],[]],[\"input \",[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound-name-input\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]],null]]]]],[1,1,0,0,\"\\n      \"],[7,\"file-upload\",[],[[\"@name\",\"@for\",\"@accept\",\"@onfileadd\"],[\"sound_file\",\"sound_file\",\"audio/vnd.wave,audio/wav,audio/wave\",[31,303,6,[27,[26,2,\"CallHead\"],[]],[[27,[24,0],[]],\"addSoundFile\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"upload-button\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,7,\"BlockHead\"],[]],[[27,[24,1],[\"files\",\"length\"]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"            \"],[1,0,0,0,[27,[24,1],[\"files\",\"0\",\"name\"]]],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"            \"],[1,0,0,0,[27,[26,3,\"AppendSingleId\"],[]]],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n      \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"actions\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n        \"],[9,\"a\",false],[14,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"action\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"cancel\"],null],[10],[1,1,0,0,\"\\n          \"],[7,\"fa-icon\",[],[[\"@icon\"],[\"ban\"]],null],[1,1,0,0,\"\\n        \"],[11],[1,1,0,0,\"\\n        \"],[9,\"a\",false],[14,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"action\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"save\"],null],[10],[1,1,0,0,\"\\n          \"],[7,\"fa-icon\",[],[[\"@icon\"],[\"save\"]],null],[1,1,0,0,\"\\n        \"],[11],[1,1,0,0,\"\\n      \"],[11],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound-display\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n      \"],[9,\"p\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"sound-name\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,0,0,0,[27,[26,1,\"Expression\"],[\"name\"]]],[11],[1,1,0,0,\"\\n      \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"actions\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[10],[1,1,0,0,\"\\n        \"],[9,\"a\",false],[14,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"action\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"play\"],null],[10],[1,1,0,0,\"\\n          \"],[7,\"fa-icon\",[],[[\"@icon\"],[\"play\"]],null],[1,1,0,0,\"\\n        \"],[11],[1,1,0,0,\"\\n        \"],[9,\"a\",false],[14,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"action\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"edit\"],null],[10],[1,1,0,0,\"\\n          \"],[7,\"fa-icon\",[],[[\"@icon\"],[\"pencil-alt\"]],null],[1,1,0,0,\"\\n        \"],[11],[1,1,0,0,\"\\n        \"],[9,\"a\",false],[14,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"action\"],[[\"from\"],[\"stream-stuff/components/sound-board/board-item/styles\"]]]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"delete\"],null],[10],[1,1,0,0,\"\\n          \"],[7,\"fa-icon\",[],[[\"@icon\"],[\"dumpster-fire\"]],null],[1,1,0,0,\"\\n        \"],[11],[1,1,0,0,\"\\n      \"],[11],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"sound\",\"action\",\"soundFileName\",\"concat\",\"sound_name\",\"input\",\"if\",\"isNew\",\"isEditing\",\"or\"]}",
+    "meta": {
+      "moduleName": "stream-stuff/components/sound-board/board-item/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
+;define("stream-stuff/components/sound-board/component", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let SoundBoardComponent = (_class = (_temp = class SoundBoardComponent extends _component.default {
+    constructor() {
+      super(...arguments);
+
+      _initializerDefineProperty(this, "store", _descriptor, this);
+
+      _initializerDefineProperty(this, "isCreatingNew", _descriptor2, this);
+
+      _initializerDefineProperty(this, "sounds", _descriptor3, this);
+
+      this.sounds = this.store.findAll('sound');
+    }
+
+    createNew() {
+      this.isCreatingNew = true;
+    }
+
+    callback() {
+      this.isCreatingNew = false;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "store", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "isCreatingNew", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return false;
+    }
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "sounds", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "createNew", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "createNew"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "callback", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "callback"), _class.prototype)), _class);
+  _exports.default = SoundBoardComponent;
+});
+;define("stream-stuff/components/sound-board/styles", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  var _default = {
+    "sound-board": "_sound-board_14nb1x",
+    "create-new": "_create-new_14nb1x"
+  };
+  _exports.default = _default;
+});
+;define("stream-stuff/components/sound-board/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "e+zWgTG8",
+    "block": "{\"symbols\":[\"sound\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"sound-board\"],[[\"from\"],[\"stream-stuff/components/sound-board/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"create-new\"],[[\"from\"],[\"stream-stuff/components/sound-board/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,4,\"BlockHead\"],[]],[[27,[26,3,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[7,\"sound-board/board-item\",[],[[\"@isNew\",\"@createCallback\",\"@cancelCallback\"],[\"true\",[27,[26,1,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"createNew\"],null],[10],[1,1,0,0,\"Create New Sound\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"actual-sounds\"],[[\"from\"],[\"stream-stuff/components/sound-board/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,7,\"BlockHead\"],[]],[[31,0,0,[27,[26,6,\"CallHead\"],[]],[[31,0,0,[27,[26,6,\"CallHead\"],[]],[[27,[26,5,\"Expression\"],[]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"      \"],[7,\"sound-board/board-item\",[],[[\"@sound\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"action\",\"callback\",\"local-class\",\"isCreatingNew\",\"if\",\"sounds\",\"-track-array\",\"each\"]}",
+    "meta": {
+      "moduleName": "stream-stuff/components/sound-board/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
 ;define("stream-stuff/components/welcome-page", ["exports", "ember-welcome-page/components/welcome-page"], function (_exports, _welcomePage) {
   "use strict";
 
@@ -360,6 +660,25 @@
     enumerable: true,
     get: function () {
       return _debug.default;
+    }
+  });
+});
+;define("stream-stuff/helpers/and", ["exports", "ember-truth-helpers/helpers/and"], function (_exports, _and) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _and.default;
+    }
+  });
+  Object.defineProperty(_exports, "and", {
+    enumerable: true,
+    get: function () {
+      return _and.and;
     }
   });
 });
@@ -402,6 +721,25 @@
 
   _exports.default = _default;
 });
+;define("stream-stuff/helpers/eq", ["exports", "ember-truth-helpers/helpers/equal"], function (_exports, _equal) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _equal.default;
+    }
+  });
+  Object.defineProperty(_exports, "equal", {
+    enumerable: true,
+    get: function () {
+      return _equal.equal;
+    }
+  });
+});
 ;define("stream-stuff/helpers/file-queue", ["exports", "ember-file-upload/helpers/file-queue"], function (_exports, _fileQueue) {
   "use strict";
 
@@ -412,6 +750,95 @@
     enumerable: true,
     get: function () {
       return _fileQueue.default;
+    }
+  });
+});
+;define("stream-stuff/helpers/gt", ["exports", "ember-truth-helpers/helpers/gt"], function (_exports, _gt) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _gt.default;
+    }
+  });
+  Object.defineProperty(_exports, "gt", {
+    enumerable: true,
+    get: function () {
+      return _gt.gt;
+    }
+  });
+});
+;define("stream-stuff/helpers/gte", ["exports", "ember-truth-helpers/helpers/gte"], function (_exports, _gte) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _gte.default;
+    }
+  });
+  Object.defineProperty(_exports, "gte", {
+    enumerable: true,
+    get: function () {
+      return _gte.gte;
+    }
+  });
+});
+;define("stream-stuff/helpers/is-array", ["exports", "ember-truth-helpers/helpers/is-array"], function (_exports, _isArray) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _isArray.default;
+    }
+  });
+  Object.defineProperty(_exports, "isArray", {
+    enumerable: true,
+    get: function () {
+      return _isArray.isArray;
+    }
+  });
+});
+;define("stream-stuff/helpers/is-empty", ["exports", "ember-truth-helpers/helpers/is-empty"], function (_exports, _isEmpty) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _isEmpty.default;
+    }
+  });
+});
+;define("stream-stuff/helpers/is-equal", ["exports", "ember-truth-helpers/helpers/is-equal"], function (_exports, _isEqual) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _isEqual.default;
+    }
+  });
+  Object.defineProperty(_exports, "isEqual", {
+    enumerable: true,
+    get: function () {
+      return _isEqual.isEqual;
     }
   });
 });
@@ -434,6 +861,101 @@
     }
   });
 });
+;define("stream-stuff/helpers/lt", ["exports", "ember-truth-helpers/helpers/lt"], function (_exports, _lt) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _lt.default;
+    }
+  });
+  Object.defineProperty(_exports, "lt", {
+    enumerable: true,
+    get: function () {
+      return _lt.lt;
+    }
+  });
+});
+;define("stream-stuff/helpers/lte", ["exports", "ember-truth-helpers/helpers/lte"], function (_exports, _lte) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _lte.default;
+    }
+  });
+  Object.defineProperty(_exports, "lte", {
+    enumerable: true,
+    get: function () {
+      return _lte.lte;
+    }
+  });
+});
+;define("stream-stuff/helpers/not-eq", ["exports", "ember-truth-helpers/helpers/not-equal"], function (_exports, _notEqual) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _notEqual.default;
+    }
+  });
+  Object.defineProperty(_exports, "notEq", {
+    enumerable: true,
+    get: function () {
+      return _notEqual.notEq;
+    }
+  });
+});
+;define("stream-stuff/helpers/not", ["exports", "ember-truth-helpers/helpers/not"], function (_exports, _not) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _not.default;
+    }
+  });
+  Object.defineProperty(_exports, "not", {
+    enumerable: true,
+    get: function () {
+      return _not.not;
+    }
+  });
+});
+;define("stream-stuff/helpers/or", ["exports", "ember-truth-helpers/helpers/or"], function (_exports, _or) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _or.default;
+    }
+  });
+  Object.defineProperty(_exports, "or", {
+    enumerable: true,
+    get: function () {
+      return _or.or;
+    }
+  });
+});
 ;define("stream-stuff/helpers/pluralize", ["exports", "ember-inflector/lib/helpers/pluralize"], function (_exports, _pluralize) {
   "use strict";
 
@@ -453,6 +975,25 @@
   _exports.default = void 0;
   var _default = _singularize.default;
   _exports.default = _default;
+});
+;define("stream-stuff/helpers/xor", ["exports", "ember-truth-helpers/helpers/xor"], function (_exports, _xor) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _xor.default;
+    }
+  });
+  Object.defineProperty(_exports, "xor", {
+    enumerable: true,
+    get: function () {
+      return _xor.xor;
+    }
+  });
 });
 ;define("stream-stuff/initializers/app-version", ["exports", "ember-cli-app-version/initializer-factory", "stream-stuff/config/environment"], function (_exports, _initializerFactory, _environment) {
   "use strict";
@@ -1007,7 +1548,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("stream-stuff/app")["default"].create({"name":"stream-stuff","version":"0.0.0+decce57d"});
+            require("stream-stuff/app")["default"].create({"name":"stream-stuff","version":"0.0.0+3442562a"});
           }
         
 //# sourceMappingURL=stream-stuff.map

@@ -5,12 +5,4 @@
 
 <button {{action updatePlayerNames}}>Update Player Names</button>
 
-
-<div local-class="sound-board">
-  {{#each sounds as |sound|}}
-    <div local-class="sound">
-      <p local-class="sound-name">{{sound.name}}</p>
-      <button {{action "playSound" sound.id}}>Play</button>
-    </div>
-  {{/each}}
-</div>
+<SoundBoard />

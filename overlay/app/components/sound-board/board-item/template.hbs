@@ -1,0 +1,39 @@
+<div local-class="sound">
+  {{#if (or isEditing isNew)}}
+    <div local-class="add-new-sound">
+      {{input local-class="sound-name-input" class="input" type="text" value=sound_name}}
+      <FileUpload @name="sound_file" @for="sound_file" @accept="audio/vnd.wave,audio/wav,audio/wave" @onfileadd={{action "addSoundFile"}} as |queue|>
+        <a local-class="upload-button">
+          {{#if queue.files.length}}
+            {{queue.files.0.name}}
+          {{else}}
+            {{soundFileName}}
+          {{/if}}
+        </a>
+      </FileUpload>
+      <div local-class="actions">
+        <a local-class="action" {{action "cancel"}}>
+          <FaIcon @icon="ban" />
+        </a>
+        <a local-class="action" {{action "save"}}>
+          <FaIcon @icon="save" />
+        </a>
+      </div>
+    </div>
+  {{else}}
+    <div local-class="sound-display">
+      <p local-class="sound-name">{{sound.name}}</p>
+      <div local-class="actions">
+        <a local-class="action" {{action "play"}}>
+          <FaIcon @icon="play" />
+        </a>
+        <a local-class="action" {{action "edit"}}>
+          <FaIcon @icon="pencil-alt" />
+        </a>
+        <a local-class="action" {{action "delete"}}>
+          <FaIcon @icon="dumpster-fire" />
+        </a>
+      </div>
+    </div>
+  {{/if}}
+</div>

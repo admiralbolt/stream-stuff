@@ -1,0 +1,53 @@
+.sound {
+  width: 40%;
+  height: 3.4rem;
+  background-color: #0060aa;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  margin-bottom: .1rem;
+
+  .add-new-sound {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+
+    .sound-name-input {
+      width: 10rem;
+    }
+
+    .upload-button {
+      white-space: nowrap;
+    }
+  }
+
+  .sound-display {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+
+    .sound-name {
+      font-weight: bold;
+      color: white;
+    }
+
+
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+
+    a.action {
+      font-size: 1.3rem;
+      margin-left: 0.5rem;
+
+      svg {
+        cursor: pointer;
+        color: white;
+      }
+    }
+  }
+}

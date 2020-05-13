@@ -6,7 +6,6 @@ import config from '../../config/environment';
 
 export default class ControlPanelComponent extends Component {
   @service websockets;
-  @service store;
   socket = null;
 
   // A list of all sounds loaded from the rest api.
@@ -19,7 +18,6 @@ export default class ControlPanelComponent extends Component {
 
   constructor() {
     super(...arguments);
-    this.sounds = this.store.findAll('sound')
     const socket = this.websockets.socketFor('ws://localhost:7000/');
 
     socket.on('open', this.openHandler, this);
@@ -52,11 +50,6 @@ export default class ControlPanelComponent extends Component {
       player3: this.player3,
       player4: this.player4
     }, true);
-  }
-
-  @action
-  playSound(soundId) {
-    fetch(`${config.host}/play_sound/?sound_id=${soundId}`);
   }
 
 }

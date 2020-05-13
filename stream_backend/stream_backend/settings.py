@@ -63,7 +63,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
   "DEFAULT_PERMISSION_CLASSES": [
-    "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    "rest_framework.permissions.AllowAny"
   ],
   "DEFAULT_PARSER_CLASSES": (
     "rest_framework_json_api.parsers.JSONParser",
@@ -85,6 +85,11 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = [
+  "content-disposition",
+  "content-type"
+]
 
 
 ROOT_URLCONF = "stream_backend.urls"
