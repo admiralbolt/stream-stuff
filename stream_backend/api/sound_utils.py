@@ -40,8 +40,6 @@ class SoundPlayer():
 
   def play_sound(self, sound_model):
     self.wave_file = wave.open(sound_model.sound_file.path, "rb")
-    print(self.wave_file.getnchannels())
-    print(self.wave_file.getframerate())
     self.stream.start_stream()
 
     while self.stream.is_active():
