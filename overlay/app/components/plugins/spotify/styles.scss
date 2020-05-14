@@ -1,0 +1,75 @@
+.spotify-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 250px;
+  width: 700px;
+  padding: 5px;
+  background-color: #20303a;
+
+  .album-wrapper {
+    padding: 10px;
+
+    .album-art {
+      height: 230px;
+    }
+  }
+
+  .song-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-size: 1.3rem;
+    color: #dddddd;
+    padding: 10px;
+    height: 230px;
+
+    .song-info-block {
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+
+      p {
+        margin: 0px 0px 5px 5px;
+      }
+
+      .song-title {
+        font-size: 2.4rem;
+        font-weight: bold;
+      }
+
+      .artist {
+        font-size: 1.8rem;
+      }
+
+      .album {
+        font-weight: italic;
+        font-size: 1.7rem;
+      }
+    }
+
+    .timing-info {
+      height: 70px;
+
+      .progress-bar {
+        border-radius: .25rem;
+        background-color: #888888;
+        width: 100%;
+        height: 40px;
+
+        .actual-progress {
+          border-radius: .25rem;
+          height: 40px;
+          background-color: #bbbbbb;
+        }
+      }
+
+      .progress-text {
+        height: 30px;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

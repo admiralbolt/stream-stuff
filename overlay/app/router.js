@@ -11,4 +11,8 @@ Router.map(function() {
   this.route('layouts', function() {
     this.route('melee');
   });
+
+  this.route('plugins', function() {
+    this.route('spotify');
+  });
 });

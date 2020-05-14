@@ -1,6 +1,6 @@
 'use strict';
 
-define("stream-stuff/tests/integration/components/control-panel/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/control-panel/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | control-panel', function (hooks) {
@@ -36,7 +36,7 @@ define("stream-stuff/tests/integration/components/control-panel/component-test",
     });
   });
 });
-define("stream-stuff/tests/integration/components/melee-layout-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/melee-layout-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | melee-layout', function (hooks) {
@@ -72,7 +72,7 @@ define("stream-stuff/tests/integration/components/melee-layout-test", ["qunit", 
     });
   });
 });
-define("stream-stuff/tests/integration/components/melee-layout/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/melee-layout/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | melee-layout', function (hooks) {
@@ -108,7 +108,79 @@ define("stream-stuff/tests/integration/components/melee-layout/component-test", 
     });
   });
 });
-define("stream-stuff/tests/integration/components/sound-board/board-item/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/plugins/spotify/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | plugins/spotify', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Plugins::Spotify />
+      */
+      {
+        id: "U5JQcZra",
+        block: "{\"symbols\":[],\"statements\":[[7,\"plugins/spotify\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Plugins::Spotify>
+              template block text
+            </Plugins::Spotify>
+          
+      */
+      {
+        id: "UYZQIu8y",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"plugins/spotify\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/socket-client/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | socket-client', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <SocketClient />
+      */
+      {
+        id: "dF4z9E/i",
+        block: "{\"symbols\":[],\"statements\":[[7,\"socket-client\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <SocketClient>
+              template block text
+            </SocketClient>
+          
+      */
+      {
+        id: "xZSk/jdM",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"socket-client\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/sound-board/board-item/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | sound-board/board-item', function (hooks) {
@@ -144,7 +216,7 @@ define("stream-stuff/tests/integration/components/sound-board/board-item/compone
     });
   });
 });
-define("stream-stuff/tests/integration/components/sound-board/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/sound-board/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | sound-board', function (hooks) {
@@ -180,13 +252,13 @@ define("stream-stuff/tests/integration/components/sound-board/component-test", [
     });
   });
 });
-define("stream-stuff/tests/test-helper", ["stream-stuff/app", "stream-stuff/config/environment", "@ember/test-helpers", "ember-qunit"], function (_app, _environment, _testHelpers, _emberQunit) {
+define("overlay/tests/test-helper", ["overlay/app", "overlay/config/environment", "@ember/test-helpers", "ember-qunit"], function (_app, _environment, _testHelpers, _emberQunit) {
   "use strict";
 
   (0, _testHelpers.setApplication)(_app.default.create(_environment.default.APP));
   (0, _emberQunit.start)();
 });
-define("stream-stuff/tests/unit/adapters/application-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/adapters/application-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Adapter | application', function (hooks) {
@@ -198,7 +270,33 @@ define("stream-stuff/tests/unit/adapters/application-test", ["qunit", "ember-qun
     });
   });
 });
-define("stream-stuff/tests/unit/models/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/instance-initializers/spotify-test", ["overlay/instance-initializers/spotify", "qunit"], function (_spotify, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Instance Initializer | spotify', function (hooks) {
+    hooks.beforeEach(function () {
+      this.TestApplication = Ember.Application.extend();
+      this.TestApplication.instanceInitializer({
+        name: 'initializer under test',
+        initialize: _spotify.initialize
+      });
+      this.application = this.TestApplication.create({
+        autoboot: false
+      });
+      this.instance = this.application.buildInstance();
+    });
+    hooks.afterEach(function () {
+      Ember.run(this.instance, 'destroy');
+      Ember.run(this.application, 'destroy');
+    }); // Replace this with your real tests.
+
+    (0, _qunit.test)('it works', async function (assert) {
+      await this.instance.boot();
+      assert.ok(true);
+    });
+  });
+});
+define("overlay/tests/unit/models/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Model | sound', function (hooks) {
@@ -211,7 +309,7 @@ define("stream-stuff/tests/unit/models/sound-test", ["qunit", "ember-qunit"], fu
     });
   });
 });
-define("stream-stuff/tests/unit/routes/control-panel-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/routes/control-panel-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Route | control-panel', function (hooks) {
@@ -222,7 +320,7 @@ define("stream-stuff/tests/unit/routes/control-panel-test", ["qunit", "ember-qun
     });
   });
 });
-define("stream-stuff/tests/unit/routes/layouts-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/routes/layouts-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Route | layouts', function (hooks) {
@@ -233,7 +331,7 @@ define("stream-stuff/tests/unit/routes/layouts-test", ["qunit", "ember-qunit"], 
     });
   });
 });
-define("stream-stuff/tests/unit/routes/layouts/melee-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/routes/layouts/melee-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Route | layouts/melee', function (hooks) {
@@ -244,7 +342,18 @@ define("stream-stuff/tests/unit/routes/layouts/melee-test", ["qunit", "ember-qun
     });
   });
 });
-define("stream-stuff/tests/unit/serializers/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+define("overlay/tests/unit/routes/plugins/spotify-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Route | plugins/spotify', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:plugins/spotify');
+      assert.ok(route);
+    });
+  });
+});
+define("overlay/tests/unit/serializers/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
   (0, _qunit.module)('Unit | Serializer | sound', function (hooks) {
@@ -263,8 +372,20 @@ define("stream-stuff/tests/unit/serializers/sound-test", ["qunit", "ember-qunit"
     });
   });
 });
-define('stream-stuff/config/environment', [], function() {
-  var prefix = 'stream-stuff';
+define("overlay/tests/unit/services/spotify-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Service | spotify', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks); // Replace this with your real tests.
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let service = this.owner.lookup('service:spotify');
+      assert.ok(service);
+    });
+  });
+});
+define('overlay/config/environment', [], function() {
+  var prefix = 'overlay';
 try {
   var metaName = prefix + '/config/environment';
   var rawConfig = document.querySelector('meta[name="' + metaName + '"]').getAttribute('content');
@@ -282,6 +403,6 @@ catch(err) {
 
 });
 
-require('stream-stuff/tests/test-helper');
+require('overlay/tests/test-helper');
 EmberENV.TESTS_FILE_LOADED = true;
 //# sourceMappingURL=tests.map

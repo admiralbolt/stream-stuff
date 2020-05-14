@@ -7,6 +7,7 @@
 # dependencies
 /bower_components/
 /overlay/node_modules/
+/overlay/config/secrets.js
 
 # misc
 /.env*

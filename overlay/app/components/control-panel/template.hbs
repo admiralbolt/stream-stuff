@@ -1,8 +1,28 @@
-{{input type="text" value=player1}}
-{{input type="text" value=player2}}
-{{input type="text" value=player3}}
-{{input type="text" value=player4}}
+<div local-class="control-panel">
 
-<button {{action updatePlayerNames}}>Update Player Names</button>
+  <div local-class="melee-controls">
+    {{input type="text" value=player1}}
+    {{input type="text" value=player2}}
+    {{input type="text" value=player3}}
+    {{input type="text" value=player4}}
 
-<SoundBoard />
+    <button class="btn" {{action updatePlayerNames}}>Update Player Names</button>
+  </div>
+
+  <br><br>
+
+  <div local-class="spotify-controls">
+    <button class="btn" {{action "authorizeSpotify"}}>Authorize Spotify</button>
+    <button class="btn" {{action "getTokens"}}>Get Tokens</button>
+    <button class="btn" {{action "refresh"}}>Refresh</button>
+    {{#if isPolling}}
+      <button class="btn" {{action "stopPolling"}}>Stop Polling</button>
+    {{else}}
+      <button class="btn" {{action "startPolling"}}>Start Polling</button>
+    {{/if}}
+  </div>
+
+  <br>
+
+  <SoundBoard />
+</div>

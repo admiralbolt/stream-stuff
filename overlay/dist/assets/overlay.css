@@ -1,0 +1,241 @@
+/* styles for overlay/components/control-panel/styles.scss */
+/* styles for overlay/components/melee-layout/styles.scss */
+._melee-layout_1kszmo {
+  border: 5px solid #464655;
+  display: flex;
+  flex-direction: row;
+  height: 1070px;
+  width: 1910px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 1313px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-space_1kszmo {
+  height: 1030px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo {
+  background-color: #464655;
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-plate-spacer_1kszmo {
+  width: 50px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 200px;
+  height: 100%;
+  padding: 0.1rem;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo:not(:last-child) {
+  margin-right: 110px;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._player_1kszmo {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-right: 1rem;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._player_1kszmo._p1_1kszmo {
+  border-bottom: 2px solid #fa5a5a;
+  color: #fa5a5a;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._player_1kszmo._p2_1kszmo {
+  border-bottom: 2px solid #5a5afa;
+  color: #5a5afa;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._player_1kszmo._p3_1kszmo {
+  border-bottom: 2px solid #f0f000;
+  color: #f0f000;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._player_1kszmo._p4_1kszmo {
+  border-bottom: 2px solid #6ec86e;
+  color: #6ec86e;
+}
+._melee-layout_1kszmo ._vidja-game_1kszmo ._name-plates_1kszmo ._name-wrapper_1kszmo ._name_1kszmo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  color: white;
+  font-size: 2.5rem;
+  padding: 0.3rem;
+  font-weight: bold;
+}
+._melee-layout_1kszmo ._panel_1kszmo {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+  width: 607px;
+}
+._melee-layout_1kszmo ._panel_1kszmo ._vertical-spacer_1kszmo {
+  background-color: #464655;
+  height: 30px;
+}
+._melee-layout_1kszmo ._panel_1kszmo ._web-cam_1kszmo {
+  height: 406px;
+  display: flex;
+  flex-direction: row;
+}
+._melee-layout_1kszmo ._panel_1kszmo ._web-cam_1kszmo ._spacer_1kszmo {
+  background-color: #464655;
+  width: 34px;
+  height: 100%;
+}
+._melee-layout_1kszmo ._panel_1kszmo ._web-cam_1kszmo ._camera-box_1kszmo {
+  background: none;
+  width: 549px;
+}
+._melee-layout_1kszmo ._panel_1kszmo ._the-rest_1kszmo {
+  background-color: #464655;
+  flex-grow: 1;
+}
+
+/* styles for overlay/components/plugins/spotify/styles.scss */
+._spotify-wrapper_1mx13n {
+  display: flex;
+  flex-direction: row;
+  height: 250px;
+  width: 700px;
+  padding: 5px;
+  background-color: #20303a;
+}
+._spotify-wrapper_1mx13n ._album-wrapper_1mx13n {
+  padding: 10px;
+}
+._spotify-wrapper_1mx13n ._album-wrapper_1mx13n ._album-art_1mx13n {
+  height: 230px;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  font-size: 1.3rem;
+  color: #dddddd;
+  padding: 10px;
+  height: 230px;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n {
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n p {
+  margin: 0px 0px 5px 5px;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._song-title_1mx13n {
+  font-size: 2.4rem;
+  font-weight: bold;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._artist_1mx13n {
+  font-size: 1.8rem;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._album_1mx13n {
+  font-weight: italic;
+  font-size: 1.7rem;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n {
+  height: 70px;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-bar_1mx13n {
+  border-radius: 0.25rem;
+  background-color: #888888;
+  width: 100%;
+  height: 40px;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-bar_1mx13n ._actual-progress_1mx13n {
+  border-radius: 0.25rem;
+  height: 40px;
+  background-color: #bbbbbb;
+}
+._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-text_1mx13n {
+  height: 30px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* styles for overlay/components/sound-board/board-item/styles.scss */
+._sound_zg69z4 {
+  width: 40%;
+  height: 3.4rem;
+  background-color: #0060aa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-bottom: 0.1rem;
+}
+._sound_zg69z4 ._add-new-sound_zg69z4 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+._sound_zg69z4 ._add-new-sound_zg69z4 ._sound-name-input_zg69z4 {
+  width: 10rem;
+}
+._sound_zg69z4 ._add-new-sound_zg69z4 ._upload-button_zg69z4 {
+  white-space: nowrap;
+}
+._sound_zg69z4 ._sound-display_zg69z4 {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+._sound_zg69z4 ._sound-display_zg69z4 ._sound-name_zg69z4 {
+  font-weight: bold;
+  color: white;
+}
+._sound_zg69z4 ._actions_zg69z4 {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+._sound_zg69z4 ._actions_zg69z4 a._action_zg69z4 {
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+}
+._sound_zg69z4 ._actions_zg69z4 a._action_zg69z4 svg {
+  cursor: pointer;
+  color: white;
+}
+
+/* styles for overlay/components/sound-board/styles.scss */
+._sound-board_crxrn1 {
+  margin-top: 1rem;
+}
+
+._create-new_crxrn1 {
+  height: 3.4rem;
+  margin-bottom: 0.6rem;
+}
+
+/* styles for overlay/styles/app.scss */
+body {
+  background-color: #222222;
+}
+
+.btn {
+  background-color: #fafafa;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+.input {
+  padding: 0.3rem;
+  border-radius: 0.25rem;
+  border: 0;
+}
+
+/* styles for overlay/styles/colors.scss */
+
+/*# sourceMappingURL=overlay.css.map */

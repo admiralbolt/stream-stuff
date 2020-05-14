@@ -1,9 +1,11 @@
 'use strict';
+var secrets = require('./secrets.js');
 
 module.exports = function(environment) {
   let ENV = {
+    spotifySecret: secrets.SPOTIFY_SECRET,
     host: 'http://localhost:8000',
-    modulePrefix: 'stream-stuff',
+    modulePrefix: 'overlay',
     environment,
     rootURL: '/',
     locationType: 'auto',
