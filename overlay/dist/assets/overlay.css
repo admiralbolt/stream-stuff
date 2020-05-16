@@ -99,12 +99,12 @@
 
 /* styles for overlay/components/plugins/spotify/styles.scss */
 ._spotify-wrapper_1mx13n {
+  background-color: #20303a;
   display: flex;
   flex-direction: row;
   height: 250px;
-  width: 700px;
   padding: 5px;
-  background-color: #20303a;
+  width: 700px;
 }
 ._spotify-wrapper_1mx13n ._album-wrapper_1mx13n {
   padding: 10px;
@@ -113,52 +113,53 @@
   height: 230px;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n {
+  color: #dddddd;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   font-size: 1.3rem;
-  color: #dddddd;
-  padding: 10px;
   height: 230px;
+  line-height: 2.1rem;
+  padding: 10px;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n {
-  height: 180px;
   display: flex;
   flex-direction: column;
+  height: 180px;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n p {
-  margin: 0px 0px 5px 5px;
+  margin: 0px 0px 3px 5px;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._song-title_1mx13n {
   font-size: 2.4rem;
   font-weight: bold;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._artist_1mx13n {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._song-info-block_1mx13n ._album_1mx13n {
+  font-size: 1.5rem;
   font-weight: italic;
-  font-size: 1.7rem;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n {
   height: 70px;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-bar_1mx13n {
-  border-radius: 0.25rem;
   background-color: #888888;
-  width: 100%;
+  border-radius: 0.25rem;
   height: 40px;
+  width: 100%;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-bar_1mx13n ._actual-progress_1mx13n {
+  background-color: #bbbbbb;
   border-radius: 0.25rem;
   height: 40px;
-  background-color: #bbbbbb;
 }
 ._spotify-wrapper_1mx13n ._song-info_1mx13n ._timing-info_1mx13n ._progress-text_1mx13n {
-  height: 30px;
-  flex-grow: 1;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex-grow: 1;
+  height: 30px;
   justify-content: center;
 }
 

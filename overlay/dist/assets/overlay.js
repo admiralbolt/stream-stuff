@@ -1770,9 +1770,7 @@
       let data = {
         grant_type: 'authorization_code',
         code: useRefresh ? this.refreshToken : this.code,
-        redirect_uri: REDIRECT_URL,
-        client_id: CLIENT_ID,
-        client_secret: _environment.default.spotifySecret
+        redirect_uri: REDIRECT_URL
       };
       let postData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
       let response = await fetch(TOKEN_URL, {
@@ -1780,7 +1778,8 @@
         mode: 'cors',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(`${CLIENT_ID}:${_environment.default.spotifySecret}`)
         },
         body: postData
       });
@@ -1795,7 +1794,7 @@
       await this.getTokens(
       /*useRefresh=*/
       true);
-      return await getCurrentlyPlaying(true);
+      return await this.getCurrentlyPlaying(true);
     }
 
     async getCurrentlyPlaying(isRetry) {
@@ -1807,7 +1806,7 @@
       });
 
       if (!response.ok) {
-        return isRetry ? 'asdf' : await refreshAndRetry();
+        return isRetry ? 'asdf' : await this.refreshAndRetry();
       }
 
       let responseData = await response.json();
@@ -2059,7 +2058,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+d678a17a"});
+            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+25ad73cf"});
           }
         
 //# sourceMappingURL=overlay.map

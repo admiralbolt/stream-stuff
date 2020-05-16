@@ -224,6 +224,7 @@
         "-ms-flex-direction",
         "-o-flex-direction",
         "flex-direction",
+        "flex-grow",
         "-webkit-flex-order",
         "-moz-flex-order",
         "-ms-flex-order",

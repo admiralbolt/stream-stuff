@@ -41,9 +41,7 @@ export default class SpotifyService extends Service {
     let data = {
       grant_type: 'authorization_code',
       code: useRefresh ? this.refreshToken : this.code,
-      redirect_uri: REDIRECT_URL,
-      client_id: CLIENT_ID,
-      client_secret: config.spotifySecret
+      redirect_uri: REDIRECT_URL
     };
 
     let postData = Object.keys(data).map(key =>
@@ -55,7 +53,8 @@ export default class SpotifyService extends Service {
       mode: 'cors',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(`${CLIENT_ID}:${config.spotifySecret}`)
       },
       body: postData
     });
@@ -71,7 +70,7 @@ export default class SpotifyService extends Service {
 
   async refreshAndRetry() {
     await this.getTokens(/*useRefresh=*/ true);
-    return await getCurrentlyPlaying(true);
+    return await this.getCurrentlyPlaying(true);
   }
 
   async getCurrentlyPlaying(isRetry) {
@@ -83,7 +82,7 @@ export default class SpotifyService extends Service {
     });
 
     if (!response.ok) {
-       return isRetry ? 'asdf' : await refreshAndRetry();
+       return isRetry ? 'asdf' : await this.refreshAndRetry();
     }
 
     let responseData = await response.json();

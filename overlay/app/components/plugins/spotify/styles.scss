@@ -1,10 +1,10 @@
 .spotify-wrapper {
+  background-color: #20303a;
   display: flex;
   flex-direction: row;
   height: 250px;
-  width: 700px;
   padding: 5px;
-  background-color: #20303a;
+  width: 700px;
 
   .album-wrapper {
     padding: 10px;
@@ -15,21 +15,22 @@
   }
 
   .song-info {
+    color: #dddddd;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     font-size: 1.3rem;
-    color: #dddddd;
-    padding: 10px;
     height: 230px;
+    line-height: 2.1rem;
+    padding: 10px;
 
     .song-info-block {
-      height: 180px;
       display: flex;
-      flex-direction: column;
+      flex-direction: column;
+      height: 180px;
 
       p {
-        margin: 0px 0px 5px 5px;
+        margin: 0px 0px 3px 5px;
       }
 
       .song-title {
@@ -38,12 +39,12 @@
       }
 
       .artist {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
       }
 
       .album {
+        font-size: 1.5rem;
         font-weight: italic;
-        font-size: 1.7rem;
       }
     }
 
@@ -51,23 +52,23 @@
       height: 70px;
 
       .progress-bar {
+        background-color: #888888;
         border-radius: .25rem;
-        background-color: #888888;
-        width: 100%;
         height: 40px;
+        width: 100%;
 
         .actual-progress {
+          background-color: #bbbbbb;
           border-radius: .25rem;
           height: 40px;
-          background-color: #bbbbbb;
         }
       }
 
       .progress-text {
-        height: 30px;
-        flex-grow: 1;
-        display: flex;
         align-items: center;
+        display: flex;
+        flex-grow: 1;
+        height: 30px;
         justify-content: center;
       }
     }
