@@ -4,6 +4,7 @@ var secrets = require('./secrets.js');
 module.exports = function(environment) {
   let ENV = {
     spotifySecret: secrets.SPOTIFY_SECRET,
+    twitchOauthToken: secrets.TWITCH_OAUTH_TOKEN,
     host: 'http://localhost:8000',
     modulePrefix: 'overlay',
     environment,

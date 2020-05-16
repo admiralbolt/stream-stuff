@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import config from '../../config/environment';
 import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
@@ -10,10 +11,12 @@ import { task } from 'ember-concurrency-decorators';
 export default class ControlPanelComponent extends Component {
   @service websockets;
   @service spotify;
+  @service twitchChat;
 
   layoutMeleeSocket = null;
   spotifySocket = null;
   @tracked isPolling = false;
+  @alias('twitchChat.botIsAlive') botIsAlive;
 
   // A list of all sounds loaded from the rest api.
   sounds = null;
@@ -39,6 +42,16 @@ export default class ControlPanelComponent extends Component {
       player3: this.player3,
       player4: this.player4
     }, true);
+  }
+
+  @action
+  startBot() {
+    this.twitchChat.start();
+  }
+
+  @action
+  stopBot() {
+    this.twitchChat.stop();
   }
 
   @action

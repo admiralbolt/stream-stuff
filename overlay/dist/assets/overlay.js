@@ -83,7 +83,7 @@
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
+  var _dec, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -93,7 +93,7 @@
 
   function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
 
-  let ControlPanelComponent = (_class = (_temp = class ControlPanelComponent extends _component.default {
+  let ControlPanelComponent = (_dec = Ember.computed.alias('twitchChat.botIsAlive'), (_class = (_temp = class ControlPanelComponent extends _component.default {
     // A list of all sounds loaded from the rest api.
     constructor() {
       super(...arguments);
@@ -102,11 +102,15 @@
 
       _initializerDefineProperty(this, "spotify", _descriptor2, this);
 
+      _initializerDefineProperty(this, "twitchChat", _descriptor3, this);
+
       _defineProperty(this, "layoutMeleeSocket", null);
 
       _defineProperty(this, "spotifySocket", null);
 
-      _initializerDefineProperty(this, "isPolling", _descriptor3, this);
+      _initializerDefineProperty(this, "isPolling", _descriptor4, this);
+
+      _initializerDefineProperty(this, "botIsAlive", _descriptor5, this);
 
       _defineProperty(this, "sounds", null);
 
@@ -131,6 +135,14 @@
         player3: this.player3,
         player4: this.player4
       }, true);
+    }
+
+    startBot() {
+      this.twitchChat.start();
+    }
+
+    stopBot() {
+      this.twitchChat.stop();
     }
 
     authorizeSpotify() {
@@ -191,14 +203,24 @@
     enumerable: true,
     writable: true,
     initializer: null
-  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "isPolling", [Ember._tracked], {
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "twitchChat", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "isPolling", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,
     initializer: function () {
       return false;
     }
-  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "authorizeSpotify", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "authorizeSpotify"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "getTokens", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "getTokens"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "refresh", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "refresh"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "pollingTask", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "pollingTask"), _class.prototype)), _class);
+  }), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "botIsAlive", [_dec], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "startBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "startBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "stopBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "stopBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "authorizeSpotify", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "authorizeSpotify"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "getTokens", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "getTokens"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "refresh", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "refresh"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "pollingTask", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "pollingTask"), _class.prototype)), _class));
   _exports.default = ControlPanelComponent;
 });
 ;define("overlay/components/control-panel/styles", ["exports"], function (_exports) {
@@ -220,8 +242,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "3/oKnFLa",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,81,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,2,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,122,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,163,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,5,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,204,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,6,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,7,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"spotify-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"authorizeSpotify\"],null],[10],[1,1,0,0,\"Authorize Spotify\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"getTokens\"],null],[10],[1,1,0,0,\"Get Tokens\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"refresh\"],null],[10],[1,1,0,0,\"Refresh\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,9,\"BlockHead\"],[]],[[27,[26,8,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopPolling\"],null],[10],[1,1,0,0,\"Stop Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startPolling\"],null],[10],[1,1,0,0,\"Start Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[7,\"sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"action\",\"local-class\",\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"isPolling\",\"if\"]}",
+    "id": "gFE9WQHh",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,81,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,2,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,122,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,163,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,5,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,204,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,6,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,7,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"twitch-chat-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,9,\"BlockHead\"],[]],[[27,[26,8,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopBot\"],null],[10],[1,1,0,0,\"Stop Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startBot\"],null],[10],[1,1,0,0,\"Start Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"spotify-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"authorizeSpotify\"],null],[10],[1,1,0,0,\"Authorize Spotify\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"getTokens\"],null],[10],[1,1,0,0,\"Get Tokens\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"refresh\"],null],[10],[1,1,0,0,\"Refresh\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,9,\"BlockHead\"],[]],[[27,[26,10,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopPolling\"],null],[10],[1,1,0,0,\"Stop Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startPolling\"],null],[10],[1,1,0,0,\"Start Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[7,\"sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"action\",\"local-class\",\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"botIsAlive\",\"if\",\"isPolling\"]}",
     "meta": {
       "moduleName": "overlay/components/control-panel/template.hbs"
     }
@@ -627,7 +649,6 @@
     }
 
     uploadFile(id) {
-      console.log('why?');
       let headers = {
         Accept: 'application/vnd.api+json'
       };
@@ -1485,6 +1506,24 @@
   };
   _exports.default = _default;
 });
+;define("overlay/instance-initializers/twitch-chat", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.initialize = initialize;
+  _exports.default = void 0;
+
+  function initialize(appInstance) {
+    let twitchChat = appInstance.lookup('service:twitch-chat');
+  }
+
+  var _default = {
+    initialize
+  };
+  _exports.default = _default;
+});
 ;define("overlay/models/sound", ["exports", "@ember-data/model"], function (_exports, _model) {
   "use strict";
 
@@ -1860,6 +1899,115 @@
     }
   });
 });
+;define("overlay/services/twitch-chat", ["exports", "tmi", "overlay/config/environment", "commander", "overlay/utils/get-command"], function (_exports, _tmi, _environment, _commander, _getCommand) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  const OPTS = {
+    identity: {
+      username: 'admiral_lightning_bot',
+      password: _environment.default.twitchOauthToken
+    },
+    channels: ['admirallightningbolt']
+  };
+  let GENERIC_RESPONSES = {
+    'fuck you': 'no u'
+  };
+  let TwitchChatService = (_class = (_temp = class TwitchChatService extends Ember.Service {
+    constructor(...args) {
+      super(...args);
+
+      _initializerDefineProperty(this, "client", _descriptor, this);
+
+      _initializerDefineProperty(this, "botIsAlive", _descriptor2, this);
+
+      _defineProperty(this, "testCommand", null);
+    }
+
+    init() {
+      super.init(...arguments);
+      this.botIsAlive = localStorage.getItem('botIsAlive');
+      if (this.botIsAlive) this.start();
+      this.testCommand = new _commander.Command();
+      this.testCommand.requiredOption('--sauce', 'Sauce');
+    }
+
+    messageHandler(target, context, msg, self) {
+      // Ignore messages from self... For now...
+      if (self) return;
+      let [inputCommand, ...args] = msg.split(/\s+/);
+      let commandGenerator = (0, _getCommand.default)(inputCommand.toLowerCase());
+
+      if (!Ember.isNone(commandGenerator)) {
+        let command = commandGenerator.getInstance(); // If --help is included, print help and exit.
+
+        if (args.includes('--help')) {
+          this.client.say(target, command.helpInformation());
+          return;
+        }
+
+        commandGenerator.parseAndExecute(this, target, context, command, args);
+      }
+
+      if (msg.toLowerCase() in GENERIC_RESPONSES) {
+        this.client.say(target, GENERIC_RESPONSES[msg.toLowerCase()]);
+      }
+    }
+
+    connectionHandler() {
+      console.log('connected!');
+    }
+
+    start() {
+      console.log('Activating skynet');
+      this.client = new _tmi.default.client(OPTS);
+      this.client.on('message', function (target, context, msg, self) {
+        this.messageHandler(target, context, msg, self);
+      }.bind(this));
+      this.client.on('connected', this.connectionHandler);
+      this.client.connect();
+      this.botIsAlive = true;
+      localStorage.setItem('botIsAlive', true);
+    }
+
+    stop() {
+      console.log('Preventing skynet');
+      this.client.disconnect();
+      this.botIsAlive = false;
+      localStorage.removeItem('botIsAlive');
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "client", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "botIsAlive", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  })), _class);
+  _exports.default = TwitchChatService;
+});
 ;define("overlay/services/websockets", ["exports", "ember-websockets/services/websockets"], function (_exports, _websockets) {
   "use strict";
 
@@ -2035,6 +2183,92 @@
     }
   });
 });
+;define("overlay/utils/command-base", ["exports", "commander"], function (_exports, _commander) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  class CommandBase {
+    // Override this in the child
+    attachProps(command) {} // Override this in the child
+
+
+    parseAndExecute(emberContext, target, twitchContext, command, args) {
+      command.exitOverride(err => {
+        emberContext.client.say(target, `@${twitchContext['display-name']} Command ${command.name()} failed: ${err.message}`);
+      }); // Default is to remove the first two argumnets from the arg array.
+      // Specifying from: 'user' doesn't remove any args.
+
+      command.parse(args, {
+        from: 'user'
+      });
+    }
+
+    getInstance() {
+      let command = new _commander.Command();
+      command.addHelpCommand(false);
+      command.description(this.description);
+      command.name(this.name);
+      this.attachProps(command);
+      return command;
+    }
+
+  }
+
+  _exports.default = CommandBase;
+});
+;define("overlay/utils/get-command", ["exports", "overlay/utils/test-command"], function (_exports, _testCommand) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = getCommand;
+
+  function getCommand(name) {
+    let commands = [new _testCommand.default()];
+    let commandMap = {};
+    commands.reduce(function (result, item, index, array) {
+      result[item.name] = item;
+    }, commandMap);
+    return commandMap[name] || undefined;
+  }
+});
+;define("overlay/utils/test-command", ["exports", "commander", "overlay/utils/command-base"], function (_exports, _commander, _commandBase) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  class TestCommand extends _commandBase.default {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "name", '!test');
+
+      _defineProperty(this, "description", 'Test Command that does stuff.');
+    }
+
+    attachProps(command) {
+      command.requiredOption('--sauce', 'Adds some sauce');
+    }
+
+    parseAndExecute(emberContext, target, twitchContext, command, args) {
+      super.parseAndExecute(emberContext, target, twitchContext, command, args);
+      emberContext.client.say(target, 'cool');
+    }
+
+  }
+
+  _exports.default = TestCommand;
+});
 ;
 
 ;define('overlay/config/environment', [], function() {
@@ -2058,7 +2292,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+25ad73cf"});
+            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+3e7552b8"});
           }
         
 //# sourceMappingURL=overlay.map

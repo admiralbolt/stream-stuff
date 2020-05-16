@@ -31,6 +31,7 @@
     "ember-cli": "~3.17.0",
     "ember-cli-app-version": "^3.2.0",
     "ember-cli-babel": "^7.18.0",
+    "ember-cli-cjs-transform": "^2.0.0",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-htmlbars": "^4.2.3",
     "ember-cli-inject-live-reload": "^2.0.2",
@@ -69,6 +70,10 @@
     "edition": "octane"
   },
   "dependencies": {
-    "ws": "^7.2.5"
+    "argparse": "^1.0.10",
+    "commander": "^5.1.0",
+    "tmi.js": "^1.5.0",
+    "ws": "^7.2.5",
+    "yargs": "^15.3.1"
   }
 }

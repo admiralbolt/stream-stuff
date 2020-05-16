@@ -28,7 +28,6 @@ export default class BoardItemComponent extends Component {
   }
 
   uploadFile(id) {
-    console.log('why?');
     let headers = {
       Accept: 'application/vnd.api+json'
     };

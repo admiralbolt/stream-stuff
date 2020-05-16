@@ -74598,6 +74598,2812 @@ if(void 0!==this.cache[b])return this.cache[b];this.cache[b]=g;f="[object Functi
 h)&&void 0!==f[h]&&null!==f[h]&&g.val.push([h,String(f[h])]);g.val.length&&(g.type=2)}else g.type=1,g.val.push([void 0,String(f)]);return g};f.expand=function(b,k){var g=(new h(b)).expand(k);return new f(g)};return h});
 
 }
+;define('tmi', ['exports'], function (exports) { 'use strict';
+
+	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+	function createCommonjsModule(fn, module) {
+		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	}
+
+	var require$$1 = {};
+
+	var utils = createCommonjsModule(function (module) {
+	var actionMessageRegex = /^\u0001ACTION ([^\u0001]+)\u0001$/;
+	var justinFanRegex = /^(justinfan)(\d+$)/;
+	var unescapeIRCRegex = /\\([sn:r\\])/g;
+	var ircEscapedChars = { s: ' ', n: '', ':': ';', r: '' };
+	var self = module.exports = {
+	    // Return the second value if the first value is undefined..
+	    get: (obj1, obj2) => { return typeof obj1 === "undefined" ? obj2 : obj1; },
+
+	    // Value is a boolean..
+	    isBoolean: (obj) => { return typeof(obj) === "boolean"; },
+
+	    // Value is a finite number..
+	    isFinite: (int) => { return isFinite(int) && !isNaN(parseFloat(int)); },
+
+	    // Value is an integer..
+	    isInteger: (int) => { return !isNaN(self.toNumber(int, 0)); },
+
+	    // Username is a justinfan username..
+	    isJustinfan: (username) => { return justinFanRegex.test(username); },
+
+	    // Value is null..
+	    isNull: (obj) => { return obj === null; },
+
+	    // Value is a regex..
+	    isRegex: (str) => { return /[\|\\\^\$\*\+\?\:\#]/.test(str); },
+
+	    // Value is a string..
+	    isString: (str) => { return typeof(str) === "string"; },
+
+	    // Value is a valid url..
+	    isURL: (str) => { return RegExp("^(?:(?:https?|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$","i").test(str); },
+
+	    // Return a random justinfan username..
+	    justinfan: () => { return `justinfan${Math.floor((Math.random() * 80000) + 1000)}`; },
+
+	    // Return a valid password..
+	    password: (str) => { return ["SCHMOOPIIE", "", null].includes(str) ? "SCHMOOPIIE" : `oauth:${str.toLowerCase().replace("oauth:", "")}`; },
+
+	    // Race a promise against a delay..
+	    promiseDelay: (time) => { return new Promise(function (resolve) { setTimeout(resolve, time); }); },
+
+	    // Replace all occurences of a string using an object..
+	    replaceAll: (str, obj) => {
+	        if (str === null || typeof str === "undefined") { return null; }
+	        for (var x in obj) {
+	            str = str.replace(new RegExp(x, "g"), obj[x]);
+	        }
+	        return str;
+	    },
+
+	    unescapeHtml: (safe) => {
+	        return safe.replace(/\\&amp\\;/g, "&")
+	            .replace(/\\&lt\\;/g, "<")
+	            .replace(/\\&gt\\;/g, ">")
+	            .replace(/\\&quot\\;/g, "\"")
+	            .replace(/\\&#039\\;/g, "'");
+	    },
+
+	    // Escaping values: http://ircv3.net/specs/core/message-tags-3.2.html#escaping-values
+	    unescapeIRC: (msg) => {
+	        return !msg || !msg.includes('\\') ? msg : msg.replace(unescapeIRCRegex, (m, p) => { return p in ircEscapedChars ? ircEscapedChars[p] : p });
+	    },
+
+	    actionMessage: (msg) => {
+	        return msg.match(actionMessageRegex);
+	    },
+
+	    // Add word to a string..
+	    addWord: (line, word) => {
+	        return line.length ? line + " " + word : line + word;
+	    },
+
+	    // Return a valid channel name..
+	    channel: (str) => {
+	        var channel = (str ? str : "").toLowerCase();
+	        return channel[0] === "#" ? channel : "#" + channel;
+	    },
+
+	    // Extract a number from a string..
+	    extractNumber: (str) => {
+	        var parts = str.split(" ");
+	        for (var i = 0; i < parts.length; i++) {
+	            if (self.isInteger(parts[i])) { return ~~parts[i]; }
+	        }
+	        return 0;
+	    },
+
+	    // Format the date..
+	    formatDate: (date) => {
+	        var hours = date.getHours();
+	        var mins  = date.getMinutes();
+
+	        hours = (hours < 10 ? "0" : "") + hours;
+	        mins = (mins < 10 ? "0" : "") + mins;
+
+	        return `${hours}:${mins}`;
+	    },
+
+	    // Inherit the prototype methods from one constructor into another..
+	    inherits: (ctor, superCtor) => {
+	        ctor.super_ = superCtor;
+	        var TempCtor = function () {};
+	        TempCtor.prototype = superCtor.prototype;
+	        ctor.prototype = new TempCtor();
+	        ctor.prototype.constructor = ctor;
+	    },
+
+	    // Return whether inside a Node application or not..
+	    isNode: () => {
+	        try {
+	            return "object" === typeof process && Object.prototype.toString.call(process) === "[object process]";
+	        } catch(e) {}
+	        return false;
+	    },
+
+	    // Return whether inside a Chrome extension or not..
+	    isExtension: () => {
+	        try {
+	            return window.chrome && chrome.runtime && chrome.runtime.id;
+	        } catch(e) {}
+	        return false;
+	    },
+
+	    // Return whether inside a React Native app..
+	    isReactNative: () => {
+	        try {
+	            return navigator && navigator.product == "ReactNative";
+	        } catch(e) {}
+	        return false;
+	    },
+
+	    // Merge two objects..
+	    merge: Object.assign,
+
+	    // Split a line but try not to cut a word in half..
+	    splitLine: (input, length) => {
+	        var lastSpace = input.substring(0, length).lastIndexOf(" ");
+	        // No spaces found, split at the very end to avoid a loop..
+	        if (lastSpace === -1) {
+	            lastSpace = length - 1;
+	        }
+	        return [input.substring(0, lastSpace), input.substring(lastSpace + 1)];
+	    },
+
+	    // Parse string to number. Returns NaN if string can't be parsed to number..
+	    toNumber: (num, precision) => {
+	        if (num === null) return 0;
+	        var factor = Math.pow(10, self.isFinite(precision) ? precision : 0);
+	        return Math.round(num * factor) / factor;
+	    },
+
+	    // Merge two arrays..
+	    union: (arr1, arr2) => {
+	        var hash = {};
+	        var ret = [];
+	        for(var i=0; i < arr1.length; i++) {
+	            var e = arr1[i];
+	            if (!hash[e]) {
+	                hash[e] = true;
+	                ret.push(e);
+	            }
+	        }
+	        for(var i=0; i < arr2.length; i++) {
+	            var e = arr2[i];
+	            if (!hash[e]) {
+	                hash[e] = true;
+	                ret.push(e);
+	            }
+	        }
+	        return ret;
+	    },
+
+	    // Return a valid username..
+	    username: (str) => {
+	        var username = (str ? str : "").toLowerCase();
+	        return username[0] === "#" ? username.slice(1) : username;
+	    }
+	};
+	});
+	var utils_1 = utils.get;
+	var utils_2 = utils.isBoolean;
+	var utils_3 = utils.isInteger;
+	var utils_4 = utils.isJustinfan;
+	var utils_5 = utils.isNull;
+	var utils_6 = utils.isRegex;
+	var utils_7 = utils.isString;
+	var utils_8 = utils.isURL;
+	var utils_9 = utils.justinfan;
+	var utils_10 = utils.password;
+	var utils_11 = utils.promiseDelay;
+	var utils_12 = utils.replaceAll;
+	var utils_13 = utils.unescapeHtml;
+	var utils_14 = utils.unescapeIRC;
+	var utils_15 = utils.actionMessage;
+	var utils_16 = utils.addWord;
+	var utils_17 = utils.channel;
+	var utils_18 = utils.extractNumber;
+	var utils_19 = utils.formatDate;
+	var utils_20 = utils.inherits;
+	var utils_21 = utils.isNode;
+	var utils_22 = utils.isExtension;
+	var utils_23 = utils.isReactNative;
+	var utils_24 = utils.merge;
+	var utils_25 = utils.splitLine;
+	var utils_26 = utils.toNumber;
+	var utils_27 = utils.union;
+	var utils_28 = utils.username;
+
+	var api = function api(options, callback) {
+	    // Set the url to options.uri or options.url..
+	    var url = utils.get(options.url, null) === null ? utils.get(options.uri, null) : utils.get(options.url, null);
+
+	    // Make sure it is a valid url..
+	    if (!utils.isURL(url)) { url = "https://api.twitch.tv/kraken" + (url[0] === "/" ? url : `/${url}`); }
+
+	    // We are inside a Node application, so we can use the request module..
+	    if (utils.isNode()) {
+	        require$$1(utils.merge({ method: "GET", json: true }, options, { url: url }), callback);
+	    }
+	    // Inside an extension -> we cannot use jsonp!
+	    else if (utils.isExtension() || utils.isReactNative()) {
+	        options = utils.merge({ url: url, method: "GET", headers: {} }, options);
+	        // prepare request
+	        var xhr = new XMLHttpRequest();
+	        xhr.open(options.method, options.url, true);
+	        for(var name in options.headers) {
+	            xhr.setRequestHeader(name, options.headers[name]);
+	        }
+	        xhr.responseType = "json";
+	        // set request handler
+	        xhr.addEventListener("load", (ev) => {
+	            if(xhr.readyState == 4) {
+	                if(xhr.status != 200) {
+	                    callback(xhr.status, null, null);
+	                } else {
+	                    callback(null, null, xhr.response);
+	                }
+	            }
+	        });
+	        // submit
+	        xhr.send();
+	    }
+	    // Inside a web application, use jsonp..
+	    else {
+	        // Callbacks must match the regex [a-zA-Z_$][\w$]*(\.[a-zA-Z_$][\w$]*)*
+	        var callbackName = `jsonp_callback_${Math.round(100000 * Math.random())}`;
+	        window[callbackName] = function(data) {
+	            delete window[callbackName];
+	            document.body.removeChild(script);
+	            callback(null, null, data);
+	        };
+
+	        // Inject the script in the document..
+	        var script = document.createElement("script");
+	        script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callbackName}`;
+	        document.body.appendChild(script);
+	    }
+	};
+
+	var api_1 = api;
+
+	// Enable followers-only mode on a channel..
+	function followersonly(channel, minutes) {
+	    channel = utils.channel(channel);
+	    minutes = utils.get(minutes, 30);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, `/followers ${minutes}`, (resolve, reject) => {
+	        // Received _promiseFollowers event, resolve or reject..
+	        this.once("_promiseFollowers", (err) => {
+	            if (!err) { resolve([channel, ~~minutes]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Disable followers-only mode on a channel..
+	function followersonlyoff(channel) {
+	    channel = utils.channel(channel);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, "/followersoff", (resolve, reject) => {
+	        // Received _promiseFollowersoff event, resolve or reject..
+	        this.once("_promiseFollowersoff", (err) => {
+	            if (!err) { resolve([channel]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Leave a channel..
+	function part(channel) {
+	    channel = utils.channel(channel);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), null, `PART ${channel}`, (resolve, reject) => {
+	        // Received _promisePart event, resolve or reject..
+	        this.once("_promisePart", (err) => {
+	            if (!err) { resolve([channel]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Enable R9KBeta mode on a channel..
+	function r9kbeta(channel) {
+	    channel = utils.channel(channel);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, "/r9kbeta", (resolve, reject) => {
+	        // Received _promiseR9kbeta event, resolve or reject..
+	        this.once("_promiseR9kbeta", (err) => {
+	            if (!err) { resolve([channel]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Disable R9KBeta mode on a channel..
+	function r9kbetaoff(channel) {
+	    channel = utils.channel(channel);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, "/r9kbetaoff", (resolve, reject) => {
+	        // Received _promiseR9kbetaoff event, resolve or reject..
+	        this.once("_promiseR9kbetaoff", (err) => {
+	            if (!err) { resolve([channel]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Enable slow mode on a channel..
+	function slow(channel, seconds) {
+	    channel = utils.channel(channel);
+	    seconds = utils.get(seconds, 300);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, `/slow ${seconds}`, (resolve, reject) => {
+	        // Received _promiseSlow event, resolve or reject..
+	        this.once("_promiseSlow", (err) => {
+	            if (!err) { resolve([channel, ~~seconds]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	// Disable slow mode on a channel..
+	function slowoff(channel) {
+	    channel = utils.channel(channel);
+
+	    // Send the command to the server and race the Promise against a delay..
+	    return this._sendCommand(this._getPromiseDelay(), channel, "/slowoff", (resolve, reject) => {
+	        // Received _promiseSlowoff event, resolve or reject..
+	        this.once("_promiseSlowoff", (err) => {
+	            if (!err) { resolve([channel]); }
+	            else { reject(err); }
+	        });
+	    });
+	}
+
+	var commands = {
+	    // Send action message (/me <message>) on a channel..
+	    action: function action(channel, message) {
+	        channel = utils.channel(channel);
+	        message = `\u0001ACTION ${message}\u0001`;
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendMessage(this._getPromiseDelay(), channel, message, (resolve, reject) => {
+	            // At this time, there is no possible way to detect if a message has been sent has been eaten
+	            // by the server, so we can only resolve the Promise.
+	            resolve([channel, message]);
+	        });
+	    },
+
+	    // Ban username on channel..
+	    ban: function ban(channel, username, reason) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+	        reason = utils.get(reason, "");
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/ban ${username} ${reason}`, (resolve, reject) => {
+	            // Received _promiseBan event, resolve or reject..
+	            this.once("_promiseBan", (err) => {
+	                if (!err) { resolve([channel, username, reason]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Clear all messages on a channel..
+	    clear: function clear(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/clear", (resolve, reject) => {
+	            // Received _promiseClear event, resolve or reject..
+	            this.once("_promiseClear", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Change the color of your username..
+	    color: function color(channel, newColor) {
+	        newColor = utils.get(newColor, channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), "#tmijs", `/color ${newColor}`, (resolve, reject) => {
+	            // Received _promiseColor event, resolve or reject..
+	            this.once("_promiseColor", (err) => {
+	                if (!err) { resolve([newColor]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Run commercial on a channel for X seconds..
+	    commercial: function commercial(channel, seconds) {
+	        channel = utils.channel(channel);
+	        seconds = utils.get(seconds, 30);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/commercial ${seconds}`, (resolve, reject) => {
+	            // Received _promiseCommercial event, resolve or reject..
+	            this.once("_promiseCommercial", (err) => {
+	                if (!err) { resolve([channel, ~~seconds]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+		
+		
+	    // Delete a specific message on a channel
+	    deletemessage: function deletemessage(channel, messageUUID) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/delete ${messageUUID}`, (resolve, reject) => {
+	            // Received _promiseDeletemessage event, resolve or reject..
+	            this.once("_promiseDeletemessage", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Enable emote-only mode on a channel..
+	    emoteonly: function emoteonly(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/emoteonly", (resolve, reject) => {
+	            // Received _promiseEmoteonly event, resolve or reject..
+	            this.once("_promiseEmoteonly", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Disable emote-only mode on a channel..
+	    emoteonlyoff: function emoteonlyoff(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/emoteonlyoff", (resolve, reject) => {
+	            // Received _promiseEmoteonlyoff event, resolve or reject..
+	            this.once("_promiseEmoteonlyoff", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Enable followers-only mode on a channel..
+	    followersonly: followersonly,
+
+	    // Alias for followersonly()..
+	    followersmode: followersonly,
+
+	    // Disable followers-only mode on a channel..
+	    followersonlyoff: followersonlyoff,
+
+	    // Alias for followersonlyoff()..
+	    followersmodeoff: followersonlyoff,
+
+	    // Host a channel..
+	    host: function host(channel, target) {
+	        channel = utils.channel(channel);
+	        target = utils.username(target);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(2000, channel, `/host ${target}`, (resolve, reject) => {
+	            // Received _promiseHost event, resolve or reject..
+	            this.once("_promiseHost", (err, remaining) => {
+	                if (!err) { resolve([channel, target, ~~remaining]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Join a channel..
+	    join: function join(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server ..
+	        return this._sendCommand(null, null, `JOIN ${channel}`, (resolve, reject) => {
+	            var eventName = "_promiseJoin";
+	            var hasFulfilled = false;
+	            var listener = (err, joinedChannel) => {
+	                if (channel === utils.channel(joinedChannel)) {
+	                    // Received _promiseJoin event for the target channel, resolve or reject..
+	                    this.removeListener(eventName, listener);
+	                    hasFulfilled = true;
+	                    if (!err) { resolve([channel]); }
+	                    else { reject(err); }
+	                }
+	            };
+	            this.on(eventName, listener);
+	            // Race the Promise against a delay..
+	            var delay = this._getPromiseDelay();
+	            utils.promiseDelay(delay).then(() => {
+	                if (!hasFulfilled) {
+	                    this.emit(eventName, "No response from Twitch.", channel);
+	                }
+	            });
+	        });
+	    },
+
+	    // Mod username on channel..
+	    mod: function mod(channel, username) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/mod ${username}`, (resolve, reject) => {
+	            // Received _promiseMod event, resolve or reject..
+	            this.once("_promiseMod", (err) => {
+	                if (!err) { resolve([channel, username]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Get list of mods on a channel..
+	    mods: function mods(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/mods", (resolve, reject) => {
+	            // Received _promiseMods event, resolve or reject..
+	            this.once("_promiseMods", (err, mods) => {
+	                if (!err) {
+	                    // Update the internal list of moderators..
+	                    mods.forEach((username) => {
+	                        if (!this.moderators[channel]) { this.moderators[channel] = []; }
+	                        if (!this.moderators[channel].includes(username)) { this.moderators[channel].push(username); }
+	                    });
+	                    resolve(mods);
+	                } else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Leave a channel..
+	    part: part,
+
+	    // Alias for part()..
+	    leave: part,
+
+	    // Send a ping to the server..
+	    ping: function ping() {
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), null, "PING", (resolve, reject) => {
+	            // Update the internal ping timeout check interval..
+	            this.latency = new Date();
+	            this.pingTimeout = setTimeout(() => {
+	                if (this.ws !== null) {
+	                    this.wasCloseCalled = false;
+	                    this.log.error("Ping timeout.");
+	                    this.ws.close();
+
+	                    clearInterval(this.pingLoop);
+	                    clearTimeout(this.pingTimeout);
+	                }
+	            }, utils.get(this.opts.connection.timeout, 9999));
+
+	            // Received _promisePing event, resolve or reject..
+	            this.once("_promisePing", (latency) => { resolve([parseFloat(latency)]); });
+	        });
+	    },
+
+	    // Enable R9KBeta mode on a channel..
+	    r9kbeta: r9kbeta,
+
+	    // Alias for r9kbeta()..
+	    r9kmode: r9kbeta,
+
+	    // Disable R9KBeta mode on a channel..
+	    r9kbetaoff: r9kbetaoff,
+
+	    // Alias for r9kbetaoff()..
+	    r9kmodeoff: r9kbetaoff,
+
+	    // Send a raw message to the server..
+	    raw: function raw(message) {
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), null, message, (resolve, reject) => {
+	            resolve([message]);
+	        });
+	    },
+
+	    // Send a message on a channel..
+	    say: function say(channel, message) {
+	        channel = utils.channel(channel);
+
+	        if ((message.startsWith(".") && !message.startsWith("..")) || message.startsWith("/") || message.startsWith("\\")) {
+	            // Check if the message is an action message..
+	            if (message.substr(1, 3) === "me ") {
+	                return this.action(channel, message.substr(4));
+	            }
+	            else {
+	                // Send the command to the server and race the Promise against a delay..
+	                return this._sendCommand(this._getPromiseDelay(), channel, message, (resolve, reject) => {
+	                    // At this time, there is no possible way to detect if a message has been sent has been eaten
+	                    // by the server, so we can only resolve the Promise.
+	                    resolve([channel, message]);
+	                });
+	            }
+	        }
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendMessage(this._getPromiseDelay(), channel, message, (resolve, reject) => {
+	            // At this time, there is no possible way to detect if a message has been sent has been eaten
+	            // by the server, so we can only resolve the Promise.
+	            resolve([channel, message]);
+	        });
+	    },
+
+	    // Enable slow mode on a channel..
+	    slow: slow,
+
+	    // Alias for slow()..
+	    slowmode: slow,
+
+	    // Disable slow mode on a channel..
+	    slowoff: slowoff,
+
+	    // Alias for slowoff()..
+	    slowmodeoff: slowoff,
+
+	    // Enable subscribers mode on a channel..
+	    subscribers: function subscribers(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/subscribers", (resolve, reject) => {
+	            // Received _promiseSubscribers event, resolve or reject..
+	            this.once("_promiseSubscribers", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Disable subscribers mode on a channel..
+	    subscribersoff: function subscribersoff(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/subscribersoff", (resolve, reject) => {
+	            // Received _promiseSubscribersoff event, resolve or reject..
+	            this.once("_promiseSubscribersoff", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Timeout username on channel for X seconds..
+	    timeout: function timeout(channel, username, seconds, reason) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        if (!utils.isNull(seconds) && !utils.isInteger(seconds)) {
+	            reason = seconds;
+	            seconds = 300;
+	        }
+
+	        seconds = utils.get(seconds, 300);
+	        reason = utils.get(reason, "");
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/timeout ${username} ${seconds} ${reason}`, (resolve, reject) => {
+	            // Received _promiseTimeout event, resolve or reject..
+	            this.once("_promiseTimeout", (err) => {
+	                if (!err) { resolve([channel, username, ~~seconds, reason]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Unban username on channel..
+	    unban: function unban(channel, username) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/unban ${username}`, (resolve, reject) => {
+	            // Received _promiseUnban event, resolve or reject..
+	            this.once("_promiseUnban", (err) => {
+	                if (!err) { resolve([channel, username]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // End the current hosting..
+	    unhost: function unhost(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(2000, channel, "/unhost", (resolve, reject) => {
+	            // Received _promiseUnhost event, resolve or reject..
+	            this.once("_promiseUnhost", (err) => {
+	                if (!err) { resolve([channel]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Unmod username on channel..
+	    unmod: function unmod(channel, username) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/unmod ${username}`, (resolve, reject) => {
+	            // Received _promiseUnmod event, resolve or reject..
+	            this.once("_promiseUnmod", (err) => {
+	                if (!err) { resolve([channel, username]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Unvip username on channel..
+	    unvip: function unvip(channel, username) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/unvip ${username}`, (resolve, reject) => {
+	            // Received _promiseUnvip event, resolve or reject..
+	            this.once("_promiseUnvip", (err) => {
+	                if (!err) { resolve([channel, username]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Add username to VIP list on channel..
+	    vip: function vip(channel, username) {
+	        channel = utils.channel(channel);
+	        username = utils.username(username);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, `/vip ${username}`, (resolve, reject) => {
+	            // Received _promiseVip event, resolve or reject..
+	            this.once("_promiseVip", (err) => {
+	                if (!err) { resolve([channel, username]); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Get list of VIPs on a channel..
+	    vips: function vips(channel) {
+	        channel = utils.channel(channel);
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), channel, "/vips", (resolve, reject) => {
+	            // Received _promiseVips event, resolve or reject..
+	            this.once("_promiseVips", (err, vips) => {
+	                if (!err) { resolve(vips); }
+	                else { reject(err); }
+	            });
+	        });
+	    },
+
+	    // Send an whisper message to a user..
+	    whisper: function whisper(username, message) {
+	        username = utils.username(username);
+
+	        // The server will not send a whisper to the account that sent it.
+	        if (username === this.getUsername()) {
+	            return Promise.reject("Cannot send a whisper to the same account.");
+	        }
+
+	        // Send the command to the server and race the Promise against a delay..
+	        return this._sendCommand(this._getPromiseDelay(), "#tmijs", `/w ${username} ${message}`, (resolve, reject) => {
+	            var from = utils.channel(username),
+	                userstate = utils.merge({
+	                        "message-type": "whisper",
+	                        "message-id": null,
+	                        "thread-id": null,
+	                        username: this.getUsername()
+	                    }, this.globaluserstate);
+
+	            // Emit for both, whisper and message..
+	            this.emits(["whisper", "message"], [
+	                [from, userstate, message, true],
+	                [from, userstate, message, true]
+	            ]);
+
+	            // At this time, there is no possible way to detect if a message has been sent has been eaten
+	            // by the server, so we can only resolve the Promise.
+	            resolve([username, message]);
+	        });
+	    }
+	};
+
+	/*
+	 * Copyright Joyent, Inc. and other Node contributors.
+	 *
+	 * Permission is hereby granted, free of charge, to any person obtaining a
+	 * copy of this software and associated documentation files (the
+	 * "Software"), to deal in the Software without restriction, including
+	 * without limitation the rights to use, copy, modify, merge, publish,
+	 * distribute, sublicense, and/or sell copies of the Software, and to permit
+	 * persons to whom the Software is furnished to do so, subject to the
+	 * following conditions:
+	 *
+	 * The above copyright notice and this permission notice shall be included
+	 * in all copies or substantial portions of the Software.
+	 *
+	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	 * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	 * NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	 * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	 * USE OR OTHER DEALINGS IN THE SOFTWARE.
+	*/
+
+	if (!String.prototype.startsWith) {
+	    String.prototype.startsWith = function(searchString, position) {
+	        position = position || 0;
+	        return this.indexOf(searchString, position) === position;
+	    };
+	}
+
+	function EventEmitter() {
+	    this._events = this._events || {};
+	    this._maxListeners = this._maxListeners || undefined;
+	}
+
+	var events = EventEmitter;
+
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function(n) {
+	    if (!isNumber(n) || n < 0 || isNaN(n)) {
+	        throw TypeError("n must be a positive number");
+	    }
+
+	    this._maxListeners = n;
+
+	    return this;
+	};
+
+	// Emit multiple events..
+	EventEmitter.prototype.emits = function(types, values) {
+	    for (var i = 0; i < types.length; i++) {
+	        var val = i < values.length ? values[i] : values[values.length - 1];
+	        this.emit.apply(this, [types[i]].concat(val));
+	    }
+	};
+
+	EventEmitter.prototype.emit = function(type) {
+	    var er, handler, len, args, i, listeners;
+
+	    if (!this._events) { this._events = {}; }
+
+	    // If there is no 'error' event listener then throw.
+	    if (type === "error") {
+	        if (!this._events.error || (isObject(this._events.error) && !this._events.error.length)) {
+	            er = arguments[1];
+	            if (er instanceof Error) { throw er; }
+	            throw TypeError("Uncaught, unspecified \"error\" event.");
+	        }
+	    }
+
+	    handler = this._events[type];
+
+	    if (isUndefined(handler)) { return false; }
+
+	    if (isFunction(handler)) {
+	        switch (arguments.length) {
+	            // fast cases
+	            case 1:
+	                handler.call(this);
+	                break;
+	            case 2:
+	                handler.call(this, arguments[1]);
+	                break;
+	            case 3:
+	                handler.call(this, arguments[1], arguments[2]);
+	                break;
+	                // slower
+	            default:
+	                args = Array.prototype.slice.call(arguments, 1);
+	                handler.apply(this, args);
+	        }
+	    } else if (isObject(handler)) {
+	        args = Array.prototype.slice.call(arguments, 1);
+	        listeners = handler.slice();
+	        len = listeners.length;
+	        for (i = 0; i < len; i++) { listeners[i].apply(this, args); }
+	    }
+
+	    return true;
+	};
+
+	EventEmitter.prototype.addListener = function(type, listener) {
+	    var m;
+
+	    if (!isFunction(listener)) { throw TypeError("listener must be a function"); }
+
+	    if (!this._events) { this._events = {}; }
+
+	    // To avoid recursion in the case that type === "newListener"! Before
+	    // adding it to the listeners, first emit "newListener".
+	    if (this._events.newListener) {
+	        this.emit("newListener", type, isFunction(listener.listener) ? listener.listener : listener);
+	    }
+
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    if (!this._events[type]) { this._events[type] = listener; }
+	    // If we've already got an array, just append.
+	    else if (isObject(this._events[type])) { this._events[type].push(listener); }
+	    // Adding the second element, need to change to array.
+	    else { this._events[type] = [this._events[type], listener]; }
+
+	    // Check for listener leak
+	    if (isObject(this._events[type]) && !this._events[type].warned) {
+	        if (!isUndefined(this._maxListeners)) {
+	            m = this._maxListeners;
+	        } else {
+	            m = EventEmitter.defaultMaxListeners;
+	        }
+
+	        if (m && m > 0 && this._events[type].length > m) {
+	            this._events[type].warned = true;
+	            console.error("(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.", this._events[type].length);
+	            // Not supported in IE 10
+	            if (typeof console.trace === "function") {
+	                console.trace();
+	            }
+	        }
+	    }
+
+	    return this;
+	};
+
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+	// Modified to support multiple calls..
+	EventEmitter.prototype.once = function(type, listener) {
+	    if (!isFunction(listener)) { throw TypeError("listener must be a function"); }
+
+	    var fired = false;
+
+	    if (this._events.hasOwnProperty(type) && type.charAt(0) === "_") {
+	        var count = 1;
+	        var searchFor = type;
+
+	        for (var k in this._events){
+	            if (this._events.hasOwnProperty(k) && k.startsWith(searchFor)) {
+	                count++;
+	            }
+	        }
+	        type = type + count;
+	    }
+
+	    function g() {
+	        if (type.charAt(0) === "_" && !isNaN(type.substr(type.length - 1))) {
+	            type = type.substring(0, type.length - 1);
+	        }
+	        this.removeListener(type, g);
+
+	        if (!fired) {
+	            fired = true;
+	            listener.apply(this, arguments);
+	        }
+	    }
+
+	    g.listener = listener;
+	    this.on(type, g);
+
+	    return this;
+	};
+
+	// Emits a "removeListener" event if the listener was removed..
+	// Modified to support multiple calls from .once()..
+	EventEmitter.prototype.removeListener = function(type, listener) {
+	    var list, position, length, i;
+
+	    if (!isFunction(listener)) { throw TypeError("listener must be a function"); }
+
+	    if (!this._events || !this._events[type]) { return this; }
+
+	    list = this._events[type];
+	    length = list.length;
+	    position = -1;
+	    if (list === listener || (isFunction(list.listener) && list.listener === listener)) {
+	        delete this._events[type];
+
+	        if (this._events.hasOwnProperty(type + "2") && type.charAt(0) === "_") {
+	            var searchFor = type;
+	            for (var k in this._events){
+	                if (this._events.hasOwnProperty(k) && k.startsWith(searchFor)) {
+	                    if (!isNaN(parseInt(k.substr(k.length - 1)))) {
+	                        this._events[type + parseInt(k.substr(k.length - 1) - 1)] = this._events[k];
+	                        delete this._events[k];
+	                    }
+	                }
+	            }
+
+	            this._events[type] = this._events[type + "1"];
+	            delete this._events[type + "1"];
+	        }
+	        if (this._events.removeListener) { this.emit("removeListener", type, listener); }
+	    }
+	    else if (isObject(list)) {
+	        for (i = length; i-- > 0;) {
+	            if (list[i] === listener ||
+	                (list[i].listener && list[i].listener === listener)) {
+	                position = i;
+	                break;
+	            }
+	        }
+
+	        if (position < 0) { return this; }
+
+	        if (list.length === 1) {
+	            list.length = 0;
+	            delete this._events[type];
+	        }
+	        else { list.splice(position, 1); }
+
+	        if (this._events.removeListener) { this.emit("removeListener", type, listener); }
+	    }
+
+	    return this;
+	};
+
+	EventEmitter.prototype.removeAllListeners = function(type) {
+	    var key, listeners;
+
+	    if (!this._events) { return this; }
+
+	    // not listening for removeListener, no need to emit
+	    if (!this._events.removeListener) {
+	        if (arguments.length === 0) { this._events = {}; }
+	        else if (this._events[type]) { delete this._events[type]; }
+	        return this;
+	    }
+
+	    // emit removeListener for all listeners on all events
+	    if (arguments.length === 0) {
+	        for (key in this._events) {
+	            if (key === "removeListener") { continue; }
+	            this.removeAllListeners(key);
+	        }
+	        this.removeAllListeners("removeListener");
+	        this._events = {};
+	        return this;
+	    }
+
+	    listeners = this._events[type];
+
+	    if (isFunction(listeners)) { this.removeListener(type, listeners); }
+	    else if (listeners) { while (listeners.length) { this.removeListener(type, listeners[listeners.length - 1]); } }
+	    delete this._events[type];
+
+	    return this;
+	};
+
+	EventEmitter.prototype.listeners = function(type) {
+	    var ret;
+	    if (!this._events || !this._events[type]) { ret = []; }
+	    else if (isFunction(this._events[type])) { ret = [this._events[type]]; }
+	    else { ret = this._events[type].slice(); }
+	    return ret;
+	};
+
+	EventEmitter.prototype.listenerCount = function(type) {
+	    if (this._events) {
+	        var evlistener = this._events[type];
+
+	        if (isFunction(evlistener)) { return 1; }
+	        else if (evlistener) { return evlistener.length; }
+	    }
+	    return 0;
+	};
+
+	EventEmitter.listenerCount = function(emitter, type) {
+	    return emitter.listenerCount(type);
+	};
+
+	function isFunction(arg) {
+	    return typeof arg === "function";
+	}
+
+	function isNumber(arg) {
+	    return typeof arg === "number";
+	}
+
+	function isObject(arg) {
+	    return typeof arg === "object" && arg !== null;
+	}
+
+	function isUndefined(arg) {
+	    return arg === void 0;
+	}
+
+	var currentLevel = "info";
+	var levels = { "trace": 0, "debug": 1, "info": 2, "warn": 3, "error": 4, "fatal": 5 };
+
+	// Logger implementation..
+	function log(level) {
+	    // Return a console message depending on the logging level..
+	    return function (message) {
+	        if (levels[level] >= levels[currentLevel]) {
+	            console.log(`[${utils.formatDate(new Date())}] ${level}: ${message}`);
+	        }
+	    }
+	}
+
+	var logger = {
+	    // Change the current logging level..
+	    setLevel: function(level) {
+	        currentLevel = level;
+	    },
+	    trace: log("trace"),
+	    debug: log("debug"),
+	    info: log("info"),
+	    warn: log("warn"),
+	    error: log("error"),
+	    fatal: log("fatal")
+	};
+
+	/*
+	    Copyright (c) 2013-2015, Fionn Kelleher All rights reserved.
+
+	    Redistribution and use in source and binary forms, with or without modification,
+	    are permitted provided that the following conditions are met:
+
+	        Redistributions of source code must retain the above copyright notice,
+	        this list of conditions and the following disclaimer.
+
+	        Redistributions in binary form must reproduce the above copyright notice,
+	        this list of conditions and the following disclaimer in the documentation and/or other materials
+	        provided with the distribution.
+
+	    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	    IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+	    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+	    OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+	    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+	    OF SUCH DAMAGE.
+	*/
+
+	var nonspaceRegex = /\S+/g;
+
+	function parseComplexTag(tags, tagKey, splA = ",", splB = "/", splC) {
+	    var raw = tags[tagKey];
+	    
+	    if(raw === undefined) {
+	        return tags;
+	    }
+
+	    var tagIsString = utils.isString(raw);
+	    tags[tagKey + "-raw"] = tagIsString ? raw : null;
+
+	    if(raw === true) {
+	        tags[tagKey] = null;
+	        return tags;
+	    }
+
+	    tags[tagKey] = {};
+
+	    if (tagIsString) {
+	        var spl = raw.split(splA);
+
+	        for (var i = 0; i < spl.length; i++) {
+	            var parts = spl[i].split(splB);
+	            var val = parts[1];
+	            if (splC !== undefined && val) {
+	                val = val.split(splC);
+	            }
+	            tags[tagKey][parts[0]] = val || null;
+	        }
+	    }
+	    return tags;
+	}
+
+	var parser = {
+	    // Parse Twitch badges..
+	    badges: function badges(tags) {
+	        return parseComplexTag(tags, "badges");
+	    },
+
+	    // Parse Twitch badge-info..
+	    badgeInfo: function badgeInfo(tags) {
+	        return parseComplexTag(tags, "badge-info");
+	    },
+
+	    // Parse Twitch emotes..
+	    emotes: function emotes(tags) {
+	        return parseComplexTag(tags, "emotes", "/", ":", ",");
+	    },
+
+	    // Parse regex emotes..
+	    emoteRegex: function emoteRegex(msg, code, id, obj) {
+	        nonspaceRegex.lastIndex = 0;
+	        var regex = new RegExp("(\\b|^|\s)" + utils.unescapeHtml(code) + "(\\b|$|\s)");
+	        var match;
+
+	        // Check if emote code matches using RegExp and push it to the object..
+	        while ((match = nonspaceRegex.exec(msg)) !== null) {
+	            if (regex.test(match[0])) {
+	                obj[id] = obj[id] || [];
+	                obj[id].push([match.index, nonspaceRegex.lastIndex - 1]);
+	            }
+	        }
+	    },
+
+	    // Parse string emotes..
+	    emoteString: function emoteString(msg, code, id, obj) {
+	        nonspaceRegex.lastIndex = 0;
+	        var match;
+
+	        // Check if emote code matches and push it to the object..
+	        while ((match = nonspaceRegex.exec(msg)) !== null) {
+	            if (match[0] === utils.unescapeHtml(code)) {
+	                obj[id] = obj[id] || [];
+	                obj[id].push([match.index, nonspaceRegex.lastIndex - 1]);
+	            }
+	        }
+	    },
+
+	    // Transform the emotes object to a string with the following format..
+	    // emote_id:first_index-last_index,another_first-another_last/another_emote_id:first_index-last_index
+	    transformEmotes: function transformEmotes(emotes) {
+	        var transformed = "";
+
+	        Object.keys(emotes).forEach((id) => {
+	            transformed = `${transformed+id}:`;
+	            emotes[id].forEach((index) => {
+	                transformed = `${transformed+index.join("-")},`;
+	            });
+	            transformed = `${transformed.slice(0,-1)}/`;
+	        });
+
+	        return transformed.slice(0,-1);
+	    },
+
+	    // Parse Twitch messages..
+	    msg: function msg(data) {
+	        var message = {
+	            raw: data,
+	            tags: {},
+	            prefix: null,
+	            command: null,
+	            params: []
+	        };
+
+	        // Position and nextspace are used by the parser as a reference..
+	        var position = 0;
+	        var nextspace = 0;
+
+	        // The first thing we check for is IRCv3.2 message tags.
+	        // http://ircv3.atheme.org/specification/message-tags-3.2
+	        if (data.charCodeAt(0) === 64) {
+	            var nextspace = data.indexOf(" ");
+
+	            // Malformed IRC message..
+	            if (nextspace === -1) {
+	                return null;
+	            }
+
+	            // Tags are split by a semi colon..
+	            var rawTags = data.slice(1, nextspace).split(";");
+
+	            for (var i = 0; i < rawTags.length; i++) {
+	                // Tags delimited by an equals sign are key=value tags.
+	                // If there's no equals, we assign the tag a value of true.
+	                var tag = rawTags[i];
+	                var pair = tag.split("=");
+	                message.tags[pair[0]] = tag.substring(tag.indexOf("=") + 1) || true;
+	            }
+
+	            position = nextspace + 1;
+	        }
+
+	        // Skip any trailing whitespace..
+	        while (data.charCodeAt(position) === 32) {
+	            position++;
+	        }
+
+	        // Extract the message's prefix if present. Prefixes are prepended with a colon..
+	        if (data.charCodeAt(position) === 58) {
+	            nextspace = data.indexOf(" ", position);
+
+	            // If there's nothing after the prefix, deem this message to be malformed.
+	            if (nextspace === -1) {
+	                return null;
+	            }
+
+	            message.prefix = data.slice(position + 1, nextspace);
+	            position = nextspace + 1;
+
+	            // Skip any trailing whitespace..
+	            while (data.charCodeAt(position) === 32) {
+	                position++;
+	            }
+	        }
+
+	        nextspace = data.indexOf(" ", position);
+
+	        // If there's no more whitespace left, extract everything from the
+	        // current position to the end of the string as the command..
+	        if (nextspace === -1) {
+	            if (data.length > position) {
+	                message.command = data.slice(position);
+	                return message;
+	            }
+
+	            return null;
+	        }
+
+	        // Else, the command is the current position up to the next space. After
+	        // that, we expect some parameters.
+	        message.command = data.slice(position, nextspace);
+
+	        position = nextspace + 1;
+
+	        // Skip any trailing whitespace..
+	        while (data.charCodeAt(position) === 32) {
+	            position++;
+	        }
+
+	        while (position < data.length) {
+	            nextspace = data.indexOf(" ", position);
+
+	            // If the character is a colon, we've got a trailing parameter.
+	            // At this point, there are no extra params, so we push everything
+	            // from after the colon to the end of the string, to the params array
+	            // and break out of the loop.
+	            if (data.charCodeAt(position) === 58) {
+	                message.params.push(data.slice(position + 1));
+	                break;
+	            }
+
+	            // If we still have some whitespace...
+	            if (nextspace !== -1) {
+	                // Push whatever's between the current position and the next
+	                // space to the params array.
+	                message.params.push(data.slice(position, nextspace));
+	                position = nextspace + 1;
+
+	                // Skip any trailing whitespace and continue looping.
+	                while (data.charCodeAt(position) === 32) {
+	                    position++;
+	                }
+
+	                continue;
+	            }
+
+	            // If we don't have any more whitespace and the param isn't trailing,
+	            // push everything remaining to the params array.
+	            if (nextspace === -1) {
+	                message.params.push(data.slice(position));
+	                break;
+	            }
+	        }
+
+	        return message;
+	    }
+	};
+
+	// Initialize the queue with a specific delay..
+	function queue(defaultDelay) {
+	    this.queue = [];
+	    this.index = 0;
+	    this.defaultDelay = defaultDelay || 3000;
+	}
+
+	// Add a new function to the queue..
+	queue.prototype.add = function add(fn, delay) {
+	    this.queue.push({
+	        fn: fn,
+	        delay: delay
+	    });
+	};
+
+	// Run the current queue..
+	queue.prototype.run = function run(index) {
+	    (index || index === 0) && (this.index = index);
+	    this.next();
+	};
+
+	// Go to the next in queue..
+	queue.prototype.next = function next() {
+	    var i = this.index++;
+	    var at = this.queue[i];
+	    var next = this.queue[this.index];
+
+	    if (!at) { return; }
+
+	    at.fn();
+	    next && setTimeout(() => {
+	        this.next();
+	    }, next.delay || this.defaultDelay);
+	};
+
+	// Reset the queue..
+	queue.prototype.reset = function reset() {
+	    this.index = 0;
+	};
+
+	// Clear the queue..
+	queue.prototype.clear = function clear() {
+	    this.index = 0;
+	    this.queue = [];
+	};
+
+	var queue_1 = queue;
+
+	var timer = {
+		queue: queue_1
+	};
+
+	var client_1 = createCommonjsModule(function (module) {
+	var eventEmitter = events.EventEmitter;
+
+
+
+	var ws = commonjsGlobal.WebSocket || commonjsGlobal.MozWebSocket || require$$1;
+
+
+	// Client instance..
+	var client = function client(opts) {
+	    if (this instanceof client === false) { return new client(opts); }
+	    this.setMaxListeners(0);
+
+	    this.opts = utils.get(opts, {});
+	    this.opts.channels = this.opts.channels || [];
+	    this.opts.connection = this.opts.connection || {};
+	    this.opts.identity = this.opts.identity || {};
+	    this.opts.options = this.opts.options || {};
+
+	    this.clientId = utils.get(this.opts.options.clientId, null);
+
+	    this.maxReconnectAttempts = utils.get(this.opts.connection.maxReconnectAttempts, Infinity);
+	    this.maxReconnectInterval = utils.get(this.opts.connection.maxReconnectInterval, 30000);
+	    this.reconnect = utils.get(this.opts.connection.reconnect, false);
+	    this.reconnectDecay = utils.get(this.opts.connection.reconnectDecay, 1.5);
+	    this.reconnectInterval = utils.get(this.opts.connection.reconnectInterval, 1000);
+
+	    this.reconnecting = false;
+	    this.reconnections = 0;
+	    this.reconnectTimer = this.reconnectInterval;
+
+	    this.secure = utils.get(this.opts.connection.secure, false);
+
+	    // Raw data and object for emote-sets..
+	    this.emotes = "";
+	    this.emotesets = {};
+
+	    this.channels = [];
+	    this.currentLatency = 0;
+	    this.globaluserstate = {};
+	    this.lastJoined = "";
+	    this.latency = new Date();
+	    this.moderators = {};
+	    this.pingLoop = null;
+	    this.pingTimeout = null;
+	    this.reason = "";
+	    this.username = "";
+	    this.userstate = {};
+	    this.wasCloseCalled = false;
+	    this.ws = null;
+
+	    // Create the logger..
+	    var level = "error";
+	    if (this.opts.options.debug) { level = "info"; }
+	    this.log = this.opts.logger || logger;
+
+	    try { logger.setLevel(level); } catch(e) {}
+	    // Format the channel names..
+	    this.opts.channels.forEach(function(part, index, theArray) {
+	        theArray[index] = utils.channel(part);
+	    });
+
+	    eventEmitter.call(this);
+	};
+
+	utils.inherits(client, eventEmitter);
+
+	client.prototype.api = api_1;
+
+	// Put all commands in prototype..
+	for(var methodName in commands) {
+	    client.prototype[methodName] = commands[methodName];
+	}
+
+	// Handle parsed chat server message..
+	client.prototype.handleMessage = function handleMessage(message) {
+	    if (utils.isNull(message)) {
+	        return;
+	    }
+
+	    this.emit("raw_message", JSON.parse(JSON.stringify(message)), message);
+
+	    var channel = utils.channel(utils.get(message.params[0], null));
+	    var msg = utils.get(message.params[1], null);
+	    var msgid = utils.get(message.tags["msg-id"], null);
+
+	    // Parse badges, badge-info and emotes..
+	    message.tags = parser.badges(parser.badgeInfo(parser.emotes(message.tags)));
+
+	    // Transform IRCv3 tags..
+	    if (message.tags) {
+	        var tags = message.tags;
+	        for(var key in tags) {
+	            if (key !== "emote-sets" && key !== "ban-duration" && key !== "bits") {
+	                var value = tags[key];
+	                if (utils.isBoolean(value)) { value = null; }
+	                else if (value === "1") { value = true; }
+	                else if (value === "0") { value = false; }
+	                else if (utils.isString(value)) { value = utils.unescapeIRC(value); }
+	                tags[key] = value;
+	            }
+	        }
+	    }
+
+	    // Messages with no prefix..
+	    if (utils.isNull(message.prefix)) {
+	        switch(message.command) {
+	            // Received PING from server..
+	            case "PING":
+	                this.emit("ping");
+	                if (!utils.isNull(this.ws) && this.ws.readyState === 1) {
+	                    this.ws.send("PONG");
+	                }
+	                break;
+
+	            // Received PONG from server, return current latency..
+	            case "PONG":
+	                var currDate = new Date();
+	                this.currentLatency = (currDate.getTime() - this.latency.getTime()) / 1000;
+	                this.emits(["pong", "_promisePing"], [[this.currentLatency]]);
+
+	                clearTimeout(this.pingTimeout);
+	                break;
+
+	            default:
+	                this.log.warn(`Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
+	                break;
+	        }
+	    }
+
+	    // Messages with "tmi.twitch.tv" as a prefix..
+	    else if (message.prefix === "tmi.twitch.tv") {
+	        switch(message.command) {
+	            case "002":
+	            case "003":
+	            case "004":
+	            case "375":
+	            case "376":
+	            case "CAP":
+	                break;
+
+	            // Retrieve username from server..
+	            case "001":
+	                this.username = message.params[0];
+	                break;
+
+	            // Connected to server..
+	            case "372":
+	                this.log.info("Connected to server.");
+	                this.userstate["#tmijs"] = {};
+	                this.emits(["connected", "_promiseConnect"], [[this.server, this.port], [null]]);
+	                this.reconnections = 0;
+	                this.reconnectTimer = this.reconnectInterval;
+
+	                // Set an internal ping timeout check interval..
+	                this.pingLoop = setInterval(() => {
+	                    // Make sure the connection is opened before sending the message..
+	                    if (!utils.isNull(this.ws) && this.ws.readyState === 1) {
+	                        this.ws.send("PING");
+	                    }
+	                    this.latency = new Date();
+	                    this.pingTimeout = setTimeout(() => {
+	                        if (!utils.isNull(this.ws)) {
+	                            this.wasCloseCalled = false;
+	                            this.log.error("Ping timeout.");
+	                            this.ws.close();
+
+	                            clearInterval(this.pingLoop);
+	                            clearTimeout(this.pingTimeout);
+	                        }
+	                    }, utils.get(this.opts.connection.timeout, 9999));
+	                }, 60000);
+
+	                // Join all the channels from configuration with a 2 seconds interval..
+	                var joinQueue = new timer.queue(2000);
+	                var joinChannels = utils.union(this.opts.channels, this.channels);
+	                this.channels = [];
+
+	                for (var i = 0; i < joinChannels.length; i++) {
+	                    let channel = joinChannels[i];
+	                    joinQueue.add(() => {
+	                        if (!utils.isNull(this.ws) && this.ws.readyState === 1) {
+	                            this.join(channel).catch(err => { this.log.error(err); });
+	                        }
+	                    });
+	                }
+
+	                joinQueue.run();
+	                break;
+
+	            // https://github.com/justintv/Twitch-API/blob/master/chat/capabilities.md#notice
+	            case "NOTICE":
+	                var nullArr = [null];
+	                var noticeArr = [channel, msgid, msg];
+	                var msgidArr = [msgid];
+	                var channelTrueArr = [channel, true];
+	                var channelFalseArr = [channel, false];
+	                var noticeAndNull = [noticeArr, nullArr];
+	                var noticeAndMsgid = [noticeArr, msgidArr];
+	                var basicLog = `[${channel}] ${msg}`;
+	                switch(msgid) {
+	                    // This room is now in subscribers-only mode.
+	                    case "subs_on":
+	                        this.log.info(`[${channel}] This room is now in subscribers-only mode.`);
+	                        this.emits(["subscriber", "subscribers", "_promiseSubscribers"], [channelTrueArr, channelTrueArr, nullArr]);
+	                        break;
+
+	                    // This room is no longer in subscribers-only mode.
+	                    case "subs_off":
+	                        this.log.info(`[${channel}] This room is no longer in subscribers-only mode.`);
+	                        this.emits(["subscriber", "subscribers", "_promiseSubscribersoff"], [channelFalseArr, channelFalseArr, nullArr]);
+	                        break;
+
+	                    // This room is now in emote-only mode.
+	                    case "emote_only_on":
+	                        this.log.info(`[${channel}] This room is now in emote-only mode.`);
+	                        this.emits(["emoteonly", "_promiseEmoteonly"], [channelTrueArr, nullArr]);
+	                        break;
+
+	                    // This room is no longer in emote-only mode.
+	                    case "emote_only_off":
+	                        this.log.info(`[${channel}] This room is no longer in emote-only mode.`);
+	                        this.emits(["emoteonly", "_promiseEmoteonlyoff"], [channelFalseArr, nullArr]);
+	                        break;
+
+	                    // Do not handle slow_on/off here, listen to the ROOMSTATE notice instead as it returns the delay.
+	                    case "slow_on":
+	                    case "slow_off":
+	                        break;
+
+	                    // Do not handle followers_on/off here, listen to the ROOMSTATE notice instead as it returns the delay.
+	                    case "followers_on_zero":
+	                    case "followers_on":
+	                    case "followers_off":
+	                        break;
+
+	                    // This room is now in r9k mode.
+	                    case "r9k_on":
+	                        this.log.info(`[${channel}] This room is now in r9k mode.`);
+	                        this.emits(["r9kmode", "r9kbeta", "_promiseR9kbeta"], [channelTrueArr, channelTrueArr, nullArr]);
+	                        break;
+
+	                    // This room is no longer in r9k mode.
+	                    case "r9k_off":
+	                        this.log.info(`[${channel}] This room is no longer in r9k mode.`);
+	                        this.emits(["r9kmode", "r9kbeta", "_promiseR9kbetaoff"], [channelFalseArr, channelFalseArr, nullArr]);
+	                        break;
+
+	                    // The moderators of this room are: [..., ...]
+	                    case "room_mods":
+	                        var mods = msg.split(": ")[1].toLowerCase()
+	                            .split(", ")
+	                            .filter(n => n);
+
+	                        this.emits(["_promiseMods", "mods"], [[null, mods], [channel, mods]]);
+	                        break;
+
+	                    // There are no moderators for this room.
+	                    case "no_mods":
+	                        this.emits(["_promiseMods", "mods"], [[null, []], [channel, []]]);
+	                        break;
+
+	                    // The VIPs of this channel are: [..., ...]
+	                    case "vips_success":
+	                        if (msg.endsWith(".")) {
+	                            msg = msg.slice(0, -1);
+	                        }
+	                        var vips = msg.split(": ")[1].toLowerCase()
+	                            .split(", ")
+	                            .filter(n => n);
+
+	                            this.emits(["_promiseVips", "vips"], [[null, vips], [channel, vips]]);
+	                            break;
+
+	                    // There are no VIPs for this room.
+	                    case "no_vips":
+	                        this.emits(["_promiseVips", "vips"], [[null, []], [channel, []]]);
+	                        break;
+
+	                    // Ban command failed..
+	                    case "already_banned":
+	                    case "bad_ban_admin":
+	                    case "bad_ban_broadcaster":
+	                    case "bad_ban_global_mod":
+	                    case "bad_ban_self":
+	                    case "bad_ban_staff":
+	                    case "usage_ban":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseBan"], noticeAndMsgid);
+	                        break;
+
+	                    // Ban command success..
+	                    case "ban_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseBan"], noticeAndNull);
+	                        break;
+
+	                    // Clear command failed..
+	                    case "usage_clear":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseClear"], noticeAndMsgid);
+	                        break;
+
+	                    // Mods command failed..
+	                    case "usage_mods":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseMods"], [noticeArr, [msgid, []]]);
+	                        break;
+
+	                    // Mod command success..
+	                    case "mod_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseMod"], noticeAndNull);
+	                        break;
+
+	                    // VIPs command failed..
+	                    case "usage_vips":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseVips"], [noticeArr, [msgid, []]]);
+	                        break;
+
+	                    // VIP command failed..
+	                    case "usage_vip":
+	                    case "bad_vip_grantee_banned":
+	                    case "bad_vip_grantee_already_vip":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseVip"], [noticeArr, [msgid, []]]);
+	                        break;
+
+	                    // VIP command success..
+	                    case "vip_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseVip"], noticeAndNull);
+	                        break;
+
+	                    // Mod command failed..
+	                    case "usage_mod":
+	                    case "bad_mod_banned":
+	                    case "bad_mod_mod":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseMod"], noticeAndMsgid);
+	                        break;
+
+	                    // Unmod command success..
+	                    case "unmod_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnmod"], noticeAndNull);
+	                        break;
+
+	                    // Unvip command success...
+	                    case "unvip_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnvip"], noticeAndNull);
+	                        break;
+
+	                    // Unmod command failed..
+	                    case "usage_unmod":
+	                    case "bad_unmod_mod":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnmod"], noticeAndMsgid);
+	                        break;
+
+	                    // Unvip command failed..
+	                    case "usage_unvip":
+	                    case "bad_unvip_grantee_not_vip":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnvip"], noticeAndMsgid);
+	                        break;
+
+	                    // Color command success..
+	                    case "color_changed":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseColor"], noticeAndNull);
+	                        break;
+
+	                    // Color command failed..
+	                    case "usage_color":
+	                    case "turbo_only_color":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseColor"], noticeAndMsgid);
+	                        break;
+
+	                    // Commercial command success..
+	                    case "commercial_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseCommercial"], noticeAndNull);
+	                        break;
+
+	                    // Commercial command failed..
+	                    case "usage_commercial":
+	                    case "bad_commercial_error":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseCommercial"], noticeAndMsgid);
+	                        break;
+
+	                    // Host command success..
+	                    case "hosts_remaining":
+	                        this.log.info(basicLog);
+	                        var remainingHost = (!isNaN(msg[0]) ? parseInt(msg[0]) : 0);
+	                        this.emits(["notice", "_promiseHost"], [noticeArr, [null, ~~remainingHost]]);
+	                        break;
+
+	                    // Host command failed..
+	                    case "bad_host_hosting":
+	                    case "bad_host_rate_exceeded":
+	                    case "bad_host_error":
+	                    case "usage_host":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseHost"], [noticeArr, [msgid, null]]);
+	                        break;
+
+	                    // r9kbeta command failed..
+	                    case "already_r9k_on":
+	                    case "usage_r9k_on":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseR9kbeta"], noticeAndMsgid);
+	                        break;
+
+	                    // r9kbetaoff command failed..
+	                    case "already_r9k_off":
+	                    case "usage_r9k_off":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseR9kbetaoff"], noticeAndMsgid);
+	                        break;
+
+	                    // Timeout command success..
+	                    case "timeout_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseTimeout"], noticeAndNull);
+	                        break;
+
+	                    case "delete_message_success":
+	                        this.log.info(`[${channel} ${msg}]`);
+	                        this.emits(["notice", "_promiseDeletemessage"], noticeAndNull);
+
+	                    // Subscribersoff command failed..
+	                    case "already_subs_off":
+	                    case "usage_subs_off":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseSubscribersoff"], noticeAndMsgid);
+	                        break;
+
+	                    // Subscribers command failed..
+	                    case "already_subs_on":
+	                    case "usage_subs_on":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseSubscribers"], noticeAndMsgid);
+	                        break;
+
+	                    // Emoteonlyoff command failed..
+	                    case "already_emote_only_off":
+	                    case "usage_emote_only_off":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseEmoteonlyoff"], noticeAndMsgid);
+	                        break;
+
+	                    // Emoteonly command failed..
+	                    case "already_emote_only_on":
+	                    case "usage_emote_only_on":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseEmoteonly"], noticeAndMsgid);
+	                        break;
+
+	                    // Slow command failed..
+	                    case "usage_slow_on":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseSlow"], noticeAndMsgid);
+	                        break;
+
+	                    // Slowoff command failed..
+	                    case "usage_slow_off":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseSlowoff"], noticeAndMsgid);
+	                        break;
+
+	                    // Timeout command failed..
+	                    case "usage_timeout":
+	                    case "bad_timeout_admin":
+	                    case "bad_timeout_broadcaster":
+	                    case "bad_timeout_duration":
+	                    case "bad_timeout_global_mod":
+	                    case "bad_timeout_self":
+	                    case "bad_timeout_staff":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseTimeout"], noticeAndMsgid);
+	                        break;
+
+	                    // Unban command success..
+	                    // Unban can also be used to cancel an active timeout.
+	                    case "untimeout_success":
+	                    case "unban_success":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnban"], noticeAndNull);
+	                        break;
+
+	                    // Unban command failed..
+	                    case "usage_unban":
+	                    case "bad_unban_no_ban":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnban"], noticeAndMsgid);
+	                        break;
+
+	                    // Delete command failed..
+	                    case "usage_delete":
+	                    case "bad_delete_message_error":
+	                    case "bad_delete_message_broadcaster":
+	                    case "bad_delete_message_mod":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseDeletemessage"], noticeAndMsgid);
+	                        break;
+
+	                    // Unhost command failed..
+	                    case "usage_unhost":
+	                    case "not_hosting":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseUnhost"], noticeAndMsgid);
+	                        break;
+
+	                    // Whisper command failed..
+	                    case "whisper_invalid_login":
+	                    case "whisper_invalid_self":
+	                    case "whisper_limit_per_min":
+	                    case "whisper_limit_per_sec":
+	                    case "whisper_restricted_recipient":
+	                        this.log.info(basicLog);
+	                        this.emits(["notice", "_promiseWhisper"], noticeAndMsgid);
+	                        break;
+
+	                    // Permission error..
+	                    case "no_permission":
+	                    case "msg_banned":
+	                    case "msg_room_not_found":
+	                    case "msg_channel_suspended":
+	                    case "tos_ban":
+	                        this.log.info(basicLog);
+	                        this.emits([
+	                            "notice",
+	                            "_promiseBan",
+	                            "_promiseClear",
+	                            "_promiseUnban",
+	                            "_promiseTimeout",
+	                            "_promiseDeletemessage",
+	                            "_promiseMods",
+	                            "_promiseMod",
+	                            "_promiseUnmod",
+	                            "_promiseVips",
+	                            "_promiseVip",
+	                            "_promiseUnvip",
+	                            "_promiseCommercial",
+	                            "_promiseHost",
+	                            "_promiseUnhost",
+	                            "_promiseJoin",
+	                            "_promisePart",
+	                            "_promiseR9kbeta",
+	                            "_promiseR9kbetaoff",
+	                            "_promiseSlow",
+	                            "_promiseSlowoff",
+	                            "_promiseFollowers",
+	                            "_promiseFollowersoff",
+	                            "_promiseSubscribers",
+	                            "_promiseSubscribersoff",
+	                            "_promiseEmoteonly",
+	                            "_promiseEmoteonlyoff"
+	                        ], [noticeArr, [msgid, channel]]);
+	                        break;
+	                    
+	                    // Automod-related..
+	                    case "msg_rejected":
+	                    case "msg_rejected_mandatory":
+	                        this.log.info(basicLog);
+	                        this.emit("automod", channel, msgid, msg);
+	                        break;
+
+	                    // Unrecognized command..
+	                    case "unrecognized_cmd":
+	                        this.log.info(basicLog);
+	                        this.emit("notice", channel, msgid, msg);
+	                        break;
+
+	                    // Send the following msg-ids to the notice event listener..
+	                    case "cmds_available":
+	                    case "host_target_went_offline":
+	                    case "msg_censored_broadcaster":
+	                    case "msg_duplicate":
+	                    case "msg_emoteonly":
+	                    case "msg_verified_email":
+	                    case "msg_ratelimit":
+	                    case "msg_subsonly":
+	                    case "msg_timedout":
+	                    case "msg_bad_characters":
+	                    case "msg_channel_blocked":
+	                    case "msg_facebook":
+	                    case "msg_followersonly":
+	                    case "msg_followersonly_followed":
+	                    case "msg_followersonly_zero":
+	                    case "msg_slowmode":
+	                    case "msg_suspended":
+	                    case "no_help":
+	                    case "usage_disconnect":
+	                    case "usage_help":
+	                    case "usage_me":
+	                        this.log.info(basicLog);
+	                        this.emit("notice", channel, msgid, msg);
+	                        break;
+
+	                    // Ignore this because we are already listening to HOSTTARGET..
+	                    case "host_on":
+	                    case "host_off":
+	                        break;
+
+	                    default:
+	                        if (msg.includes("Login unsuccessful") || msg.includes("Login authentication failed")) {
+	                            this.wasCloseCalled = false;
+	                            this.reconnect = false;
+	                            this.reason = msg;
+	                            this.log.error(this.reason);
+	                            this.ws.close();
+	                        }
+	                        else if (msg.includes("Error logging in") || msg.includes("Improperly formatted auth")) {
+	                            this.wasCloseCalled = false;
+	                            this.reconnect = false;
+	                            this.reason = msg;
+	                            this.log.error(this.reason);
+	                            this.ws.close();
+	                        }
+	                        else if (msg.includes("Invalid NICK")) {
+	                            this.wasCloseCalled = false;
+	                            this.reconnect = false;
+	                            this.reason = "Invalid NICK.";
+	                            this.log.error(this.reason);
+	                            this.ws.close();
+	                        }
+	                        else {
+	                            this.log.warn(`Could not parse NOTICE from tmi.twitch.tv:\n${JSON.stringify(message, null, 4)}`);
+	                        }
+	                        break;
+	                }
+	                break;
+
+	            // Handle subanniversary / resub..
+	            case "USERNOTICE":
+	                var username = message.tags["display-name"] || message.tags["login"];
+	                var plan = message.tags["msg-param-sub-plan"] || "";
+	                var planName = utils.unescapeIRC(utils.get(message.tags["msg-param-sub-plan-name"], "")) || null;
+	                var prime = plan.includes("Prime");
+	                var methods = { prime, plan, planName };
+	                var userstate = message.tags;
+	                var streakMonths = ~~(message.tags["msg-param-streak-months"] || 0);
+	                var recipient = message.tags["msg-param-recipient-display-name"] || message.tags["msg-param-recipient-user-name"];
+	                var giftSubCount = ~~message.tags["msg-param-mass-gift-count"];
+	                userstate["message-type"] = msgid;
+
+	                switch(msgid) {
+	                    // Handle resub
+	                    case "resub":
+	                        this.emits(["resub", "subanniversary"], [
+	                            [channel, username, streakMonths, msg, userstate, methods]
+	                        ]);
+	                        break;
+
+	                    // Handle sub
+	                    case "sub":
+	                        this.emit("subscription", channel, username, methods, msg, userstate);
+	                        break;
+
+	                    // Handle gift sub
+	                    case "subgift":
+	                        this.emit("subgift", channel, username, streakMonths, recipient, methods, userstate);
+	                        break;
+
+	                    // Handle anonymous gift sub
+	                    // Need proof that this event occur
+	                    case "anonsubgift":
+	                        this.emit("anonsubgift", channel, streakMonths, recipient, methods, userstate);
+	                        break;
+
+	                    // Handle random gift subs
+	                    case "submysterygift":
+	                        this.emit("submysterygift", channel, username, giftSubCount, methods, userstate);
+	                        break;
+
+	                    // Handle anonymous random gift subs
+	                    // Need proof that this event occur
+	                    case "anonsubmysterygift":
+	                        this.emit("anonsubmysterygift", channel, giftSubCount, methods, userstate);
+	                        break;
+
+	                    // Handle user upgrading from Prime to a normal tier sub
+	                    case "primepaidupgrade":
+	                        this.emit("primepaidupgrade", channel, username, methods, userstate);
+	                        break;
+
+	                    // Handle user upgrading from a gifted sub
+	                    case "giftpaidupgrade":
+	                        var sender = message.tags["msg-param-sender-name"] || message.tags["msg-param-sender-login"];
+	                        this.emit("giftpaidupgrade", channel, username, sender, userstate);
+	                        break;
+
+	                    // Handle user upgrading from an anonymous gifted sub
+	                    case "anongiftpaidupgrade":
+	                        this.emit("anongiftpaidupgrade", channel, username, userstate);
+	                        break;
+
+	                    // Handle raid
+	                    case "raid":
+	                        var username = message.tags["msg-param-displayName"] || message.tags["msg-param-login"];
+	                        var viewers = message.tags["msg-param-viewerCount"];
+	                        this.emit("raided", channel, username, viewers);
+	                        break;
+	                }
+
+	                break;
+
+	            // Channel is now hosting another channel or exited host mode..
+	            case "HOSTTARGET":
+	                var msgSplit = msg.split(" ");
+	                var viewers = ~~msgSplit[1] || 0;
+	                // Stopped hosting..
+	                if (msgSplit[0] === "-") {
+	                    this.log.info(`[${channel}] Exited host mode.`);
+	                    this.emits(["unhost", "_promiseUnhost"], [[channel, viewers], [null]]);
+	                }
+	                // Now hosting..
+	                else {
+	                    this.log.info(`[${channel}] Now hosting ${msgSplit[0]} for ${viewers} viewer(s).`);
+	                    this.emit("hosting", channel, msgSplit[0], viewers);
+	                }
+	                break;
+
+	            // Someone has been timed out or chat has been cleared by a moderator..
+	            case "CLEARCHAT":
+	                // User has been banned / timed out by a moderator..
+	                if (message.params.length > 1) {
+	                    // Duration returns null if it's a ban, otherwise it's a timeout..
+	                    var duration = utils.get(message.tags["ban-duration"], null);
+
+	                    if (utils.isNull(duration)) {
+	                        this.log.info(`[${channel}] ${msg} has been banned.`);
+	                        this.emit("ban", channel, msg, null, message.tags);
+	                    } else {
+	                        this.log.info(`[${channel}] ${msg} has been timed out for ${duration} seconds.`);
+	                        this.emit("timeout", channel, msg, null, ~~duration, message.tags);
+	                    }
+	                }
+	                // Chat was cleared by a moderator..
+	                else {
+	                    this.log.info(`[${channel}] Chat was cleared by a moderator.`);
+	                    this.emits(["clearchat", "_promiseClear"], [[channel], [null]]);
+	                }
+	                break;
+
+	            // Someone's message has been deleted
+	            case "CLEARMSG":
+	                if (message.params.length > 1) {
+	                    var username = message.tags["login"];
+	                    var deletedMessage = msg;
+	                    var userstate = message.tags;
+	                    userstate["message-type"] = "messagedeleted";
+
+	                    this.log.info(`[${channel}] ${username}'s message has been deleted.`);
+	                    this.emit("messagedeleted", channel, username, deletedMessage, userstate);
+	                }
+	                break;
+
+	            // Received a reconnection request from the server..
+	            case "RECONNECT":
+	                this.log.info("Received RECONNECT request from Twitch..");
+	                this.log.info(`Disconnecting and reconnecting in ${Math.round(this.reconnectTimer / 1000)} seconds..`);
+	                this.disconnect();
+	                setTimeout(() => { this.connect(); }, this.reconnectTimer);
+	                break;
+
+	            // Received when joining a channel and every time you send a PRIVMSG to a channel.
+	            case "USERSTATE":
+	                message.tags.username = this.username;
+
+	                // Add the client to the moderators of this room..
+	                if (message.tags["user-type"] === "mod") {
+	                    if (!this.moderators[this.lastJoined]) { this.moderators[this.lastJoined] = []; }
+	                    if (!this.moderators[this.lastJoined].includes(this.username)) { this.moderators[this.lastJoined].push(this.username); }
+	                }
+
+	                // Logged in and username doesn't start with justinfan..
+	                if (!utils.isJustinfan(this.getUsername()) && !this.userstate[channel]) {
+	                    this.userstate[channel] = message.tags;
+	                    this.lastJoined = channel;
+	                    this.channels.push(channel);
+	                    this.log.info(`Joined ${channel}`);
+	                    this.emit("join", channel, utils.username(this.getUsername()), true);
+	                }
+
+	                // Emote-sets has changed, update it..
+	                if (message.tags["emote-sets"] !== this.emotes) {
+	                    this._updateEmoteset(message.tags["emote-sets"]);
+	                }
+
+	                this.userstate[channel] = message.tags;
+	                break;
+
+	            // Describe non-channel-specific state informations..
+	            case "GLOBALUSERSTATE":
+	                this.globaluserstate = message.tags;
+
+	                // Received emote-sets..
+	                if (typeof message.tags["emote-sets"] !== "undefined") {
+	                    this._updateEmoteset(message.tags["emote-sets"]);
+	                }
+	                break;
+
+	            // Received when joining a channel and every time one of the chat room settings, like slow mode, change.
+	            // The message on join contains all room settings.
+	            case "ROOMSTATE":
+	                // We use this notice to know if we successfully joined a channel..
+	                if (utils.channel(this.lastJoined) === channel) { this.emit("_promiseJoin", null, channel); }
+
+	                // Provide the channel name in the tags before emitting it..
+	                message.tags.channel = channel;
+	                this.emit("roomstate", channel, message.tags);
+
+	                if (!message.tags.hasOwnProperty("subs-only")) {
+	                    // Handle slow mode here instead of the slow_on/off notice..
+	                    // This room is now in slow mode. You may send messages every slow_duration seconds.
+	                    if (message.tags.hasOwnProperty("slow")) {
+	                        if (typeof message.tags.slow === "boolean" && !message.tags.slow) {
+	                            var disabled = [channel, false, 0];
+	                            this.log.info(`[${channel}] This room is no longer in slow mode.`);
+	                            this.emits(["slow", "slowmode", "_promiseSlowoff"], [disabled, disabled, [null]]);
+	                        } else {
+	                            var minutes = ~~message.tags.slow;
+	                            var enabled = [channel, true, minutes];
+	                            this.log.info(`[${channel}] This room is now in slow mode.`);
+	                            this.emits(["slow", "slowmode", "_promiseSlow"], [enabled, enabled, [null]]);
+	                        }
+	                    }
+
+	                    // Handle followers only mode here instead of the followers_on/off notice..
+	                    // This room is now in follower-only mode.
+	                    // This room is now in <duration> followers-only mode.
+	                    // This room is no longer in followers-only mode.
+	                    // duration is in minutes (string)
+	                    // -1 when /followersoff (string)
+	                    // false when /followers with no duration (boolean)
+	                    if (message.tags.hasOwnProperty("followers-only")) {
+	                        if (message.tags["followers-only"] === "-1") {
+	                            var disabled = [channel, false, 0];
+	                            this.log.info(`[${channel}] This room is no longer in followers-only mode.`);
+	                            this.emits(["followersonly", "followersmode", "_promiseFollowersoff"], [disabled, disabled, [null]]);
+	                        } else {
+	                            var minutes = ~~message.tags["followers-only"];
+	                            var enabled = [channel, true, minutes];
+	                            this.log.info(`[${channel}] This room is now in follower-only mode.`);
+	                            this.emits(["followersonly", "followersmode", "_promiseFollowers"], [enabled, enabled, [null]]);
+	                        }
+	                    }
+	                }
+	                break;
+
+	            // Wrong cluster..
+	            case "SERVERCHANGE":
+	                break;
+
+	            default:
+	                this.log.warn(`Could not parse message from tmi.twitch.tv:\n${JSON.stringify(message, null, 4)}`);
+	                break;
+	        }
+	    }
+
+	    // Messages from jtv..
+	    else if (message.prefix === "jtv") {
+	        switch(message.command) {
+	            case "MODE":
+	                if (msg === "+o") {
+	                    // Add username to the moderators..
+	                    if (!this.moderators[channel]) { this.moderators[channel] = []; }
+	                    if (!this.moderators[channel].includes(message.params[2])) { this.moderators[channel].push(message.params[2]); }
+
+	                    this.emit("mod", channel, message.params[2]);
+	                }
+	                else if (msg === "-o") {
+	                    // Remove username from the moderators..
+	                    if (!this.moderators[channel]) { this.moderators[channel] = []; }
+	                    this.moderators[channel].filter((value) => { return value != message.params[2]; });
+
+	                    this.emit("unmod", channel, message.params[2]);
+	                }
+	                break;
+
+	            default:
+	                this.log.warn(`Could not parse message from jtv:\n${JSON.stringify(message, null, 4)}`);
+	                break;
+	        }
+	    }
+
+	    // Anything else..
+	    else {
+	        switch(message.command) {
+	            case "353":
+	                this.emit("names", message.params[2], message.params[3].split(" "));
+	                break;
+
+	            case "366":
+	                break;
+
+	            // Someone has joined the channel..
+	            case "JOIN":
+	                var nick = message.prefix.split("!")[0];
+	                // Joined a channel as a justinfan (anonymous) user..
+	                if (utils.isJustinfan(this.getUsername()) && this.username === nick) {
+	                    this.lastJoined = channel;
+	                    this.channels.push(channel);
+	                    this.log.info(`Joined ${channel}`);
+	                    this.emit("join", channel, nick, true);
+	                }
+
+	                // Someone else joined the channel, just emit the join event..
+	                if (this.username !== nick) {
+	                    this.emit("join", channel, nick, false);
+	                }
+	                break;
+
+	            // Someone has left the channel..
+	            case "PART":
+	                var isSelf = false;
+	                var nick = message.prefix.split("!")[0];
+	                // Client left a channel..
+	                if (this.username === nick) {
+	                    isSelf = true;
+	                    if (this.userstate[channel]) { delete this.userstate[channel]; }
+
+	                    var index = this.channels.indexOf(channel);
+	                    if (index !== -1) { this.channels.splice(index, 1); }
+
+	                    var index = this.opts.channels.indexOf(channel);
+	                    if (index !== -1) { this.opts.channels.splice(index, 1); }
+
+	                    this.log.info(`Left ${channel}`);
+	                    this.emit("_promisePart", null);
+	                }
+
+	                // Client or someone else left the channel, emit the part event..
+	                this.emit("part", channel, nick, isSelf);
+	                break;
+
+	            // Received a whisper..
+	            case "WHISPER":
+	                var nick = message.prefix.split("!")[0];
+	                this.log.info(`[WHISPER] <${nick}>: ${msg}`);
+
+	                // Update the tags to provide the username..
+	                if (!message.tags.hasOwnProperty("username")) { message.tags.username = nick; }
+	                message.tags["message-type"] = "whisper";
+
+	                var from = utils.channel(message.tags.username);
+	                // Emit for both, whisper and message..
+	                this.emits(["whisper", "message"], [
+	                    [from, message.tags, msg, false]
+	                ]);
+	                break;
+
+	            case "PRIVMSG":
+	                // Add username (lowercase) to the tags..
+	                message.tags.username = message.prefix.split("!")[0];
+
+	                // Message from JTV..
+	                if (message.tags.username === "jtv") {
+	                    var name = utils.username(msg.split(" ")[0]);
+	                    var autohost = msg.includes("auto");
+	                    // Someone is hosting the channel and the message contains how many viewers..
+	                    if (msg.includes("hosting you for")) {
+	                        var count = utils.extractNumber(msg);
+
+	                        this.emit("hosted", channel, name, count, autohost);
+	                    }
+
+	                    // Some is hosting the channel, but no viewer(s) count provided in the message..
+	                    else if (msg.includes("hosting you")) {
+	                        this.emit("hosted", channel, name, 0, autohost);
+	                    }
+	                }
+
+	                else {
+	                    // Message is an action (/me <message>)..
+	                    var actionMessage = utils.actionMessage(msg);
+	                    if (actionMessage) {
+	                        message.tags["message-type"] = "action";
+	                        this.log.info(`[${channel}] *<${message.tags.username}>: ${actionMessage[1]}`);
+	                        this.emits(["action", "message"], [
+	                            [channel, message.tags, actionMessage[1], false]
+	                        ]);
+	                    }
+	                    else {
+	                        if (message.tags.hasOwnProperty("bits")) {
+	                            this.emit("cheer", channel, message.tags, msg);
+	                        }
+
+	                        // Message is a regular chat message..
+	                        else {
+	                            message.tags["message-type"] = "chat";
+	                            this.log.info(`[${channel}] <${message.tags.username}>: ${msg}`);
+
+	                            this.emits(["chat", "message"], [
+	                                [channel, message.tags, msg, false]
+	                            ]);
+	                        }
+	                    }
+	                }
+	                break;
+
+	            default:
+	                this.log.warn(`Could not parse message:\n${JSON.stringify(message, null, 4)}`);
+	                break;
+	        }
+	    }
+	};
+
+	// Connect to server..
+	client.prototype.connect = function connect() {
+	    return new Promise((resolve, reject) => {
+	        this.server = utils.get(this.opts.connection.server, "irc-ws.chat.twitch.tv");
+	        this.port = utils.get(this.opts.connection.port, 80);
+
+	        // Override port if using a secure connection..
+	        if (this.secure) { this.port = 443; }
+	        if (this.port === 443) { this.secure = true; }
+
+	        this.reconnectTimer = this.reconnectTimer * this.reconnectDecay;
+	        if (this.reconnectTimer >= this.maxReconnectInterval) {
+	            this.reconnectTimer = this.maxReconnectInterval;
+	        }
+
+	        // Connect to server from configuration..
+	        this._openConnection();
+	        this.once("_promiseConnect", (err) => {
+	            if (!err) { resolve([this.server, ~~this.port]); }
+	            else { reject(err); }
+	        });
+	    });
+	};
+
+	// Open a connection..
+	client.prototype._openConnection = function _openConnection() {
+	    this.ws = new ws(`${this.secure ? "wss" : "ws"}://${this.server}:${this.port}/`, "irc");
+
+	    this.ws.onmessage = this._onMessage.bind(this);
+	    this.ws.onerror = this._onError.bind(this);
+	    this.ws.onclose = this._onClose.bind(this);
+	    this.ws.onopen = this._onOpen.bind(this);
+	};
+
+	// Called when the WebSocket connection's readyState changes to OPEN.
+	// Indicates that the connection is ready to send and receive data..
+	client.prototype._onOpen = function _onOpen() {
+	    if (utils.isNull(this.ws) || this.ws.readyState !== 1) {
+	        return;
+	    }
+	    // Emitting "connecting" event..
+	    this.log.info(`Connecting to ${this.server} on port ${this.port}..`);
+	    this.emit("connecting", this.server, ~~this.port);
+
+	    this.username = utils.get(this.opts.identity.username, utils.justinfan());
+	    this.password = utils.password(utils.get(this.opts.identity.password, "SCHMOOPIIE"));
+
+	    // Emitting "logon" event..
+	    this.log.info("Sending authentication to server..");
+	    this.emit("logon");
+
+	    // Authentication..
+	    this.ws.send("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
+	    this.ws.send(`PASS ${this.password}`);
+	    this.ws.send(`NICK ${this.username}`);
+	};
+
+	// Called when a message is received from the server..
+	client.prototype._onMessage = function _onMessage(event) {
+	    var parts = event.data.split("\r\n");
+
+	    parts.forEach((str) => {
+	        if (!utils.isNull(str)) { this.handleMessage(parser.msg(str)); }
+	    });
+	};
+
+	// Called when an error occurs..
+	client.prototype._onError = function _onError() {
+	    this.moderators = {};
+	    this.userstate = {};
+	    this.globaluserstate = {};
+
+	    // Stop the internal ping timeout check interval..
+	    clearInterval(this.pingLoop);
+	    clearTimeout(this.pingTimeout);
+
+	    this.reason = !utils.isNull(this.ws) ? "Unable to connect." : "Connection closed.";
+
+	    this.emits(["_promiseConnect", "disconnected"], [[this.reason]]);
+
+	    // Reconnect to server..
+	    if (this.reconnect && this.reconnections === this.maxReconnectAttempts) {
+	        this.emit("maxreconnect");
+	        this.log.error("Maximum reconnection attempts reached.");
+	    }
+	    if (this.reconnect && !this.reconnecting && this.reconnections <= this.maxReconnectAttempts-1) {
+	        this.reconnecting = true;
+	        this.reconnections = this.reconnections+1;
+	        this.log.error(`Reconnecting in ${Math.round(this.reconnectTimer / 1000)} seconds..`);
+	        this.emit("reconnect");
+	        setTimeout(() => { this.reconnecting = false; this.connect(); }, this.reconnectTimer);
+	    }
+
+	    this.ws = null;
+	};
+
+	// Called when the WebSocket connection's readyState changes to CLOSED..
+	client.prototype._onClose = function _onClose() {
+	    this.moderators = {};
+	    this.userstate = {};
+	    this.globaluserstate = {};
+
+	    // Stop the internal ping timeout check interval..
+	    clearInterval(this.pingLoop);
+	    clearTimeout(this.pingTimeout);
+
+	    // User called .disconnect(), don't try to reconnect.
+	    if (this.wasCloseCalled) {
+	        this.wasCloseCalled = false;
+	        this.reason = "Connection closed.";
+	        this.log.info(this.reason);
+	        this.emits(["_promiseConnect", "_promiseDisconnect", "disconnected"], [[this.reason], [null], [this.reason]]);
+	    }
+	    // Got disconnected from server..
+	    else {
+	        this.emits(["_promiseConnect", "disconnected"], [[this.reason]]);
+
+	        // Reconnect to server..
+	        if (this.reconnect && this.reconnections === this.maxReconnectAttempts) {
+	            this.emit("maxreconnect");
+	            this.log.error("Maximum reconnection attempts reached.");
+	        }
+	        if (this.reconnect && !this.reconnecting && this.reconnections <= this.maxReconnectAttempts-1) {
+	            this.reconnecting = true;
+	            this.reconnections = this.reconnections+1;
+	            this.log.error(`Could not connect to server. Reconnecting in ${Math.round(this.reconnectTimer / 1000)} seconds..`);
+	            this.emit("reconnect");
+	            setTimeout(() => { this.reconnecting = false; this.connect(); }, this.reconnectTimer);
+	        }
+	    }
+
+	    this.ws = null;
+	};
+
+	// Minimum of 600ms for command promises, if current latency exceeds, add 100ms to it to make sure it doesn't get timed out..
+	client.prototype._getPromiseDelay = function _getPromiseDelay() {
+	    if (this.currentLatency <= 600) { return 600; }
+	    else { return this.currentLatency + 100; }
+	};
+
+	// Send command to server or channel..
+	client.prototype._sendCommand = function _sendCommand(delay, channel, command, fn) {
+	    // Race promise against delay..
+	    return new Promise((resolve, reject) => {
+	        // Make sure the socket is opened..
+	        if (utils.isNull(this.ws) || this.ws.readyState !== 1) {
+	            // Disconnected from server..
+	            return reject("Not connected to server.");
+	        }
+	        else if (typeof delay === 'number') {
+	            utils.promiseDelay(delay).then(() => { reject("No response from Twitch."); });
+	        }
+
+	        // Executing a command on a channel..
+	        if (!utils.isNull(channel)) {
+	            var chan = utils.channel(channel);
+	            this.log.info(`[${chan}] Executing command: ${command}`);
+	            this.ws.send(`PRIVMSG ${chan} :${command}`);
+	        }
+
+	        // Executing a raw command..
+	        else {
+	            this.log.info(`Executing command: ${command}`);
+	            this.ws.send(command);
+	        }
+	        fn(resolve, reject);
+	    });
+	};
+
+	// Send a message to channel..
+	client.prototype._sendMessage = function _sendMessage(delay, channel, message, fn) {
+	    // Promise a result..
+	    return new Promise((resolve, reject) => {
+	        // Make sure the socket is opened and not logged in as a justinfan user..
+	        if (utils.isNull(this.ws) || this.ws.readyState !== 1) {
+	            return reject("Not connected to server.");
+	        }
+	        else if (utils.isJustinfan(this.getUsername())) {
+	            return reject("Cannot send anonymous messages.");
+	        }
+	        var chan = utils.channel(channel);
+	        if (!this.userstate[chan]) { this.userstate[chan] = {}; }
+
+	        // Split long lines otherwise they will be eaten by the server..
+	        if (message.length >= 500) {
+	            var msg = utils.splitLine(message, 500);
+	            message = msg[0];
+
+	            setTimeout(() => {
+	                this._sendMessage(delay, channel, msg[1], () => {});
+	            }, 350);
+	        }
+
+	        this.ws.send(`PRIVMSG ${chan} :${message}`);
+
+	        var emotes = {};
+
+	        // Parse regex and string emotes..
+	        Object.keys(this.emotesets).forEach((id) => {
+	            this.emotesets[id].forEach(function(emote) {
+	                if (utils.isRegex(emote.code)) { return parser.emoteRegex(message, emote.code, emote.id, emotes); }
+	                parser.emoteString(message, emote.code, emote.id, emotes);
+	            });
+	        });
+
+	        // Merge userstate with parsed emotes..
+	        var userstate = utils.merge(this.userstate[chan], parser.emotes({ emotes: parser.transformEmotes(emotes) || null }));
+
+	        // Message is an action (/me <message>)..
+	        var actionMessage = utils.actionMessage(message);
+	        if (actionMessage) {
+	            userstate["message-type"] = "action";
+	            this.log.info(`[${chan}] *<${this.getUsername()}>: ${actionMessage[1]}`);
+	            this.emits(["action", "message"], [
+	                [chan, userstate, actionMessage[1], true]
+	            ]);
+	        }
+
+	        // Message is a regular chat message..
+	        else {
+	            userstate["message-type"] = "chat";
+	            this.log.info(`[${chan}] <${this.getUsername()}>: ${message}`);
+	            this.emits(["chat", "message"], [
+	                [chan, userstate, message, true]
+	            ]);
+	        }
+	        fn(resolve, reject);
+	    });
+	};
+
+	// Grab the emote-sets object from the API..
+	client.prototype._updateEmoteset = function _updateEmoteset(sets) {
+	    this.emotes = sets;
+
+	    this.api({
+	        url: `/chat/emoticon_images?emotesets=${sets}`,
+	        headers: {
+	            "Authorization": `OAuth ${utils.password(utils.get(this.opts.identity.password, "")).replace("oauth:", "")}`,
+	            "Client-ID": this.clientId
+	        }
+	    }, (err, res, body) => {
+	        if (!err) {
+	            this.emotesets = body["emoticon_sets"] || {};
+	            return this.emit("emotesets", sets, this.emotesets);
+	        }
+	        setTimeout(() => { this._updateEmoteset(sets); }, 60000);
+	    });
+	};
+
+	// Get current username..
+	client.prototype.getUsername = function getUsername() {
+	    return this.username;
+	};
+
+	// Get current options..
+	client.prototype.getOptions = function getOptions() {
+	    return this.opts;
+	};
+
+	// Get current channels..
+	client.prototype.getChannels = function getChannels() {
+	    return this.channels;
+	};
+
+	// Check if username is a moderator on a channel..
+	client.prototype.isMod = function isMod(channel, username) {
+	    var chan = utils.channel(channel);
+	    if (!this.moderators[chan]) { this.moderators[chan] = []; }
+	    return this.moderators[chan].includes(utils.username(username));
+	};
+
+	// Get readyState..
+	client.prototype.readyState = function readyState() {
+	    if (utils.isNull(this.ws)) { return "CLOSED"; }
+	    return ["CONNECTING", "OPEN", "CLOSING", "CLOSED"][this.ws.readyState];
+	};
+
+	// Disconnect from server..
+	client.prototype.disconnect = function disconnect() {
+	    return new Promise((resolve, reject) => {
+	        if (!utils.isNull(this.ws) && this.ws.readyState !== 3) {
+	            this.wasCloseCalled = true;
+	            this.log.info("Disconnecting from server..");
+	            this.ws.close();
+	            this.once("_promiseDisconnect", () => { resolve([this.server, ~~this.port]); });
+	        } else {
+	            this.log.error("Cannot disconnect from server. Socket is not opened or connection is already closing.");
+	            reject("Cannot disconnect from server. Socket is not opened or connection is already closing.");
+	        }
+	    });
+	};
+
+	// Expose everything, for browser and Node..
+	if ( module.exports) {
+	    module.exports = client;
+	}
+	if (typeof window !== "undefined") {
+	    window.tmi = {};
+	    window.tmi.client = client;
+	    window.tmi.Client = client;
+	}
+	});
+
+	var tmi_js = {
+		client: client_1,
+		Client: client_1
+	};
+	var tmi_js_1 = tmi_js.client;
+	var tmi_js_2 = tmi_js.Client;
+
+	exports.Client = tmi_js_2;
+	exports.client = tmi_js_1;
+	exports.default = tmi_js;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+});
+
 ;define('@ember-data/adapter/-private', ['exports', 'require', 'ember-inflector'], function (exports, require, emberInflector) { 'use strict';
 
   var require__default = 'default' in require ? require['default'] : require;
@@ -108134,6 +110940,266 @@ require('ember-css-modules/extensions');
 
 ;
 ;
+(window["webpackJsonp_ember_auto_import_"] = window["webpackJsonp_ember_auto_import_"] || []).push([["vendors~app"],{
+
+/***/ "./node_modules/@glimmer/env/dist/modules/es2017/index.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@glimmer/env/dist/modules/es2017/index.js ***!
+  \****************************************************************/
+/*! exports provided: DEBUG, CI */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"DEBUG\", function() { return DEBUG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CI\", function() { return CI; });\nconst DEBUG = false;\nconst CI = false;\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/env/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/index.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js ***!
+  \*********************************************************************/
+/*! exports provided: tracked, setPropertyDidChange */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _src_tracked__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/tracked */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"tracked\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"setPropertyDidChange\"]; });\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js ***!
+  \***************************************************************************/
+/*! exports provided: tracked, setPropertyDidChange */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return tracked; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return setPropertyDidChange; });\n/* harmony import */ var _glimmer_env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @glimmer/env */ \"./node_modules/@glimmer/env/dist/modules/es2017/index.js\");\n/* harmony import */ var _glimmer_validator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @glimmer/validator */ \"./node_modules/@glimmer/validator/dist/modules/es2017/index.js\");\n\n\n/**\n * @decorator\n *\n * Marks a property as tracked.\n *\n * By default, a component's properties are expected to be static,\n * meaning you are not able to update them and have the template update accordingly.\n * Marking a property as tracked means that when that property changes,\n * a rerender of the component is scheduled so the template is kept up to date.\n *\n * @example\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    remainingApples = 10\n * }\n * ```\n *\n * When something changes the component's `remainingApples` property, the rerender\n * will be scheduled.\n *\n * @example Computed Properties\n *\n * In the case that you have a getter that depends on other properties, tracked\n * properties accessed within the getter will automatically be tracked for you.\n * That means when any of those dependent tracked properties is changed, a\n * rerender of the component will be scheduled.\n *\n * In the following example we have two properties,\n * `eatenApples`, and `remainingApples`.\n *\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * const totalApples = 100;\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    eatenApples = 0\n *\n *    get remainingApples() {\n *      return totalApples - this.eatenApples;\n *    }\n *\n *    increment() {\n *      this.eatenApples = this.eatenApples + 1;\n *    }\n *  }\n * ```\n */\n\nlet tracked = (...args) => {\n  let [target, key, descriptor] = args; // Error on `@tracked()`, `@tracked(...args)`, and `@tracked get propName()`\n\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && typeof target === 'string') throwTrackedWithArgumentsError(args);\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && target === undefined) throwTrackedWithEmptyArgumentsError();\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && descriptor && descriptor.get) throwTrackedComputedPropertyError();\n\n  if (descriptor) {\n    return descriptorForField(target, key, descriptor);\n  } else {\n    // In TypeScript's implementation, decorators on simple class fields do not\n    // receive a descriptor, so we define the property on the target directly.\n    Object.defineProperty(target, key, descriptorForField(target, key));\n  }\n};\n\nfunction throwTrackedComputedPropertyError() {\n  throw new Error(`The @tracked decorator does not need to be applied to getters. Properties implemented using a getter will recompute automatically when any tracked properties they access change.`);\n}\n\nfunction throwTrackedWithArgumentsError(args) {\n  throw new Error(`You attempted to use @tracked with ${args.length > 1 ? 'arguments' : 'an argument'} ( @tracked(${args.map(d => `'${d}'`).join(', ')}) ), which is no longer necessary nor supported. Dependencies are now automatically tracked, so you can just use ${'`@tracked`'}.`);\n}\n\nfunction throwTrackedWithEmptyArgumentsError() {\n  throw new Error('You attempted to use @tracked(), which is no longer necessary nor supported. Remove the parentheses and you will be good to go!');\n}\n\nfunction descriptorForField(_target, key, desc) {\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && desc && (desc.value || desc.get || desc.set)) {\n    throw new Error(`You attempted to use @tracked on ${key}, but that element is not a class field. @tracked is only usable on class fields. Native getters and setters will autotrack add any tracked fields they encounter, so there is no need mark getters and setters with @tracked.`);\n  }\n\n  let {\n    getter,\n    setter\n  } = Object(_glimmer_validator__WEBPACK_IMPORTED_MODULE_1__[\"trackedData\"])(key, desc && desc.initializer);\n  return {\n    enumerable: true,\n    configurable: true,\n\n    get() {\n      return getter(this);\n    },\n\n    set(newValue) {\n      setter(this, newValue);\n      propertyDidChange();\n    }\n\n  };\n}\n\nlet propertyDidChange = function () {};\n\nfunction setPropertyDidChange(cb) {\n  propertyDidChange = cb;\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/index.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/index.js ***!
+  \**********************************************************************/
+/*! exports provided: ALLOW_CYCLES, bump, combine, COMPUTE, CONSTANT_TAG, CONSTANT, createCombinatorTag, createTag, createUpdatableTag, CURRENT_TAG, dirty, INITIAL, isConst, isConstTag, update, validate, value, VOLATILE_TAG, VOLATILE, dirtyTag, tagFor, updateTag, track, consume, EPOCH, trackedData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"ALLOW_CYCLES\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"bump\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"COMPUTE\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createCombinatorTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CURRENT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"INITIAL\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConst\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"validate\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"value\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE\"]; });\n\n/* harmony import */ var _lib_meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib/meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"updateTag\"]; });\n\n/* harmony import */ var _lib_tracking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib/tracking */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"track\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"consume\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"EPOCH\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"trackedData\"]; });\n\n\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js ***!
+  \*************************************************************************/
+/*! exports provided: dirtyTag, tagFor, updateTag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return dirtyTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return tagFor; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return updateTag; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n\nconst TRACKED_TAGS = new WeakMap();\n\nfunction isObject(u) {\n  return typeof u === 'object' && u !== null;\n}\n\nfunction dirtyTag(obj, key) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (tag === undefined) {\n      updateTag(obj, key, Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])());\n    } else if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(tag);\n    }\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\nfunction tagFor(obj, key) {\n  if (isObject(obj)) {\n    let tags = TRACKED_TAGS.get(obj);\n\n    if (tags === undefined) {\n      tags = new Map();\n      TRACKED_TAGS.set(obj, tags);\n    } else if (tags.has(key)) {\n      return tags.get(key);\n    }\n\n    let tag = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])();\n    tags.set(key, tag);\n    return tag;\n  } else {\n    return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n  }\n}\nfunction updateTag(obj, key, newTag) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"])(tag, newTag);\n    }\n\n    return tag;\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js ***!
+  \*****************************************************************************/
+/*! exports provided: track, consume, EPOCH, trackedData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return track; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return consume; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return EPOCH; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return trackedData; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony import */ var _meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n\n\n\n/**\n * Whenever a tracked computed property is entered, the current tracker is\n * saved off and a new tracker is replaced.\n *\n * Any tracked properties consumed are added to the current tracker.\n *\n * When a tracked computed property is exited, the tracker's tags are\n * combined and added to the parent tracker.\n *\n * The consequence is that each tracked computed property has a tag\n * that corresponds to the tracked properties consumed inside of\n * itself, including child tracked computed properties.\n */\n\nlet CURRENT_TRACKER = null;\n/**\n * An object that that tracks @tracked properties that were consumed.\n */\n\nclass Tracker {\n  constructor() {\n    this.tags = new Set();\n    this.last = null;\n  }\n\n  add(tag) {\n    this.tags.add(tag);\n    this.last = tag;\n  }\n\n  combine() {\n    let {\n      tags\n    } = this;\n\n    if (tags.size === 0) {\n      return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n    } else if (tags.size === 1) {\n      return this.last;\n    } else {\n      let tagsArr = [];\n      tags.forEach(tag => tagsArr.push(tag));\n      return Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"])(tagsArr);\n    }\n  }\n\n}\n\nfunction track(callback) {\n  let parent = CURRENT_TRACKER;\n  let current = new Tracker();\n  CURRENT_TRACKER = current;\n\n  try {\n    callback();\n  } finally {\n    CURRENT_TRACKER = parent;\n  }\n\n  return current.combine();\n}\nfunction consume(tag) {\n  if (CURRENT_TRACKER !== null) {\n    CURRENT_TRACKER.add(tag);\n  }\n} //////////\n\nconst EPOCH = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"])();\nfunction trackedData(key, initializer) {\n  let values = new WeakMap();\n  let hasInitializer = typeof initializer === 'function';\n\n  function getter(self) {\n    consume(Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"])(self, key));\n    let value; // If the field has never been initialized, we should initialize it\n\n    if (hasInitializer && !values.has(self)) {\n      value = initializer();\n      values.set(self, value);\n    } else {\n      value = values.get(self);\n    }\n\n    return value;\n  }\n\n  function setter(self, value) {\n    Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(EPOCH);\n    Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"])(self, key);\n    values.set(self, value);\n  }\n\n  return {\n    getter,\n    setter\n  };\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js ***!
+  \*******************************************************************************/
+/*! exports provided: CONSTANT, INITIAL, VOLATILE, bump, COMPUTE, value, validate, ALLOW_CYCLES, dirty, update, createTag, createUpdatableTag, CONSTANT_TAG, isConst, isConstTag, VOLATILE_TAG, CURRENT_TAG, combine, createCombinatorTag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return CONSTANT; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return INITIAL; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return VOLATILE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return bump; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return COMPUTE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return value; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return validate; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return ALLOW_CYCLES; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return dirty; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return update; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return createTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return createUpdatableTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return CONSTANT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return isConst; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return isConstTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return VOLATILE_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return CURRENT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return combine; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return createCombinatorTag; });\nconst symbol = typeof Symbol !== 'undefined' ? Symbol : key => `__${key}${Math.floor(Math.random() * Date.now())}__`;\nconst CONSTANT = 0;\nconst INITIAL = 1;\nconst VOLATILE = 9007199254740991; // MAX_INT\n\nlet $REVISION = INITIAL;\nfunction bump() {\n  $REVISION++;\n} //////////\n\nconst COMPUTE = symbol('TAG_COMPUTE'); //////////\n\n/**\n * `value` receives a tag and returns an opaque Revision based on that tag. This\n * snapshot can then later be passed to `validate` with the same tag to\n * determine if the tag has changed at all since the time that `value` was\n * called.\n *\n * The current implementation returns the global revision count directly for\n * performance reasons. This is an implementation detail, and should not be\n * relied on directly by users of these APIs. Instead, Revisions should be\n * treated as if they are opaque/unknown, and should only be interacted with via\n * the `value`/`validate` API.\n *\n * @param tag\n */\n\nfunction value(_tag) {\n  return $REVISION;\n}\n/**\n * `validate` receives a tag and a snapshot from a previous call to `value` with\n * the same tag, and determines if the tag is still valid compared to the\n * snapshot. If the tag's state has changed at all since then, `validate` will\n * return false, otherwise it will return true. This is used to determine if a\n * calculation related to the tags should be rerun.\n *\n * @param tag\n * @param snapshot\n */\n\nfunction validate(tag, snapshot) {\n  return snapshot >= tag[COMPUTE]();\n}\nconst TYPE = symbol('TAG_TYPE');\nlet ALLOW_CYCLES;\n\nif (false) {}\n\nclass MonomorphicTagImpl {\n  constructor(type) {\n    this.revision = INITIAL;\n    this.lastChecked = INITIAL;\n    this.lastValue = INITIAL;\n    this.isUpdating = false;\n    this.subtag = null;\n    this.subtags = null;\n    this[TYPE] = type;\n  }\n\n  [COMPUTE]() {\n    let {\n      lastChecked\n    } = this;\n\n    if (lastChecked !== $REVISION) {\n      this.isUpdating = true;\n      this.lastChecked = $REVISION;\n\n      try {\n        let {\n          subtags,\n          subtag,\n          revision\n        } = this;\n\n        if (subtag !== null) {\n          revision = Math.max(revision, subtag[COMPUTE]());\n        }\n\n        if (subtags !== null) {\n          for (let i = 0; i < subtags.length; i++) {\n            let value = subtags[i][COMPUTE]();\n            revision = Math.max(value, revision);\n          }\n        }\n\n        this.lastValue = revision;\n      } finally {\n        this.isUpdating = false;\n      }\n    }\n\n    if (this.isUpdating === true) {\n      if (false) {}\n\n      this.lastChecked = ++$REVISION;\n    }\n\n    return this.lastValue;\n  }\n\n  static update(_tag, subtag) {\n    if (false\n    /* Updatable */\n    ) {} // TODO: TS 3.7 should allow us to do this via assertion\n\n\n    let tag = _tag;\n\n    if (subtag === CONSTANT_TAG) {\n      tag.subtag = null;\n    } else {\n      tag.subtag = subtag; // subtag could be another type of tag, e.g. CURRENT_TAG or VOLATILE_TAG.\n      // If so, lastChecked/lastValue will be undefined, result in these being\n      // NaN. This is fine, it will force the system to recompute.\n\n      tag.lastChecked = Math.min(tag.lastChecked, subtag.lastChecked);\n      tag.lastValue = Math.max(tag.lastValue, subtag.lastValue);\n    }\n  }\n\n  static dirty(tag) {\n    if (false) {}\n\n    tag.revision = ++$REVISION;\n  }\n\n}\n\nconst dirty = MonomorphicTagImpl.dirty;\nconst update = MonomorphicTagImpl.update; //////////\n\nfunction createTag() {\n  return new MonomorphicTagImpl(0\n  /* Dirtyable */\n  );\n}\nfunction createUpdatableTag() {\n  return new MonomorphicTagImpl(1\n  /* Updatable */\n  );\n} //////////\n\nconst CONSTANT_TAG = new MonomorphicTagImpl(3\n/* Constant */\n);\nfunction isConst({\n  tag\n}) {\n  return tag === CONSTANT_TAG;\n}\nfunction isConstTag(tag) {\n  return tag === CONSTANT_TAG;\n} //////////\n\nclass VolatileTag {\n  [COMPUTE]() {\n    return VOLATILE;\n  }\n\n}\n\nconst VOLATILE_TAG = new VolatileTag(); //////////\n\nclass CurrentTag {\n  [COMPUTE]() {\n    return $REVISION;\n  }\n\n}\n\nconst CURRENT_TAG = new CurrentTag(); //////////\n\nfunction combine(tags) {\n  let optimized = [];\n\n  for (let i = 0, l = tags.length; i < l; i++) {\n    let tag = tags[i];\n    if (tag === CONSTANT_TAG) continue;\n    optimized.push(tag);\n  }\n\n  return createCombinatorTag(optimized);\n}\nfunction createCombinatorTag(tags) {\n  switch (tags.length) {\n    case 0:\n      return CONSTANT_TAG;\n\n    case 1:\n      return tags[0];\n\n    default:\n      let tag = new MonomorphicTagImpl(2\n      /* Combinator */\n      );\n      tag.subtags = tags;\n      return tag;\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js?");
+
+/***/ }),
+
+/***/ "./node_modules/base64-js/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/base64-js/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nexports.byteLength = byteLength;\nexports.toByteArray = toByteArray;\nexports.fromByteArray = fromByteArray;\nvar lookup = [];\nvar revLookup = [];\nvar Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;\nvar code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';\n\nfor (var i = 0, len = code.length; i < len; ++i) {\n  lookup[i] = code[i];\n  revLookup[code.charCodeAt(i)] = i;\n} // Support decoding URL-safe base64 strings, as Node.js does.\n// See: https://en.wikipedia.org/wiki/Base64#URL_applications\n\n\nrevLookup['-'.charCodeAt(0)] = 62;\nrevLookup['_'.charCodeAt(0)] = 63;\n\nfunction getLens(b64) {\n  var len = b64.length;\n\n  if (len % 4 > 0) {\n    throw new Error('Invalid string. Length must be a multiple of 4');\n  } // Trim off extra bytes after placeholder bytes are found\n  // See: https://github.com/beatgammit/base64-js/issues/42\n\n\n  var validLen = b64.indexOf('=');\n  if (validLen === -1) validLen = len;\n  var placeHoldersLen = validLen === len ? 0 : 4 - validLen % 4;\n  return [validLen, placeHoldersLen];\n} // base64 is 4/3 + up to two characters of the original data\n\n\nfunction byteLength(b64) {\n  var lens = getLens(b64);\n  var validLen = lens[0];\n  var placeHoldersLen = lens[1];\n  return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;\n}\n\nfunction _byteLength(b64, validLen, placeHoldersLen) {\n  return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;\n}\n\nfunction toByteArray(b64) {\n  var tmp;\n  var lens = getLens(b64);\n  var validLen = lens[0];\n  var placeHoldersLen = lens[1];\n  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen));\n  var curByte = 0; // if there are placeholders, only get up to the last complete 4 chars\n\n  var len = placeHoldersLen > 0 ? validLen - 4 : validLen;\n  var i;\n\n  for (i = 0; i < len; i += 4) {\n    tmp = revLookup[b64.charCodeAt(i)] << 18 | revLookup[b64.charCodeAt(i + 1)] << 12 | revLookup[b64.charCodeAt(i + 2)] << 6 | revLookup[b64.charCodeAt(i + 3)];\n    arr[curByte++] = tmp >> 16 & 0xFF;\n    arr[curByte++] = tmp >> 8 & 0xFF;\n    arr[curByte++] = tmp & 0xFF;\n  }\n\n  if (placeHoldersLen === 2) {\n    tmp = revLookup[b64.charCodeAt(i)] << 2 | revLookup[b64.charCodeAt(i + 1)] >> 4;\n    arr[curByte++] = tmp & 0xFF;\n  }\n\n  if (placeHoldersLen === 1) {\n    tmp = revLookup[b64.charCodeAt(i)] << 10 | revLookup[b64.charCodeAt(i + 1)] << 4 | revLookup[b64.charCodeAt(i + 2)] >> 2;\n    arr[curByte++] = tmp >> 8 & 0xFF;\n    arr[curByte++] = tmp & 0xFF;\n  }\n\n  return arr;\n}\n\nfunction tripletToBase64(num) {\n  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];\n}\n\nfunction encodeChunk(uint8, start, end) {\n  var tmp;\n  var output = [];\n\n  for (var i = start; i < end; i += 3) {\n    tmp = (uint8[i] << 16 & 0xFF0000) + (uint8[i + 1] << 8 & 0xFF00) + (uint8[i + 2] & 0xFF);\n    output.push(tripletToBase64(tmp));\n  }\n\n  return output.join('');\n}\n\nfunction fromByteArray(uint8) {\n  var tmp;\n  var len = uint8.length;\n  var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes\n\n  var parts = [];\n  var maxChunkLength = 16383; // must be multiple of 3\n  // go through the array every three bytes, we'll deal with trailing stuff later\n\n  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {\n    parts.push(encodeChunk(uint8, i, i + maxChunkLength > len2 ? len2 : i + maxChunkLength));\n  } // pad the end with zeros, but make sure to not forget the extra bytes\n\n\n  if (extraBytes === 1) {\n    tmp = uint8[len - 1];\n    parts.push(lookup[tmp >> 2] + lookup[tmp << 4 & 0x3F] + '==');\n  } else if (extraBytes === 2) {\n    tmp = (uint8[len - 2] << 8) + uint8[len - 1];\n    parts.push(lookup[tmp >> 10] + lookup[tmp >> 4 & 0x3F] + lookup[tmp << 2 & 0x3F] + '=');\n  }\n\n  return parts.join('');\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/base64-js/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/buffer/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/buffer/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("/* WEBPACK VAR INJECTION */(function(global) {/*!\n * The buffer module from node.js, for the browser.\n *\n * @author   Feross Aboukhadijeh <http://feross.org>\n * @license  MIT\n */\n\n/* eslint-disable no-proto */\n\n\nvar base64 = __webpack_require__(/*! base64-js */ \"./node_modules/base64-js/index.js\");\n\nvar ieee754 = __webpack_require__(/*! ieee754 */ \"./node_modules/ieee754/index.js\");\n\nvar isArray = __webpack_require__(/*! isarray */ \"./node_modules/buffer/node_modules/isarray/index.js\");\n\nexports.Buffer = Buffer;\nexports.SlowBuffer = SlowBuffer;\nexports.INSPECT_MAX_BYTES = 50;\n/**\n * If `Buffer.TYPED_ARRAY_SUPPORT`:\n *   === true    Use Uint8Array implementation (fastest)\n *   === false   Use Object implementation (most compatible, even IE6)\n *\n * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,\n * Opera 11.6+, iOS 4.2+.\n *\n * Due to various browser bugs, sometimes the Object implementation will be used even\n * when the browser supports typed arrays.\n *\n * Note:\n *\n *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,\n *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.\n *\n *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.\n *\n *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of\n *     incorrect length in some situations.\n\n * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they\n * get the Object implementation, which is slower but behaves correctly.\n */\n\nBuffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined ? global.TYPED_ARRAY_SUPPORT : typedArraySupport();\n/*\n * Export kMaxLength after typed array support is determined.\n */\n\nexports.kMaxLength = kMaxLength();\n\nfunction typedArraySupport() {\n  try {\n    var arr = new Uint8Array(1);\n    arr.__proto__ = {\n      __proto__: Uint8Array.prototype,\n      foo: function () {\n        return 42;\n      }\n    };\n    return arr.foo() === 42 && // typed array instances can be augmented\n    typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`\n    arr.subarray(1, 1).byteLength === 0; // ie10 has broken `subarray`\n  } catch (e) {\n    return false;\n  }\n}\n\nfunction kMaxLength() {\n  return Buffer.TYPED_ARRAY_SUPPORT ? 0x7fffffff : 0x3fffffff;\n}\n\nfunction createBuffer(that, length) {\n  if (kMaxLength() < length) {\n    throw new RangeError('Invalid typed array length');\n  }\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    // Return an augmented `Uint8Array` instance, for best performance\n    that = new Uint8Array(length);\n    that.__proto__ = Buffer.prototype;\n  } else {\n    // Fallback: Return an object instance of the Buffer class\n    if (that === null) {\n      that = new Buffer(length);\n    }\n\n    that.length = length;\n  }\n\n  return that;\n}\n/**\n * The Buffer constructor returns instances of `Uint8Array` that have their\n * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of\n * `Uint8Array`, so the returned instances will have all the node `Buffer` methods\n * and the `Uint8Array` methods. Square bracket notation works as expected -- it\n * returns a single octet.\n *\n * The `Uint8Array` prototype remains unmodified.\n */\n\n\nfunction Buffer(arg, encodingOrOffset, length) {\n  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {\n    return new Buffer(arg, encodingOrOffset, length);\n  } // Common case.\n\n\n  if (typeof arg === 'number') {\n    if (typeof encodingOrOffset === 'string') {\n      throw new Error('If encoding is specified then the first argument must be a string');\n    }\n\n    return allocUnsafe(this, arg);\n  }\n\n  return from(this, arg, encodingOrOffset, length);\n}\n\nBuffer.poolSize = 8192; // not used by this implementation\n// TODO: Legacy, not needed anymore. Remove in next major version.\n\nBuffer._augment = function (arr) {\n  arr.__proto__ = Buffer.prototype;\n  return arr;\n};\n\nfunction from(that, value, encodingOrOffset, length) {\n  if (typeof value === 'number') {\n    throw new TypeError('\"value\" argument must not be a number');\n  }\n\n  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {\n    return fromArrayBuffer(that, value, encodingOrOffset, length);\n  }\n\n  if (typeof value === 'string') {\n    return fromString(that, value, encodingOrOffset);\n  }\n\n  return fromObject(that, value);\n}\n/**\n * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError\n * if value is a number.\n * Buffer.from(str[, encoding])\n * Buffer.from(array)\n * Buffer.from(buffer)\n * Buffer.from(arrayBuffer[, byteOffset[, length]])\n **/\n\n\nBuffer.from = function (value, encodingOrOffset, length) {\n  return from(null, value, encodingOrOffset, length);\n};\n\nif (Buffer.TYPED_ARRAY_SUPPORT) {\n  Buffer.prototype.__proto__ = Uint8Array.prototype;\n  Buffer.__proto__ = Uint8Array;\n\n  if (typeof Symbol !== 'undefined' && Symbol.species && Buffer[Symbol.species] === Buffer) {\n    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97\n    Object.defineProperty(Buffer, Symbol.species, {\n      value: null,\n      configurable: true\n    });\n  }\n}\n\nfunction assertSize(size) {\n  if (typeof size !== 'number') {\n    throw new TypeError('\"size\" argument must be a number');\n  } else if (size < 0) {\n    throw new RangeError('\"size\" argument must not be negative');\n  }\n}\n\nfunction alloc(that, size, fill, encoding) {\n  assertSize(size);\n\n  if (size <= 0) {\n    return createBuffer(that, size);\n  }\n\n  if (fill !== undefined) {\n    // Only pay attention to encoding if it's a string. This\n    // prevents accidentally sending in a number that would\n    // be interpretted as a start offset.\n    return typeof encoding === 'string' ? createBuffer(that, size).fill(fill, encoding) : createBuffer(that, size).fill(fill);\n  }\n\n  return createBuffer(that, size);\n}\n/**\n * Creates a new filled Buffer instance.\n * alloc(size[, fill[, encoding]])\n **/\n\n\nBuffer.alloc = function (size, fill, encoding) {\n  return alloc(null, size, fill, encoding);\n};\n\nfunction allocUnsafe(that, size) {\n  assertSize(size);\n  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);\n\n  if (!Buffer.TYPED_ARRAY_SUPPORT) {\n    for (var i = 0; i < size; ++i) {\n      that[i] = 0;\n    }\n  }\n\n  return that;\n}\n/**\n * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.\n * */\n\n\nBuffer.allocUnsafe = function (size) {\n  return allocUnsafe(null, size);\n};\n/**\n * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.\n */\n\n\nBuffer.allocUnsafeSlow = function (size) {\n  return allocUnsafe(null, size);\n};\n\nfunction fromString(that, string, encoding) {\n  if (typeof encoding !== 'string' || encoding === '') {\n    encoding = 'utf8';\n  }\n\n  if (!Buffer.isEncoding(encoding)) {\n    throw new TypeError('\"encoding\" must be a valid string encoding');\n  }\n\n  var length = byteLength(string, encoding) | 0;\n  that = createBuffer(that, length);\n  var actual = that.write(string, encoding);\n\n  if (actual !== length) {\n    // Writing a hex string, for example, that contains invalid characters will\n    // cause everything after the first invalid character to be ignored. (e.g.\n    // 'abxxcd' will be treated as 'ab')\n    that = that.slice(0, actual);\n  }\n\n  return that;\n}\n\nfunction fromArrayLike(that, array) {\n  var length = array.length < 0 ? 0 : checked(array.length) | 0;\n  that = createBuffer(that, length);\n\n  for (var i = 0; i < length; i += 1) {\n    that[i] = array[i] & 255;\n  }\n\n  return that;\n}\n\nfunction fromArrayBuffer(that, array, byteOffset, length) {\n  array.byteLength; // this throws if `array` is not a valid ArrayBuffer\n\n  if (byteOffset < 0 || array.byteLength < byteOffset) {\n    throw new RangeError('\\'offset\\' is out of bounds');\n  }\n\n  if (array.byteLength < byteOffset + (length || 0)) {\n    throw new RangeError('\\'length\\' is out of bounds');\n  }\n\n  if (byteOffset === undefined && length === undefined) {\n    array = new Uint8Array(array);\n  } else if (length === undefined) {\n    array = new Uint8Array(array, byteOffset);\n  } else {\n    array = new Uint8Array(array, byteOffset, length);\n  }\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    // Return an augmented `Uint8Array` instance, for best performance\n    that = array;\n    that.__proto__ = Buffer.prototype;\n  } else {\n    // Fallback: Return an object instance of the Buffer class\n    that = fromArrayLike(that, array);\n  }\n\n  return that;\n}\n\nfunction fromObject(that, obj) {\n  if (Buffer.isBuffer(obj)) {\n    var len = checked(obj.length) | 0;\n    that = createBuffer(that, len);\n\n    if (that.length === 0) {\n      return that;\n    }\n\n    obj.copy(that, 0, 0, len);\n    return that;\n  }\n\n  if (obj) {\n    if (typeof ArrayBuffer !== 'undefined' && obj.buffer instanceof ArrayBuffer || 'length' in obj) {\n      if (typeof obj.length !== 'number' || isnan(obj.length)) {\n        return createBuffer(that, 0);\n      }\n\n      return fromArrayLike(that, obj);\n    }\n\n    if (obj.type === 'Buffer' && isArray(obj.data)) {\n      return fromArrayLike(that, obj.data);\n    }\n  }\n\n  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.');\n}\n\nfunction checked(length) {\n  // Note: cannot use `length < kMaxLength()` here because that fails when\n  // length is NaN (which is otherwise coerced to zero.)\n  if (length >= kMaxLength()) {\n    throw new RangeError('Attempt to allocate Buffer larger than maximum ' + 'size: 0x' + kMaxLength().toString(16) + ' bytes');\n  }\n\n  return length | 0;\n}\n\nfunction SlowBuffer(length) {\n  if (+length != length) {\n    // eslint-disable-line eqeqeq\n    length = 0;\n  }\n\n  return Buffer.alloc(+length);\n}\n\nBuffer.isBuffer = function isBuffer(b) {\n  return !!(b != null && b._isBuffer);\n};\n\nBuffer.compare = function compare(a, b) {\n  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {\n    throw new TypeError('Arguments must be Buffers');\n  }\n\n  if (a === b) return 0;\n  var x = a.length;\n  var y = b.length;\n\n  for (var i = 0, len = Math.min(x, y); i < len; ++i) {\n    if (a[i] !== b[i]) {\n      x = a[i];\n      y = b[i];\n      break;\n    }\n  }\n\n  if (x < y) return -1;\n  if (y < x) return 1;\n  return 0;\n};\n\nBuffer.isEncoding = function isEncoding(encoding) {\n  switch (String(encoding).toLowerCase()) {\n    case 'hex':\n    case 'utf8':\n    case 'utf-8':\n    case 'ascii':\n    case 'latin1':\n    case 'binary':\n    case 'base64':\n    case 'ucs2':\n    case 'ucs-2':\n    case 'utf16le':\n    case 'utf-16le':\n      return true;\n\n    default:\n      return false;\n  }\n};\n\nBuffer.concat = function concat(list, length) {\n  if (!isArray(list)) {\n    throw new TypeError('\"list\" argument must be an Array of Buffers');\n  }\n\n  if (list.length === 0) {\n    return Buffer.alloc(0);\n  }\n\n  var i;\n\n  if (length === undefined) {\n    length = 0;\n\n    for (i = 0; i < list.length; ++i) {\n      length += list[i].length;\n    }\n  }\n\n  var buffer = Buffer.allocUnsafe(length);\n  var pos = 0;\n\n  for (i = 0; i < list.length; ++i) {\n    var buf = list[i];\n\n    if (!Buffer.isBuffer(buf)) {\n      throw new TypeError('\"list\" argument must be an Array of Buffers');\n    }\n\n    buf.copy(buffer, pos);\n    pos += buf.length;\n  }\n\n  return buffer;\n};\n\nfunction byteLength(string, encoding) {\n  if (Buffer.isBuffer(string)) {\n    return string.length;\n  }\n\n  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' && (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {\n    return string.byteLength;\n  }\n\n  if (typeof string !== 'string') {\n    string = '' + string;\n  }\n\n  var len = string.length;\n  if (len === 0) return 0; // Use a for loop to avoid recursion\n\n  var loweredCase = false;\n\n  for (;;) {\n    switch (encoding) {\n      case 'ascii':\n      case 'latin1':\n      case 'binary':\n        return len;\n\n      case 'utf8':\n      case 'utf-8':\n      case undefined:\n        return utf8ToBytes(string).length;\n\n      case 'ucs2':\n      case 'ucs-2':\n      case 'utf16le':\n      case 'utf-16le':\n        return len * 2;\n\n      case 'hex':\n        return len >>> 1;\n\n      case 'base64':\n        return base64ToBytes(string).length;\n\n      default:\n        if (loweredCase) return utf8ToBytes(string).length; // assume utf8\n\n        encoding = ('' + encoding).toLowerCase();\n        loweredCase = true;\n    }\n  }\n}\n\nBuffer.byteLength = byteLength;\n\nfunction slowToString(encoding, start, end) {\n  var loweredCase = false; // No need to verify that \"this.length <= MAX_UINT32\" since it's a read-only\n  // property of a typed array.\n  // This behaves neither like String nor Uint8Array in that we set start/end\n  // to their upper/lower bounds if the value passed is out of range.\n  // undefined is handled specially as per ECMA-262 6th Edition,\n  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.\n\n  if (start === undefined || start < 0) {\n    start = 0;\n  } // Return early if start > this.length. Done here to prevent potential uint32\n  // coercion fail below.\n\n\n  if (start > this.length) {\n    return '';\n  }\n\n  if (end === undefined || end > this.length) {\n    end = this.length;\n  }\n\n  if (end <= 0) {\n    return '';\n  } // Force coersion to uint32. This will also coerce falsey/NaN values to 0.\n\n\n  end >>>= 0;\n  start >>>= 0;\n\n  if (end <= start) {\n    return '';\n  }\n\n  if (!encoding) encoding = 'utf8';\n\n  while (true) {\n    switch (encoding) {\n      case 'hex':\n        return hexSlice(this, start, end);\n\n      case 'utf8':\n      case 'utf-8':\n        return utf8Slice(this, start, end);\n\n      case 'ascii':\n        return asciiSlice(this, start, end);\n\n      case 'latin1':\n      case 'binary':\n        return latin1Slice(this, start, end);\n\n      case 'base64':\n        return base64Slice(this, start, end);\n\n      case 'ucs2':\n      case 'ucs-2':\n      case 'utf16le':\n      case 'utf-16le':\n        return utf16leSlice(this, start, end);\n\n      default:\n        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding);\n        encoding = (encoding + '').toLowerCase();\n        loweredCase = true;\n    }\n  }\n} // The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect\n// Buffer instances.\n\n\nBuffer.prototype._isBuffer = true;\n\nfunction swap(b, n, m) {\n  var i = b[n];\n  b[n] = b[m];\n  b[m] = i;\n}\n\nBuffer.prototype.swap16 = function swap16() {\n  var len = this.length;\n\n  if (len % 2 !== 0) {\n    throw new RangeError('Buffer size must be a multiple of 16-bits');\n  }\n\n  for (var i = 0; i < len; i += 2) {\n    swap(this, i, i + 1);\n  }\n\n  return this;\n};\n\nBuffer.prototype.swap32 = function swap32() {\n  var len = this.length;\n\n  if (len % 4 !== 0) {\n    throw new RangeError('Buffer size must be a multiple of 32-bits');\n  }\n\n  for (var i = 0; i < len; i += 4) {\n    swap(this, i, i + 3);\n    swap(this, i + 1, i + 2);\n  }\n\n  return this;\n};\n\nBuffer.prototype.swap64 = function swap64() {\n  var len = this.length;\n\n  if (len % 8 !== 0) {\n    throw new RangeError('Buffer size must be a multiple of 64-bits');\n  }\n\n  for (var i = 0; i < len; i += 8) {\n    swap(this, i, i + 7);\n    swap(this, i + 1, i + 6);\n    swap(this, i + 2, i + 5);\n    swap(this, i + 3, i + 4);\n  }\n\n  return this;\n};\n\nBuffer.prototype.toString = function toString() {\n  var length = this.length | 0;\n  if (length === 0) return '';\n  if (arguments.length === 0) return utf8Slice(this, 0, length);\n  return slowToString.apply(this, arguments);\n};\n\nBuffer.prototype.equals = function equals(b) {\n  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer');\n  if (this === b) return true;\n  return Buffer.compare(this, b) === 0;\n};\n\nBuffer.prototype.inspect = function inspect() {\n  var str = '';\n  var max = exports.INSPECT_MAX_BYTES;\n\n  if (this.length > 0) {\n    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ');\n    if (this.length > max) str += ' ... ';\n  }\n\n  return '<Buffer ' + str + '>';\n};\n\nBuffer.prototype.compare = function compare(target, start, end, thisStart, thisEnd) {\n  if (!Buffer.isBuffer(target)) {\n    throw new TypeError('Argument must be a Buffer');\n  }\n\n  if (start === undefined) {\n    start = 0;\n  }\n\n  if (end === undefined) {\n    end = target ? target.length : 0;\n  }\n\n  if (thisStart === undefined) {\n    thisStart = 0;\n  }\n\n  if (thisEnd === undefined) {\n    thisEnd = this.length;\n  }\n\n  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {\n    throw new RangeError('out of range index');\n  }\n\n  if (thisStart >= thisEnd && start >= end) {\n    return 0;\n  }\n\n  if (thisStart >= thisEnd) {\n    return -1;\n  }\n\n  if (start >= end) {\n    return 1;\n  }\n\n  start >>>= 0;\n  end >>>= 0;\n  thisStart >>>= 0;\n  thisEnd >>>= 0;\n  if (this === target) return 0;\n  var x = thisEnd - thisStart;\n  var y = end - start;\n  var len = Math.min(x, y);\n  var thisCopy = this.slice(thisStart, thisEnd);\n  var targetCopy = target.slice(start, end);\n\n  for (var i = 0; i < len; ++i) {\n    if (thisCopy[i] !== targetCopy[i]) {\n      x = thisCopy[i];\n      y = targetCopy[i];\n      break;\n    }\n  }\n\n  if (x < y) return -1;\n  if (y < x) return 1;\n  return 0;\n}; // Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,\n// OR the last index of `val` in `buffer` at offset <= `byteOffset`.\n//\n// Arguments:\n// - buffer - a Buffer to search\n// - val - a string, Buffer, or number\n// - byteOffset - an index into `buffer`; will be clamped to an int32\n// - encoding - an optional encoding, relevant is val is a string\n// - dir - true for indexOf, false for lastIndexOf\n\n\nfunction bidirectionalIndexOf(buffer, val, byteOffset, encoding, dir) {\n  // Empty buffer means no match\n  if (buffer.length === 0) return -1; // Normalize byteOffset\n\n  if (typeof byteOffset === 'string') {\n    encoding = byteOffset;\n    byteOffset = 0;\n  } else if (byteOffset > 0x7fffffff) {\n    byteOffset = 0x7fffffff;\n  } else if (byteOffset < -0x80000000) {\n    byteOffset = -0x80000000;\n  }\n\n  byteOffset = +byteOffset; // Coerce to Number.\n\n  if (isNaN(byteOffset)) {\n    // byteOffset: it it's undefined, null, NaN, \"foo\", etc, search whole buffer\n    byteOffset = dir ? 0 : buffer.length - 1;\n  } // Normalize byteOffset: negative offsets start from the end of the buffer\n\n\n  if (byteOffset < 0) byteOffset = buffer.length + byteOffset;\n\n  if (byteOffset >= buffer.length) {\n    if (dir) return -1;else byteOffset = buffer.length - 1;\n  } else if (byteOffset < 0) {\n    if (dir) byteOffset = 0;else return -1;\n  } // Normalize val\n\n\n  if (typeof val === 'string') {\n    val = Buffer.from(val, encoding);\n  } // Finally, search either indexOf (if dir is true) or lastIndexOf\n\n\n  if (Buffer.isBuffer(val)) {\n    // Special case: looking for empty string/buffer always fails\n    if (val.length === 0) {\n      return -1;\n    }\n\n    return arrayIndexOf(buffer, val, byteOffset, encoding, dir);\n  } else if (typeof val === 'number') {\n    val = val & 0xFF; // Search for a byte value [0-255]\n\n    if (Buffer.TYPED_ARRAY_SUPPORT && typeof Uint8Array.prototype.indexOf === 'function') {\n      if (dir) {\n        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset);\n      } else {\n        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset);\n      }\n    }\n\n    return arrayIndexOf(buffer, [val], byteOffset, encoding, dir);\n  }\n\n  throw new TypeError('val must be string, number or Buffer');\n}\n\nfunction arrayIndexOf(arr, val, byteOffset, encoding, dir) {\n  var indexSize = 1;\n  var arrLength = arr.length;\n  var valLength = val.length;\n\n  if (encoding !== undefined) {\n    encoding = String(encoding).toLowerCase();\n\n    if (encoding === 'ucs2' || encoding === 'ucs-2' || encoding === 'utf16le' || encoding === 'utf-16le') {\n      if (arr.length < 2 || val.length < 2) {\n        return -1;\n      }\n\n      indexSize = 2;\n      arrLength /= 2;\n      valLength /= 2;\n      byteOffset /= 2;\n    }\n  }\n\n  function read(buf, i) {\n    if (indexSize === 1) {\n      return buf[i];\n    } else {\n      return buf.readUInt16BE(i * indexSize);\n    }\n  }\n\n  var i;\n\n  if (dir) {\n    var foundIndex = -1;\n\n    for (i = byteOffset; i < arrLength; i++) {\n      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {\n        if (foundIndex === -1) foundIndex = i;\n        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize;\n      } else {\n        if (foundIndex !== -1) i -= i - foundIndex;\n        foundIndex = -1;\n      }\n    }\n  } else {\n    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;\n\n    for (i = byteOffset; i >= 0; i--) {\n      var found = true;\n\n      for (var j = 0; j < valLength; j++) {\n        if (read(arr, i + j) !== read(val, j)) {\n          found = false;\n          break;\n        }\n      }\n\n      if (found) return i;\n    }\n  }\n\n  return -1;\n}\n\nBuffer.prototype.includes = function includes(val, byteOffset, encoding) {\n  return this.indexOf(val, byteOffset, encoding) !== -1;\n};\n\nBuffer.prototype.indexOf = function indexOf(val, byteOffset, encoding) {\n  return bidirectionalIndexOf(this, val, byteOffset, encoding, true);\n};\n\nBuffer.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {\n  return bidirectionalIndexOf(this, val, byteOffset, encoding, false);\n};\n\nfunction hexWrite(buf, string, offset, length) {\n  offset = Number(offset) || 0;\n  var remaining = buf.length - offset;\n\n  if (!length) {\n    length = remaining;\n  } else {\n    length = Number(length);\n\n    if (length > remaining) {\n      length = remaining;\n    }\n  } // must be an even number of digits\n\n\n  var strLen = string.length;\n  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string');\n\n  if (length > strLen / 2) {\n    length = strLen / 2;\n  }\n\n  for (var i = 0; i < length; ++i) {\n    var parsed = parseInt(string.substr(i * 2, 2), 16);\n    if (isNaN(parsed)) return i;\n    buf[offset + i] = parsed;\n  }\n\n  return i;\n}\n\nfunction utf8Write(buf, string, offset, length) {\n  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length);\n}\n\nfunction asciiWrite(buf, string, offset, length) {\n  return blitBuffer(asciiToBytes(string), buf, offset, length);\n}\n\nfunction latin1Write(buf, string, offset, length) {\n  return asciiWrite(buf, string, offset, length);\n}\n\nfunction base64Write(buf, string, offset, length) {\n  return blitBuffer(base64ToBytes(string), buf, offset, length);\n}\n\nfunction ucs2Write(buf, string, offset, length) {\n  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length);\n}\n\nBuffer.prototype.write = function write(string, offset, length, encoding) {\n  // Buffer#write(string)\n  if (offset === undefined) {\n    encoding = 'utf8';\n    length = this.length;\n    offset = 0; // Buffer#write(string, encoding)\n  } else if (length === undefined && typeof offset === 'string') {\n    encoding = offset;\n    length = this.length;\n    offset = 0; // Buffer#write(string, offset[, length][, encoding])\n  } else if (isFinite(offset)) {\n    offset = offset | 0;\n\n    if (isFinite(length)) {\n      length = length | 0;\n      if (encoding === undefined) encoding = 'utf8';\n    } else {\n      encoding = length;\n      length = undefined;\n    } // legacy write(string, encoding, offset, length) - remove in v0.13\n\n  } else {\n    throw new Error('Buffer.write(string, encoding, offset[, length]) is no longer supported');\n  }\n\n  var remaining = this.length - offset;\n  if (length === undefined || length > remaining) length = remaining;\n\n  if (string.length > 0 && (length < 0 || offset < 0) || offset > this.length) {\n    throw new RangeError('Attempt to write outside buffer bounds');\n  }\n\n  if (!encoding) encoding = 'utf8';\n  var loweredCase = false;\n\n  for (;;) {\n    switch (encoding) {\n      case 'hex':\n        return hexWrite(this, string, offset, length);\n\n      case 'utf8':\n      case 'utf-8':\n        return utf8Write(this, string, offset, length);\n\n      case 'ascii':\n        return asciiWrite(this, string, offset, length);\n\n      case 'latin1':\n      case 'binary':\n        return latin1Write(this, string, offset, length);\n\n      case 'base64':\n        // Warning: maxLength not taken into account in base64Write\n        return base64Write(this, string, offset, length);\n\n      case 'ucs2':\n      case 'ucs-2':\n      case 'utf16le':\n      case 'utf-16le':\n        return ucs2Write(this, string, offset, length);\n\n      default:\n        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding);\n        encoding = ('' + encoding).toLowerCase();\n        loweredCase = true;\n    }\n  }\n};\n\nBuffer.prototype.toJSON = function toJSON() {\n  return {\n    type: 'Buffer',\n    data: Array.prototype.slice.call(this._arr || this, 0)\n  };\n};\n\nfunction base64Slice(buf, start, end) {\n  if (start === 0 && end === buf.length) {\n    return base64.fromByteArray(buf);\n  } else {\n    return base64.fromByteArray(buf.slice(start, end));\n  }\n}\n\nfunction utf8Slice(buf, start, end) {\n  end = Math.min(buf.length, end);\n  var res = [];\n  var i = start;\n\n  while (i < end) {\n    var firstByte = buf[i];\n    var codePoint = null;\n    var bytesPerSequence = firstByte > 0xEF ? 4 : firstByte > 0xDF ? 3 : firstByte > 0xBF ? 2 : 1;\n\n    if (i + bytesPerSequence <= end) {\n      var secondByte, thirdByte, fourthByte, tempCodePoint;\n\n      switch (bytesPerSequence) {\n        case 1:\n          if (firstByte < 0x80) {\n            codePoint = firstByte;\n          }\n\n          break;\n\n        case 2:\n          secondByte = buf[i + 1];\n\n          if ((secondByte & 0xC0) === 0x80) {\n            tempCodePoint = (firstByte & 0x1F) << 0x6 | secondByte & 0x3F;\n\n            if (tempCodePoint > 0x7F) {\n              codePoint = tempCodePoint;\n            }\n          }\n\n          break;\n\n        case 3:\n          secondByte = buf[i + 1];\n          thirdByte = buf[i + 2];\n\n          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {\n            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | thirdByte & 0x3F;\n\n            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {\n              codePoint = tempCodePoint;\n            }\n          }\n\n          break;\n\n        case 4:\n          secondByte = buf[i + 1];\n          thirdByte = buf[i + 2];\n          fourthByte = buf[i + 3];\n\n          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {\n            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | fourthByte & 0x3F;\n\n            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {\n              codePoint = tempCodePoint;\n            }\n          }\n\n      }\n    }\n\n    if (codePoint === null) {\n      // we did not generate a valid codePoint so insert a\n      // replacement char (U+FFFD) and advance only 1 byte\n      codePoint = 0xFFFD;\n      bytesPerSequence = 1;\n    } else if (codePoint > 0xFFFF) {\n      // encode to utf16 (surrogate pair dance)\n      codePoint -= 0x10000;\n      res.push(codePoint >>> 10 & 0x3FF | 0xD800);\n      codePoint = 0xDC00 | codePoint & 0x3FF;\n    }\n\n    res.push(codePoint);\n    i += bytesPerSequence;\n  }\n\n  return decodeCodePointsArray(res);\n} // Based on http://stackoverflow.com/a/22747272/680742, the browser with\n// the lowest limit is Chrome, with 0x10000 args.\n// We go 1 magnitude less, for safety\n\n\nvar MAX_ARGUMENTS_LENGTH = 0x1000;\n\nfunction decodeCodePointsArray(codePoints) {\n  var len = codePoints.length;\n\n  if (len <= MAX_ARGUMENTS_LENGTH) {\n    return String.fromCharCode.apply(String, codePoints); // avoid extra slice()\n  } // Decode in chunks to avoid \"call stack size exceeded\".\n\n\n  var res = '';\n  var i = 0;\n\n  while (i < len) {\n    res += String.fromCharCode.apply(String, codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH));\n  }\n\n  return res;\n}\n\nfunction asciiSlice(buf, start, end) {\n  var ret = '';\n  end = Math.min(buf.length, end);\n\n  for (var i = start; i < end; ++i) {\n    ret += String.fromCharCode(buf[i] & 0x7F);\n  }\n\n  return ret;\n}\n\nfunction latin1Slice(buf, start, end) {\n  var ret = '';\n  end = Math.min(buf.length, end);\n\n  for (var i = start; i < end; ++i) {\n    ret += String.fromCharCode(buf[i]);\n  }\n\n  return ret;\n}\n\nfunction hexSlice(buf, start, end) {\n  var len = buf.length;\n  if (!start || start < 0) start = 0;\n  if (!end || end < 0 || end > len) end = len;\n  var out = '';\n\n  for (var i = start; i < end; ++i) {\n    out += toHex(buf[i]);\n  }\n\n  return out;\n}\n\nfunction utf16leSlice(buf, start, end) {\n  var bytes = buf.slice(start, end);\n  var res = '';\n\n  for (var i = 0; i < bytes.length; i += 2) {\n    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);\n  }\n\n  return res;\n}\n\nBuffer.prototype.slice = function slice(start, end) {\n  var len = this.length;\n  start = ~~start;\n  end = end === undefined ? len : ~~end;\n\n  if (start < 0) {\n    start += len;\n    if (start < 0) start = 0;\n  } else if (start > len) {\n    start = len;\n  }\n\n  if (end < 0) {\n    end += len;\n    if (end < 0) end = 0;\n  } else if (end > len) {\n    end = len;\n  }\n\n  if (end < start) end = start;\n  var newBuf;\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    newBuf = this.subarray(start, end);\n    newBuf.__proto__ = Buffer.prototype;\n  } else {\n    var sliceLen = end - start;\n    newBuf = new Buffer(sliceLen, undefined);\n\n    for (var i = 0; i < sliceLen; ++i) {\n      newBuf[i] = this[i + start];\n    }\n  }\n\n  return newBuf;\n};\n/*\n * Need to make sure that buffer isn't trying to write out of bounds.\n */\n\n\nfunction checkOffset(offset, ext, length) {\n  if (offset % 1 !== 0 || offset < 0) throw new RangeError('offset is not uint');\n  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length');\n}\n\nBuffer.prototype.readUIntLE = function readUIntLE(offset, byteLength, noAssert) {\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n  if (!noAssert) checkOffset(offset, byteLength, this.length);\n  var val = this[offset];\n  var mul = 1;\n  var i = 0;\n\n  while (++i < byteLength && (mul *= 0x100)) {\n    val += this[offset + i] * mul;\n  }\n\n  return val;\n};\n\nBuffer.prototype.readUIntBE = function readUIntBE(offset, byteLength, noAssert) {\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n\n  if (!noAssert) {\n    checkOffset(offset, byteLength, this.length);\n  }\n\n  var val = this[offset + --byteLength];\n  var mul = 1;\n\n  while (byteLength > 0 && (mul *= 0x100)) {\n    val += this[offset + --byteLength] * mul;\n  }\n\n  return val;\n};\n\nBuffer.prototype.readUInt8 = function readUInt8(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 1, this.length);\n  return this[offset];\n};\n\nBuffer.prototype.readUInt16LE = function readUInt16LE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 2, this.length);\n  return this[offset] | this[offset + 1] << 8;\n};\n\nBuffer.prototype.readUInt16BE = function readUInt16BE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 2, this.length);\n  return this[offset] << 8 | this[offset + 1];\n};\n\nBuffer.prototype.readUInt32LE = function readUInt32LE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return (this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16) + this[offset + 3] * 0x1000000;\n};\n\nBuffer.prototype.readUInt32BE = function readUInt32BE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return this[offset] * 0x1000000 + (this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3]);\n};\n\nBuffer.prototype.readIntLE = function readIntLE(offset, byteLength, noAssert) {\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n  if (!noAssert) checkOffset(offset, byteLength, this.length);\n  var val = this[offset];\n  var mul = 1;\n  var i = 0;\n\n  while (++i < byteLength && (mul *= 0x100)) {\n    val += this[offset + i] * mul;\n  }\n\n  mul *= 0x80;\n  if (val >= mul) val -= Math.pow(2, 8 * byteLength);\n  return val;\n};\n\nBuffer.prototype.readIntBE = function readIntBE(offset, byteLength, noAssert) {\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n  if (!noAssert) checkOffset(offset, byteLength, this.length);\n  var i = byteLength;\n  var mul = 1;\n  var val = this[offset + --i];\n\n  while (i > 0 && (mul *= 0x100)) {\n    val += this[offset + --i] * mul;\n  }\n\n  mul *= 0x80;\n  if (val >= mul) val -= Math.pow(2, 8 * byteLength);\n  return val;\n};\n\nBuffer.prototype.readInt8 = function readInt8(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 1, this.length);\n  if (!(this[offset] & 0x80)) return this[offset];\n  return (0xff - this[offset] + 1) * -1;\n};\n\nBuffer.prototype.readInt16LE = function readInt16LE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 2, this.length);\n  var val = this[offset] | this[offset + 1] << 8;\n  return val & 0x8000 ? val | 0xFFFF0000 : val;\n};\n\nBuffer.prototype.readInt16BE = function readInt16BE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 2, this.length);\n  var val = this[offset + 1] | this[offset] << 8;\n  return val & 0x8000 ? val | 0xFFFF0000 : val;\n};\n\nBuffer.prototype.readInt32LE = function readInt32LE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16 | this[offset + 3] << 24;\n};\n\nBuffer.prototype.readInt32BE = function readInt32BE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return this[offset] << 24 | this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3];\n};\n\nBuffer.prototype.readFloatLE = function readFloatLE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return ieee754.read(this, offset, true, 23, 4);\n};\n\nBuffer.prototype.readFloatBE = function readFloatBE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 4, this.length);\n  return ieee754.read(this, offset, false, 23, 4);\n};\n\nBuffer.prototype.readDoubleLE = function readDoubleLE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 8, this.length);\n  return ieee754.read(this, offset, true, 52, 8);\n};\n\nBuffer.prototype.readDoubleBE = function readDoubleBE(offset, noAssert) {\n  if (!noAssert) checkOffset(offset, 8, this.length);\n  return ieee754.read(this, offset, false, 52, 8);\n};\n\nfunction checkInt(buf, value, offset, ext, max, min) {\n  if (!Buffer.isBuffer(buf)) throw new TypeError('\"buffer\" argument must be a Buffer instance');\n  if (value > max || value < min) throw new RangeError('\"value\" argument is out of bounds');\n  if (offset + ext > buf.length) throw new RangeError('Index out of range');\n}\n\nBuffer.prototype.writeUIntLE = function writeUIntLE(value, offset, byteLength, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n\n  if (!noAssert) {\n    var maxBytes = Math.pow(2, 8 * byteLength) - 1;\n    checkInt(this, value, offset, byteLength, maxBytes, 0);\n  }\n\n  var mul = 1;\n  var i = 0;\n  this[offset] = value & 0xFF;\n\n  while (++i < byteLength && (mul *= 0x100)) {\n    this[offset + i] = value / mul & 0xFF;\n  }\n\n  return offset + byteLength;\n};\n\nBuffer.prototype.writeUIntBE = function writeUIntBE(value, offset, byteLength, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  byteLength = byteLength | 0;\n\n  if (!noAssert) {\n    var maxBytes = Math.pow(2, 8 * byteLength) - 1;\n    checkInt(this, value, offset, byteLength, maxBytes, 0);\n  }\n\n  var i = byteLength - 1;\n  var mul = 1;\n  this[offset + i] = value & 0xFF;\n\n  while (--i >= 0 && (mul *= 0x100)) {\n    this[offset + i] = value / mul & 0xFF;\n  }\n\n  return offset + byteLength;\n};\n\nBuffer.prototype.writeUInt8 = function writeUInt8(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);\n  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);\n  this[offset] = value & 0xff;\n  return offset + 1;\n};\n\nfunction objectWriteUInt16(buf, value, offset, littleEndian) {\n  if (value < 0) value = 0xffff + value + 1;\n\n  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {\n    buf[offset + i] = (value & 0xff << 8 * (littleEndian ? i : 1 - i)) >>> (littleEndian ? i : 1 - i) * 8;\n  }\n}\n\nBuffer.prototype.writeUInt16LE = function writeUInt16LE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value & 0xff;\n    this[offset + 1] = value >>> 8;\n  } else {\n    objectWriteUInt16(this, value, offset, true);\n  }\n\n  return offset + 2;\n};\n\nBuffer.prototype.writeUInt16BE = function writeUInt16BE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value >>> 8;\n    this[offset + 1] = value & 0xff;\n  } else {\n    objectWriteUInt16(this, value, offset, false);\n  }\n\n  return offset + 2;\n};\n\nfunction objectWriteUInt32(buf, value, offset, littleEndian) {\n  if (value < 0) value = 0xffffffff + value + 1;\n\n  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {\n    buf[offset + i] = value >>> (littleEndian ? i : 3 - i) * 8 & 0xff;\n  }\n}\n\nBuffer.prototype.writeUInt32LE = function writeUInt32LE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset + 3] = value >>> 24;\n    this[offset + 2] = value >>> 16;\n    this[offset + 1] = value >>> 8;\n    this[offset] = value & 0xff;\n  } else {\n    objectWriteUInt32(this, value, offset, true);\n  }\n\n  return offset + 4;\n};\n\nBuffer.prototype.writeUInt32BE = function writeUInt32BE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value >>> 24;\n    this[offset + 1] = value >>> 16;\n    this[offset + 2] = value >>> 8;\n    this[offset + 3] = value & 0xff;\n  } else {\n    objectWriteUInt32(this, value, offset, false);\n  }\n\n  return offset + 4;\n};\n\nBuffer.prototype.writeIntLE = function writeIntLE(value, offset, byteLength, noAssert) {\n  value = +value;\n  offset = offset | 0;\n\n  if (!noAssert) {\n    var limit = Math.pow(2, 8 * byteLength - 1);\n    checkInt(this, value, offset, byteLength, limit - 1, -limit);\n  }\n\n  var i = 0;\n  var mul = 1;\n  var sub = 0;\n  this[offset] = value & 0xFF;\n\n  while (++i < byteLength && (mul *= 0x100)) {\n    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {\n      sub = 1;\n    }\n\n    this[offset + i] = (value / mul >> 0) - sub & 0xFF;\n  }\n\n  return offset + byteLength;\n};\n\nBuffer.prototype.writeIntBE = function writeIntBE(value, offset, byteLength, noAssert) {\n  value = +value;\n  offset = offset | 0;\n\n  if (!noAssert) {\n    var limit = Math.pow(2, 8 * byteLength - 1);\n    checkInt(this, value, offset, byteLength, limit - 1, -limit);\n  }\n\n  var i = byteLength - 1;\n  var mul = 1;\n  var sub = 0;\n  this[offset + i] = value & 0xFF;\n\n  while (--i >= 0 && (mul *= 0x100)) {\n    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {\n      sub = 1;\n    }\n\n    this[offset + i] = (value / mul >> 0) - sub & 0xFF;\n  }\n\n  return offset + byteLength;\n};\n\nBuffer.prototype.writeInt8 = function writeInt8(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);\n  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);\n  if (value < 0) value = 0xff + value + 1;\n  this[offset] = value & 0xff;\n  return offset + 1;\n};\n\nBuffer.prototype.writeInt16LE = function writeInt16LE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value & 0xff;\n    this[offset + 1] = value >>> 8;\n  } else {\n    objectWriteUInt16(this, value, offset, true);\n  }\n\n  return offset + 2;\n};\n\nBuffer.prototype.writeInt16BE = function writeInt16BE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value >>> 8;\n    this[offset + 1] = value & 0xff;\n  } else {\n    objectWriteUInt16(this, value, offset, false);\n  }\n\n  return offset + 2;\n};\n\nBuffer.prototype.writeInt32LE = function writeInt32LE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value & 0xff;\n    this[offset + 1] = value >>> 8;\n    this[offset + 2] = value >>> 16;\n    this[offset + 3] = value >>> 24;\n  } else {\n    objectWriteUInt32(this, value, offset, true);\n  }\n\n  return offset + 4;\n};\n\nBuffer.prototype.writeInt32BE = function writeInt32BE(value, offset, noAssert) {\n  value = +value;\n  offset = offset | 0;\n  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);\n  if (value < 0) value = 0xffffffff + value + 1;\n\n  if (Buffer.TYPED_ARRAY_SUPPORT) {\n    this[offset] = value >>> 24;\n    this[offset + 1] = value >>> 16;\n    this[offset + 2] = value >>> 8;\n    this[offset + 3] = value & 0xff;\n  } else {\n    objectWriteUInt32(this, value, offset, false);\n  }\n\n  return offset + 4;\n};\n\nfunction checkIEEE754(buf, value, offset, ext, max, min) {\n  if (offset + ext > buf.length) throw new RangeError('Index out of range');\n  if (offset < 0) throw new RangeError('Index out of range');\n}\n\nfunction writeFloat(buf, value, offset, littleEndian, noAssert) {\n  if (!noAssert) {\n    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38);\n  }\n\n  ieee754.write(buf, value, offset, littleEndian, 23, 4);\n  return offset + 4;\n}\n\nBuffer.prototype.writeFloatLE = function writeFloatLE(value, offset, noAssert) {\n  return writeFloat(this, value, offset, true, noAssert);\n};\n\nBuffer.prototype.writeFloatBE = function writeFloatBE(value, offset, noAssert) {\n  return writeFloat(this, value, offset, false, noAssert);\n};\n\nfunction writeDouble(buf, value, offset, littleEndian, noAssert) {\n  if (!noAssert) {\n    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308);\n  }\n\n  ieee754.write(buf, value, offset, littleEndian, 52, 8);\n  return offset + 8;\n}\n\nBuffer.prototype.writeDoubleLE = function writeDoubleLE(value, offset, noAssert) {\n  return writeDouble(this, value, offset, true, noAssert);\n};\n\nBuffer.prototype.writeDoubleBE = function writeDoubleBE(value, offset, noAssert) {\n  return writeDouble(this, value, offset, false, noAssert);\n}; // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)\n\n\nBuffer.prototype.copy = function copy(target, targetStart, start, end) {\n  if (!start) start = 0;\n  if (!end && end !== 0) end = this.length;\n  if (targetStart >= target.length) targetStart = target.length;\n  if (!targetStart) targetStart = 0;\n  if (end > 0 && end < start) end = start; // Copy 0 bytes; we're done\n\n  if (end === start) return 0;\n  if (target.length === 0 || this.length === 0) return 0; // Fatal error conditions\n\n  if (targetStart < 0) {\n    throw new RangeError('targetStart out of bounds');\n  }\n\n  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds');\n  if (end < 0) throw new RangeError('sourceEnd out of bounds'); // Are we oob?\n\n  if (end > this.length) end = this.length;\n\n  if (target.length - targetStart < end - start) {\n    end = target.length - targetStart + start;\n  }\n\n  var len = end - start;\n  var i;\n\n  if (this === target && start < targetStart && targetStart < end) {\n    // descending copy from end\n    for (i = len - 1; i >= 0; --i) {\n      target[i + targetStart] = this[i + start];\n    }\n  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {\n    // ascending copy from start\n    for (i = 0; i < len; ++i) {\n      target[i + targetStart] = this[i + start];\n    }\n  } else {\n    Uint8Array.prototype.set.call(target, this.subarray(start, start + len), targetStart);\n  }\n\n  return len;\n}; // Usage:\n//    buffer.fill(number[, offset[, end]])\n//    buffer.fill(buffer[, offset[, end]])\n//    buffer.fill(string[, offset[, end]][, encoding])\n\n\nBuffer.prototype.fill = function fill(val, start, end, encoding) {\n  // Handle string cases:\n  if (typeof val === 'string') {\n    if (typeof start === 'string') {\n      encoding = start;\n      start = 0;\n      end = this.length;\n    } else if (typeof end === 'string') {\n      encoding = end;\n      end = this.length;\n    }\n\n    if (val.length === 1) {\n      var code = val.charCodeAt(0);\n\n      if (code < 256) {\n        val = code;\n      }\n    }\n\n    if (encoding !== undefined && typeof encoding !== 'string') {\n      throw new TypeError('encoding must be a string');\n    }\n\n    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {\n      throw new TypeError('Unknown encoding: ' + encoding);\n    }\n  } else if (typeof val === 'number') {\n    val = val & 255;\n  } // Invalid ranges are not set to a default, so can range check early.\n\n\n  if (start < 0 || this.length < start || this.length < end) {\n    throw new RangeError('Out of range index');\n  }\n\n  if (end <= start) {\n    return this;\n  }\n\n  start = start >>> 0;\n  end = end === undefined ? this.length : end >>> 0;\n  if (!val) val = 0;\n  var i;\n\n  if (typeof val === 'number') {\n    for (i = start; i < end; ++i) {\n      this[i] = val;\n    }\n  } else {\n    var bytes = Buffer.isBuffer(val) ? val : utf8ToBytes(new Buffer(val, encoding).toString());\n    var len = bytes.length;\n\n    for (i = 0; i < end - start; ++i) {\n      this[i + start] = bytes[i % len];\n    }\n  }\n\n  return this;\n}; // HELPER FUNCTIONS\n// ================\n\n\nvar INVALID_BASE64_RE = /[^+\\/0-9A-Za-z-_]/g;\n\nfunction base64clean(str) {\n  // Node strips out invalid characters like \\n and \\t from the string, base64-js does not\n  str = stringtrim(str).replace(INVALID_BASE64_RE, ''); // Node converts strings with length < 2 to ''\n\n  if (str.length < 2) return ''; // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not\n\n  while (str.length % 4 !== 0) {\n    str = str + '=';\n  }\n\n  return str;\n}\n\nfunction stringtrim(str) {\n  if (str.trim) return str.trim();\n  return str.replace(/^\\s+|\\s+$/g, '');\n}\n\nfunction toHex(n) {\n  if (n < 16) return '0' + n.toString(16);\n  return n.toString(16);\n}\n\nfunction utf8ToBytes(string, units) {\n  units = units || Infinity;\n  var codePoint;\n  var length = string.length;\n  var leadSurrogate = null;\n  var bytes = [];\n\n  for (var i = 0; i < length; ++i) {\n    codePoint = string.charCodeAt(i); // is surrogate component\n\n    if (codePoint > 0xD7FF && codePoint < 0xE000) {\n      // last char was a lead\n      if (!leadSurrogate) {\n        // no lead yet\n        if (codePoint > 0xDBFF) {\n          // unexpected trail\n          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);\n          continue;\n        } else if (i + 1 === length) {\n          // unpaired lead\n          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);\n          continue;\n        } // valid lead\n\n\n        leadSurrogate = codePoint;\n        continue;\n      } // 2 leads in a row\n\n\n      if (codePoint < 0xDC00) {\n        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);\n        leadSurrogate = codePoint;\n        continue;\n      } // valid surrogate pair\n\n\n      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000;\n    } else if (leadSurrogate) {\n      // valid bmp char, but last char was a lead\n      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);\n    }\n\n    leadSurrogate = null; // encode utf8\n\n    if (codePoint < 0x80) {\n      if ((units -= 1) < 0) break;\n      bytes.push(codePoint);\n    } else if (codePoint < 0x800) {\n      if ((units -= 2) < 0) break;\n      bytes.push(codePoint >> 0x6 | 0xC0, codePoint & 0x3F | 0x80);\n    } else if (codePoint < 0x10000) {\n      if ((units -= 3) < 0) break;\n      bytes.push(codePoint >> 0xC | 0xE0, codePoint >> 0x6 & 0x3F | 0x80, codePoint & 0x3F | 0x80);\n    } else if (codePoint < 0x110000) {\n      if ((units -= 4) < 0) break;\n      bytes.push(codePoint >> 0x12 | 0xF0, codePoint >> 0xC & 0x3F | 0x80, codePoint >> 0x6 & 0x3F | 0x80, codePoint & 0x3F | 0x80);\n    } else {\n      throw new Error('Invalid code point');\n    }\n  }\n\n  return bytes;\n}\n\nfunction asciiToBytes(str) {\n  var byteArray = [];\n\n  for (var i = 0; i < str.length; ++i) {\n    // Node's code seems to be doing this and not & 0x7F..\n    byteArray.push(str.charCodeAt(i) & 0xFF);\n  }\n\n  return byteArray;\n}\n\nfunction utf16leToBytes(str, units) {\n  var c, hi, lo;\n  var byteArray = [];\n\n  for (var i = 0; i < str.length; ++i) {\n    if ((units -= 2) < 0) break;\n    c = str.charCodeAt(i);\n    hi = c >> 8;\n    lo = c % 256;\n    byteArray.push(lo);\n    byteArray.push(hi);\n  }\n\n  return byteArray;\n}\n\nfunction base64ToBytes(str) {\n  return base64.toByteArray(base64clean(str));\n}\n\nfunction blitBuffer(src, dst, offset, length) {\n  for (var i = 0; i < length; ++i) {\n    if (i + offset >= dst.length || i >= src.length) break;\n    dst[i + offset] = src[i];\n  }\n\n  return i;\n}\n\nfunction isnan(val) {\n  return val !== val; // eslint-disable-line no-self-compare\n}\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ \"./node_modules/webpack/buildin/global.js\")))\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/buffer/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/buffer/node_modules/isarray/index.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/buffer/node_modules/isarray/index.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("var toString = {}.toString;\n\nmodule.exports = Array.isArray || function (arr) {\n  return toString.call(arr) == '[object Array]';\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/buffer/node_modules/isarray/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/commander/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/commander/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("/* WEBPACK VAR INJECTION */(function(process, Buffer) {/**\n * Module dependencies.\n */\nconst EventEmitter = __webpack_require__(/*! events */ \"./node_modules/events/events.js\").EventEmitter;\n\nconst spawn = __webpack_require__(/*! child_process */ \"./node_modules/node-libs-browser/mock/empty.js\").spawn;\n\nconst path = __webpack_require__(/*! path */ \"./node_modules/path-browserify/index.js\");\n\nconst fs = __webpack_require__(/*! fs */ \"./node_modules/node-libs-browser/mock/empty.js\"); // @ts-check\n\n\nclass Option {\n  /**\n   * Initialize a new `Option` with the given `flags` and `description`.\n   *\n   * @param {string} flags\n   * @param {string} description\n   * @api public\n   */\n  constructor(flags, description) {\n    this.flags = flags;\n    this.required = flags.indexOf('<') >= 0; // A value must be supplied when the option is specified.\n\n    this.optional = flags.indexOf('[') >= 0; // A value is optional when the option is specified.\n\n    this.mandatory = false; // The option must have a value after parsing, which usually means it must be specified on command line.\n\n    this.negate = flags.indexOf('-no-') !== -1;\n    const flagParts = flags.split(/[ ,|]+/);\n    if (flagParts.length > 1 && !/^[[<]/.test(flagParts[1])) this.short = flagParts.shift();\n    this.long = flagParts.shift();\n    this.description = description || '';\n    this.defaultValue = undefined;\n  }\n  /**\n   * Return option name.\n   *\n   * @return {string}\n   * @api private\n   */\n\n\n  name() {\n    return this.long.replace(/^--/, '');\n  }\n\n  /**\n   * Return option name, in a camelcase format that can be used\n   * as a object attribute key.\n   *\n   * @return {string}\n   * @api private\n   */\n  attributeName() {\n    return camelcase(this.name().replace(/^no-/, ''));\n  }\n\n  /**\n   * Check if `arg` matches the short or long flag.\n   *\n   * @param {string} arg\n   * @return {boolean}\n   * @api private\n   */\n  is(arg) {\n    return this.short === arg || this.long === arg;\n  }\n\n}\n/**\n * CommanderError class\n * @class\n */\n\n\nclass CommanderError extends Error {\n  /**\n   * Constructs the CommanderError class\n   * @param {number} exitCode suggested exit code which could be used with process.exit\n   * @param {string} code an id string representing the error\n   * @param {string} message human-readable description of the error\n   * @constructor\n   */\n  constructor(exitCode, code, message) {\n    super(message); // properly capture stack trace in Node.js\n\n    Error.captureStackTrace(this, this.constructor);\n    this.name = this.constructor.name;\n    this.code = code;\n    this.exitCode = exitCode;\n    this.nestedError = undefined;\n  }\n\n}\n\nclass Command extends EventEmitter {\n  /**\n   * Initialize a new `Command`.\n   *\n   * @param {string} [name]\n   * @api public\n   */\n  constructor(name) {\n    super();\n    this.commands = [];\n    this.options = [];\n    this.parent = null;\n    this._allowUnknownOption = false;\n    this._args = [];\n    this.rawArgs = null;\n    this._scriptPath = null;\n    this._name = name || '';\n    this._optionValues = {};\n    this._storeOptionsAsProperties = true; // backwards compatible by default\n\n    this._passCommandToAction = true; // backwards compatible by default\n\n    this._actionResults = [];\n    this._actionHandler = null;\n    this._executableHandler = false;\n    this._executableFile = null; // custom name for executable\n\n    this._defaultCommandName = null;\n    this._exitCallback = null;\n    this._aliases = [];\n    this._hidden = false;\n    this._helpFlags = '-h, --help';\n    this._helpDescription = 'display help for command';\n    this._helpShortFlag = '-h';\n    this._helpLongFlag = '--help';\n    this._hasImplicitHelpCommand = undefined; // Deliberately undefined, not decided whether true or false\n\n    this._helpCommandName = 'help';\n    this._helpCommandnameAndArgs = 'help [command]';\n    this._helpCommandDescription = 'display help for command';\n  }\n  /**\n   * Define a command.\n   *\n   * There are two styles of command: pay attention to where to put the description.\n   *\n   * Examples:\n   *\n   *      // Command implemented using action handler (description is supplied separately to `.command`)\n   *      program\n   *        .command('clone <source> [destination]')\n   *        .description('clone a repository into a newly created directory')\n   *        .action((source, destination) => {\n   *          console.log('clone command called');\n   *        });\n   *\n   *      // Command implemented using separate executable file (description is second parameter to `.command`)\n   *      program\n   *        .command('start <service>', 'start named service')\n   *        .command('stop [service]', 'stop named service, or all if no name supplied');\n   *\n   * @param {string} nameAndArgs - command name and arguments, args are `<required>` or `[optional]` and last may also be `variadic...`\n   * @param {Object|string} [actionOptsOrExecDesc] - configuration options (for action), or description (for executable)\n   * @param {Object} [execOpts] - configuration options (for executable)\n   * @return {Command} returns new command for action handler, or `this` for executable command\n   * @api public\n   */\n\n\n  command(nameAndArgs, actionOptsOrExecDesc, execOpts) {\n    let desc = actionOptsOrExecDesc;\n    let opts = execOpts;\n\n    if (typeof desc === 'object' && desc !== null) {\n      opts = desc;\n      desc = null;\n    }\n\n    opts = opts || {};\n    const args = nameAndArgs.split(/ +/);\n    const cmd = this.createCommand(args.shift());\n\n    if (desc) {\n      cmd.description(desc);\n      cmd._executableHandler = true;\n    }\n\n    if (opts.isDefault) this._defaultCommandName = cmd._name;\n    cmd._hidden = !!(opts.noHelp || opts.hidden);\n    cmd._helpFlags = this._helpFlags;\n    cmd._helpDescription = this._helpDescription;\n    cmd._helpShortFlag = this._helpShortFlag;\n    cmd._helpLongFlag = this._helpLongFlag;\n    cmd._helpCommandName = this._helpCommandName;\n    cmd._helpCommandnameAndArgs = this._helpCommandnameAndArgs;\n    cmd._helpCommandDescription = this._helpCommandDescription;\n    cmd._exitCallback = this._exitCallback;\n    cmd._storeOptionsAsProperties = this._storeOptionsAsProperties;\n    cmd._passCommandToAction = this._passCommandToAction;\n    cmd._executableFile = opts.executableFile || null; // Custom name for executable file, set missing to null to match constructor\n\n    this.commands.push(cmd);\n\n    cmd._parseExpectedArgs(args);\n\n    cmd.parent = this;\n    if (desc) return this;\n    return cmd;\n  }\n\n  /**\n   * Factory routine to create a new unattached command.\n   *\n   * See .command() for creating an attached subcommand, which uses this routine to\n   * create the command. You can override createCommand to customise subcommands.\n   *\n   * @param {string} [name]\n   * @return {Command} new command\n   * @api public\n   */\n  createCommand(name) {\n    return new Command(name);\n  }\n\n  /**\n   * Add a prepared subcommand.\n   *\n   * See .command() for creating an attached subcommand which inherits settings from its parent.\n   *\n   * @param {Command} cmd - new subcommand\n   * @param {Object} [opts] - configuration options\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  addCommand(cmd, opts) {\n    if (!cmd._name) throw new Error('Command passed to .addCommand() must have a name'); // To keep things simple, block automatic name generation for deeply nested executables.\n    // Fail fast and detect when adding rather than later when parsing.\n\n    function checkExplicitNames(commandArray) {\n      commandArray.forEach(cmd => {\n        if (cmd._executableHandler && !cmd._executableFile) {\n          throw new Error(`Must specify executableFile for deeply nested executable: ${cmd.name()}`);\n        }\n\n        checkExplicitNames(cmd.commands);\n      });\n    }\n\n    checkExplicitNames(cmd.commands);\n    opts = opts || {};\n    if (opts.isDefault) this._defaultCommandName = cmd._name;\n    if (opts.noHelp || opts.hidden) cmd._hidden = true; // modifying passed command due to existing implementation\n\n    this.commands.push(cmd);\n    cmd.parent = this;\n    return this;\n  }\n\n  /**\n   * Define argument syntax for the command.\n   *\n   * @api public\n   */\n  arguments(desc) {\n    return this._parseExpectedArgs(desc.split(/ +/));\n  }\n\n  /**\n   * Override default decision whether to add implicit help command.\n   *\n   *    addHelpCommand() // force on\n   *    addHelpCommand(false); // force off\n   *    addHelpCommand('help [cmd]', 'display help for [cmd]'); // force on with custom detais\n   *\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  addHelpCommand(enableOrNameAndArgs, description) {\n    if (enableOrNameAndArgs === false) {\n      this._hasImplicitHelpCommand = false;\n    } else {\n      this._hasImplicitHelpCommand = true;\n\n      if (typeof enableOrNameAndArgs === 'string') {\n        this._helpCommandName = enableOrNameAndArgs.split(' ')[0];\n        this._helpCommandnameAndArgs = enableOrNameAndArgs;\n      }\n\n      this._helpCommandDescription = description || this._helpCommandDescription;\n    }\n\n    return this;\n  }\n\n  /**\n   * @return {boolean}\n   * @api private\n   */\n  _lazyHasImplicitHelpCommand() {\n    if (this._hasImplicitHelpCommand === undefined) {\n      this._hasImplicitHelpCommand = this.commands.length && !this._actionHandler && !this._findCommand('help');\n    }\n\n    return this._hasImplicitHelpCommand;\n  }\n\n  /**\n   * Parse expected `args`.\n   *\n   * For example `[\"[type]\"]` becomes `[{ required: false, name: 'type' }]`.\n   *\n   * @param {Array} args\n   * @return {Command} `this` command for chaining\n   * @api private\n   */\n  _parseExpectedArgs(args) {\n    if (!args.length) return;\n    args.forEach(arg => {\n      const argDetails = {\n        required: false,\n        name: '',\n        variadic: false\n      };\n\n      switch (arg[0]) {\n        case '<':\n          argDetails.required = true;\n          argDetails.name = arg.slice(1, -1);\n          break;\n\n        case '[':\n          argDetails.name = arg.slice(1, -1);\n          break;\n      }\n\n      if (argDetails.name.length > 3 && argDetails.name.slice(-3) === '...') {\n        argDetails.variadic = true;\n        argDetails.name = argDetails.name.slice(0, -3);\n      }\n\n      if (argDetails.name) {\n        this._args.push(argDetails);\n      }\n    });\n\n    this._args.forEach((arg, i) => {\n      if (arg.variadic && i < this._args.length - 1) {\n        throw new Error(`only the last argument can be variadic '${arg.name}'`);\n      }\n    });\n\n    return this;\n  }\n\n  /**\n   * Register callback to use as replacement for calling process.exit.\n   *\n   * @param {Function} [fn] optional callback which will be passed a CommanderError, defaults to throwing\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  exitOverride(fn) {\n    if (fn) {\n      this._exitCallback = fn;\n    } else {\n      this._exitCallback = err => {\n        if (err.code !== 'commander.executeSubCommandAsync') {\n          throw err;\n        } else {// Async callback from spawn events, not useful to throw.\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * Call process.exit, and _exitCallback if defined.\n   *\n   * @param {number} exitCode exit code for using with process.exit\n   * @param {string} code an id string representing the error\n   * @param {string} message human-readable description of the error\n   * @return never\n   * @api private\n   */\n  _exit(exitCode, code, message) {\n    if (this._exitCallback) {\n      this._exitCallback(new CommanderError(exitCode, code, message)); // Expecting this line is not reached.\n\n    }\n\n    process.exit(exitCode);\n  }\n\n  /**\n   * Register callback `fn` for the command.\n   *\n   * Examples:\n   *\n   *      program\n   *        .command('help')\n   *        .description('display verbose help')\n   *        .action(function() {\n   *           // output help here\n   *        });\n   *\n   * @param {Function} fn\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  action(fn) {\n    const listener = args => {\n      // The .action callback takes an extra parameter which is the command or options.\n      const expectedArgsCount = this._args.length;\n      const actionArgs = args.slice(0, expectedArgsCount);\n\n      if (this._passCommandToAction) {\n        actionArgs[expectedArgsCount] = this;\n      } else {\n        actionArgs[expectedArgsCount] = this.opts();\n      } // Add the extra arguments so available too.\n\n\n      if (args.length > expectedArgsCount) {\n        actionArgs.push(args.slice(expectedArgsCount));\n      }\n\n      const actionResult = fn.apply(this, actionArgs); // Remember result in case it is async. Assume parseAsync getting called on root.\n\n      let rootCommand = this;\n\n      while (rootCommand.parent) {\n        rootCommand = rootCommand.parent;\n      }\n\n      rootCommand._actionResults.push(actionResult);\n    };\n\n    this._actionHandler = listener;\n    return this;\n  }\n\n  /**\n   * Internal implementation shared by .option() and .requiredOption()\n   *\n   * @param {Object} config\n   * @param {string} flags\n   * @param {string} description\n   * @param {Function|*} [fn] - custom option processing function or default vaue\n   * @param {*} [defaultValue]\n   * @return {Command} `this` command for chaining\n   * @api private\n   */\n  _optionEx(config, flags, description, fn, defaultValue) {\n    const option = new Option(flags, description);\n    const oname = option.name();\n    const name = option.attributeName();\n    option.mandatory = !!config.mandatory; // default as 3rd arg\n\n    if (typeof fn !== 'function') {\n      if (fn instanceof RegExp) {\n        // This is a bit simplistic (especially no error messages), and probably better handled by caller using custom option processing.\n        // No longer documented in README, but still present for backwards compatibility.\n        const regex = fn;\n\n        fn = (val, def) => {\n          const m = regex.exec(val);\n          return m ? m[0] : def;\n        };\n      } else {\n        defaultValue = fn;\n        fn = null;\n      }\n    } // preassign default value for --no-*, [optional], <required>, or plain flag if boolean value\n\n\n    if (option.negate || option.optional || option.required || typeof defaultValue === 'boolean') {\n      // when --no-foo we make sure default is true, unless a --foo option is already defined\n      if (option.negate) {\n        const positiveLongFlag = option.long.replace(/^--no-/, '--');\n        defaultValue = this._findOption(positiveLongFlag) ? this._getOptionValue(name) : true;\n      } // preassign only if we have a default\n\n\n      if (defaultValue !== undefined) {\n        this._setOptionValue(name, defaultValue);\n\n        option.defaultValue = defaultValue;\n      }\n    } // register the option\n\n\n    this.options.push(option); // when it's passed assign the value\n    // and conditionally invoke the callback\n\n    this.on('option:' + oname, val => {\n      // coercion\n      if (val !== null && fn) {\n        val = fn(val, this._getOptionValue(name) === undefined ? defaultValue : this._getOptionValue(name));\n      } // unassigned or boolean value\n\n\n      if (typeof this._getOptionValue(name) === 'boolean' || typeof this._getOptionValue(name) === 'undefined') {\n        // if no value, negate false, and we have a default, then use it!\n        if (val == null) {\n          this._setOptionValue(name, option.negate ? false : defaultValue || true);\n        } else {\n          this._setOptionValue(name, val);\n        }\n      } else if (val !== null) {\n        // reassign\n        this._setOptionValue(name, option.negate ? false : val);\n      }\n    });\n    return this;\n  }\n\n  /**\n   * Define option with `flags`, `description` and optional\n   * coercion `fn`.\n   *\n   * The `flags` string should contain both the short and long flags,\n   * separated by comma, a pipe or space. The following are all valid\n   * all will output this way when `--help` is used.\n   *\n   *    \"-p, --pepper\"\n   *    \"-p|--pepper\"\n   *    \"-p --pepper\"\n   *\n   * Examples:\n   *\n   *     // simple boolean defaulting to undefined\n   *     program.option('-p, --pepper', 'add pepper');\n   *\n   *     program.pepper\n   *     // => undefined\n   *\n   *     --pepper\n   *     program.pepper\n   *     // => true\n   *\n   *     // simple boolean defaulting to true (unless non-negated option is also defined)\n   *     program.option('-C, --no-cheese', 'remove cheese');\n   *\n   *     program.cheese\n   *     // => true\n   *\n   *     --no-cheese\n   *     program.cheese\n   *     // => false\n   *\n   *     // required argument\n   *     program.option('-C, --chdir <path>', 'change the working directory');\n   *\n   *     --chdir /tmp\n   *     program.chdir\n   *     // => \"/tmp\"\n   *\n   *     // optional argument\n   *     program.option('-c, --cheese [type]', 'add cheese [marble]');\n   *\n   * @param {string} flags\n   * @param {string} description\n   * @param {Function|*} [fn] - custom option processing function or default vaue\n   * @param {*} [defaultValue]\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  option(flags, description, fn, defaultValue) {\n    return this._optionEx({}, flags, description, fn, defaultValue);\n  }\n\n  /*\n  * Add a required option which must have a value after parsing. This usually means\n  * the option must be specified on the command line. (Otherwise the same as .option().)\n  *\n  * The `flags` string should contain both the short and long flags, separated by comma, a pipe or space.\n  *\n  * @param {string} flags\n  * @param {string} description\n  * @param {Function|*} [fn] - custom option processing function or default vaue\n  * @param {*} [defaultValue]\n  * @return {Command} `this` command for chaining\n  * @api public\n  */\n  requiredOption(flags, description, fn, defaultValue) {\n    return this._optionEx({\n      mandatory: true\n    }, flags, description, fn, defaultValue);\n  }\n\n  /**\n   * Allow unknown options on the command line.\n   *\n   * @param {Boolean} [arg] - if `true` or omitted, no error will be thrown\n   * for unknown options.\n   * @api public\n   */\n  allowUnknownOption(arg) {\n    this._allowUnknownOption = arg === undefined || arg;\n    return this;\n  }\n\n  /**\n    * Whether to store option values as properties on command object,\n    * or store separately (specify false). In both cases the option values can be accessed using .opts().\n    *\n    * @param {boolean} value\n    * @return {Command} `this` command for chaining\n    * @api public\n    */\n  storeOptionsAsProperties(value) {\n    this._storeOptionsAsProperties = value === undefined || value;\n\n    if (this.options.length) {\n      throw new Error('call .storeOptionsAsProperties() before adding options');\n    }\n\n    return this;\n  }\n\n  /**\n    * Whether to pass command to action handler,\n    * or just the options (specify false).\n    *\n    * @param {boolean} value\n    * @return {Command} `this` command for chaining\n    * @api public\n    */\n  passCommandToAction(value) {\n    this._passCommandToAction = value === undefined || value;\n    return this;\n  }\n\n  /**\n   * Store option value\n   *\n   * @param {string} key\n   * @param {Object} value\n   * @api private\n   */\n  _setOptionValue(key, value) {\n    if (this._storeOptionsAsProperties) {\n      this[key] = value;\n    } else {\n      this._optionValues[key] = value;\n    }\n  }\n\n  /**\n   * Retrieve option value\n   *\n   * @param {string} key\n   * @return {Object} value\n   * @api private\n   */\n  _getOptionValue(key) {\n    if (this._storeOptionsAsProperties) {\n      return this[key];\n    }\n\n    return this._optionValues[key];\n  }\n\n  /**\n   * Parse `argv`, setting options and invoking commands when defined.\n   *\n   * The default expectation is that the arguments are from node and have the application as argv[0]\n   * and the script being run in argv[1], with user parameters after that.\n   *\n   * Examples:\n   *\n   *      program.parse(process.argv);\n   *      program.parse(); // implicitly use process.argv and auto-detect node vs electron conventions\n   *      program.parse(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]\n   *\n   * @param {string[]} [argv] - optional, defaults to process.argv\n   * @param {Object} [parseOptions] - optionally specify style of options with from: node/user/electron\n   * @param {string} [parseOptions.from] - where the args are from: 'node', 'user', 'electron'\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  parse(argv, parseOptions) {\n    if (argv !== undefined && !Array.isArray(argv)) {\n      throw new Error('first parameter to parse must be array or undefined');\n    }\n\n    parseOptions = parseOptions || {}; // Default to using process.argv\n\n    if (argv === undefined) {\n      argv = process.argv; // @ts-ignore\n\n      if (process.versions && process.versions.electron) {\n        parseOptions.from = 'electron';\n      }\n    }\n\n    this.rawArgs = argv.slice(); // make it a little easier for callers by supporting various argv conventions\n\n    let userArgs;\n\n    switch (parseOptions.from) {\n      case undefined:\n      case 'node':\n        this._scriptPath = argv[1];\n        userArgs = argv.slice(2);\n        break;\n\n      case 'electron':\n        // @ts-ignore\n        if (process.defaultApp) {\n          this._scriptPath = argv[1];\n          userArgs = argv.slice(2);\n        } else {\n          userArgs = argv.slice(1);\n        }\n\n        break;\n\n      case 'user':\n        userArgs = argv.slice(0);\n        break;\n\n      default:\n        throw new Error(`unexpected parse option { from: '${parseOptions.from}' }`);\n    }\n\n    if (!this._scriptPath && process.mainModule) {\n      this._scriptPath = process.mainModule.filename;\n    } // Guess name, used in usage in help.\n\n\n    this._name = this._name || this._scriptPath && path.basename(this._scriptPath, path.extname(this._scriptPath)); // Let's go!\n\n    this._parseCommand([], userArgs);\n\n    return this;\n  }\n\n  /**\n   * Parse `argv`, setting options and invoking commands when defined.\n   *\n   * Use parseAsync instead of parse if any of your action handlers are async. Returns a Promise.\n   *\n   * The default expectation is that the arguments are from node and have the application as argv[0]\n   * and the script being run in argv[1], with user parameters after that.\n   *\n   * Examples:\n   *\n   *      program.parseAsync(process.argv);\n   *      program.parseAsync(); // implicitly use process.argv and auto-detect node vs electron conventions\n   *      program.parseAsync(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]\n   *\n   * @param {string[]} [argv]\n   * @param {Object} [parseOptions]\n   * @param {string} parseOptions.from - where the args are from: 'node', 'user', 'electron'\n   * @return {Promise}\n   * @api public\n   */\n  parseAsync(argv, parseOptions) {\n    this.parse(argv, parseOptions);\n    return Promise.all(this._actionResults).then(() => this);\n  }\n\n  /**\n   * Execute a sub-command executable.\n   *\n   * @api private\n   */\n  _executeSubCommand(subcommand, args) {\n    args = args.slice();\n    let launchWithNode = false; // Use node for source targets so do not need to get permissions correct, and on Windows.\n\n    const sourceExt = ['.js', '.ts', '.mjs']; // Not checking for help first. Unlikely to have mandatory and executable, and can't robustly test for help flags in external command.\n\n    this._checkForMissingMandatoryOptions(); // Want the entry script as the reference for command name and directory for searching for other files.\n\n\n    const scriptPath = this._scriptPath;\n    let baseDir;\n\n    try {\n      const resolvedLink = fs.realpathSync(scriptPath);\n      baseDir = path.dirname(resolvedLink);\n    } catch (e) {\n      baseDir = '.'; // dummy, probably not going to find executable!\n    } // name of the subcommand, like `pm-install`\n\n\n    let bin = path.basename(scriptPath, path.extname(scriptPath)) + '-' + subcommand._name;\n\n    if (subcommand._executableFile) {\n      bin = subcommand._executableFile;\n    }\n\n    const localBin = path.join(baseDir, bin);\n\n    if (fs.existsSync(localBin)) {\n      // prefer local `./<bin>` to bin in the $PATH\n      bin = localBin;\n    } else {\n      // Look for source files.\n      sourceExt.forEach(ext => {\n        if (fs.existsSync(`${localBin}${ext}`)) {\n          bin = `${localBin}${ext}`;\n        }\n      });\n    }\n\n    launchWithNode = sourceExt.includes(path.extname(bin));\n    let proc;\n\n    if (process.platform !== 'win32') {\n      if (launchWithNode) {\n        args.unshift(bin); // add executable arguments to spawn\n\n        args = incrementNodeInspectorPort(process.execArgv).concat(args);\n        proc = spawn(process.argv[0], args, {\n          stdio: 'inherit'\n        });\n      } else {\n        proc = spawn(bin, args, {\n          stdio: 'inherit'\n        });\n      }\n    } else {\n      args.unshift(bin); // add executable arguments to spawn\n\n      args = incrementNodeInspectorPort(process.execArgv).concat(args);\n      proc = spawn(process.execPath, args, {\n        stdio: 'inherit'\n      });\n    }\n\n    const signals = ['SIGUSR1', 'SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'];\n    signals.forEach(signal => {\n      // @ts-ignore\n      process.on(signal, () => {\n        if (proc.killed === false && proc.exitCode === null) {\n          proc.kill(signal);\n        }\n      });\n    }); // By default terminate process when spawned process terminates.\n    // Suppressing the exit if exitCallback defined is a bit messy and of limited use, but does allow process to stay running!\n\n    const exitCallback = this._exitCallback;\n\n    if (!exitCallback) {\n      proc.on('close', process.exit.bind(process));\n    } else {\n      proc.on('close', () => {\n        exitCallback(new CommanderError(process.exitCode || 0, 'commander.executeSubCommandAsync', '(close)'));\n      });\n    }\n\n    proc.on('error', err => {\n      // @ts-ignore\n      if (err.code === 'ENOENT') {\n        const executableMissing = `'${bin}' does not exist\n - if '${subcommand._name}' is not meant to be an executable command, remove description parameter from '.command()' and use '.description()' instead\n - if the default executable name is not suitable, use the executableFile option to supply a custom name`;\n        throw new Error(executableMissing); // @ts-ignore\n      } else if (err.code === 'EACCES') {\n        throw new Error(`'${bin}' not executable`);\n      }\n\n      if (!exitCallback) {\n        process.exit(1);\n      } else {\n        const wrappedError = new CommanderError(1, 'commander.executeSubCommandAsync', '(error)');\n        wrappedError.nestedError = err;\n        exitCallback(wrappedError);\n      }\n    }); // Store the reference to the child process\n\n    this.runningCommand = proc;\n  }\n\n  /**\n   * @api private\n   */\n  _dispatchSubcommand(commandName, operands, unknown) {\n    const subCommand = this._findCommand(commandName);\n\n    if (!subCommand) this._helpAndError();\n\n    if (subCommand._executableHandler) {\n      this._executeSubCommand(subCommand, operands.concat(unknown));\n    } else {\n      subCommand._parseCommand(operands, unknown);\n    }\n  }\n\n  /**\n   * Process arguments in context of this command.\n   *\n   * @api private\n   */\n  _parseCommand(operands, unknown) {\n    const parsed = this.parseOptions(unknown);\n    operands = operands.concat(parsed.operands);\n    unknown = parsed.unknown;\n    this.args = operands.concat(unknown);\n\n    if (operands && this._findCommand(operands[0])) {\n      this._dispatchSubcommand(operands[0], operands.slice(1), unknown);\n    } else if (this._lazyHasImplicitHelpCommand() && operands[0] === this._helpCommandName) {\n      if (operands.length === 1) {\n        this.help();\n      } else {\n        this._dispatchSubcommand(operands[1], [], [this._helpLongFlag]);\n      }\n    } else if (this._defaultCommandName) {\n      outputHelpIfRequested(this, unknown); // Run the help for default command from parent rather than passing to default command\n\n      this._dispatchSubcommand(this._defaultCommandName, operands, unknown);\n    } else {\n      if (this.commands.length && this.args.length === 0 && !this._actionHandler && !this._defaultCommandName) {\n        // probaby missing subcommand and no handler, user needs help\n        this._helpAndError();\n      }\n\n      outputHelpIfRequested(this, parsed.unknown);\n\n      this._checkForMissingMandatoryOptions();\n\n      if (parsed.unknown.length > 0) {\n        this.unknownOption(parsed.unknown[0]);\n      }\n\n      if (this._actionHandler) {\n        const args = this.args.slice();\n\n        this._args.forEach((arg, i) => {\n          if (arg.required && args[i] == null) {\n            this.missingArgument(arg.name);\n          } else if (arg.variadic) {\n            args[i] = args.splice(i);\n          }\n        });\n\n        this._actionHandler(args);\n\n        this.emit('command:' + this.name(), operands, unknown);\n      } else if (operands.length) {\n        if (this._findCommand('*')) {\n          this._dispatchSubcommand('*', operands, unknown);\n        } else if (this.listenerCount('command:*')) {\n          this.emit('command:*', operands, unknown);\n        } else if (this.commands.length) {\n          this.unknownCommand();\n        }\n      } else if (this.commands.length) {\n        // This command has subcommands and nothing hooked up at this level, so display help.\n        this._helpAndError();\n      } else {// fall through for caller to handle after calling .parse()\n      }\n    }\n  }\n\n  /**\n   * Find matching command.\n   *\n   * @api private\n   */\n  _findCommand(name) {\n    if (!name) return undefined;\n    return this.commands.find(cmd => cmd._name === name || cmd._aliases.includes(name));\n  }\n\n  /**\n   * Return an option matching `arg` if any.\n   *\n   * @param {string} arg\n   * @return {Option}\n   * @api private\n   */\n  _findOption(arg) {\n    return this.options.find(option => option.is(arg));\n  }\n\n  /**\n   * Display an error message if a mandatory option does not have a value.\n   * Lazy calling after checking for help flags from leaf subcommand.\n   *\n   * @api private\n   */\n  _checkForMissingMandatoryOptions() {\n    // Walk up hierarchy so can call in subcommand after checking for displaying help.\n    for (let cmd = this; cmd; cmd = cmd.parent) {\n      cmd.options.forEach(anOption => {\n        if (anOption.mandatory && cmd._getOptionValue(anOption.attributeName()) === undefined) {\n          cmd.missingMandatoryOptionValue(anOption);\n        }\n      });\n    }\n  }\n\n  /**\n   * Parse options from `argv` removing known options,\n   * and return argv split into operands and unknown arguments.\n   *\n   * Examples:\n   *\n   *    argv => operands, unknown\n   *    --known kkk op => [op], []\n   *    op --known kkk => [op], []\n   *    sub --unknown uuu op => [sub], [--unknown uuu op]\n   *    sub -- --unknown uuu op => [sub --unknown uuu op], []\n   *\n   * @param {String[]} argv\n   * @return {{operands: String[], unknown: String[]}}\n   * @api public\n   */\n  parseOptions(argv) {\n    const operands = []; // operands, not options or values\n\n    const unknown = []; // first unknown option and remaining unknown args\n\n    let dest = operands;\n    const args = argv.slice();\n\n    function maybeOption(arg) {\n      return arg.length > 1 && arg[0] === '-';\n    } // parse options\n\n\n    while (args.length) {\n      const arg = args.shift(); // literal\n\n      if (arg === '--') {\n        if (dest === unknown) dest.push(arg);\n        dest.push(...args);\n        break;\n      }\n\n      if (maybeOption(arg)) {\n        const option = this._findOption(arg); // recognised option, call listener to assign value with possible custom processing\n\n\n        if (option) {\n          if (option.required) {\n            const value = args.shift();\n            if (value === undefined) this.optionMissingArgument(option);\n            this.emit(`option:${option.name()}`, value);\n          } else if (option.optional) {\n            let value = null; // historical behaviour is optional value is following arg unless an option\n\n            if (args.length > 0 && !maybeOption(args[0])) {\n              value = args.shift();\n            }\n\n            this.emit(`option:${option.name()}`, value);\n          } else {\n            // boolean flag\n            this.emit(`option:${option.name()}`);\n          }\n\n          continue;\n        }\n      } // Look for combo options following single dash, eat first one if known.\n\n\n      if (arg.length > 2 && arg[0] === '-' && arg[1] !== '-') {\n        const option = this._findOption(`-${arg[1]}`);\n\n        if (option) {\n          if (option.required || option.optional) {\n            // option with value following in same argument\n            this.emit(`option:${option.name()}`, arg.slice(2));\n          } else {\n            // boolean option, emit and put back remainder of arg for further processing\n            this.emit(`option:${option.name()}`);\n            args.unshift(`-${arg.slice(2)}`);\n          }\n\n          continue;\n        }\n      } // Look for known long flag with value, like --foo=bar\n\n\n      if (/^--[^=]+=/.test(arg)) {\n        const index = arg.indexOf('=');\n\n        const option = this._findOption(arg.slice(0, index));\n\n        if (option && (option.required || option.optional)) {\n          this.emit(`option:${option.name()}`, arg.slice(index + 1));\n          continue;\n        }\n      } // looks like an option but unknown, unknowns from here\n\n\n      if (arg.length > 1 && arg[0] === '-') {\n        dest = unknown;\n      } // add arg\n\n\n      dest.push(arg);\n    }\n\n    return {\n      operands,\n      unknown\n    };\n  }\n\n  /**\n   * Return an object containing options as key-value pairs\n   *\n   * @return {Object}\n   * @api public\n   */\n  opts() {\n    if (this._storeOptionsAsProperties) {\n      // Preserve original behaviour so backwards compatible when still using properties\n      const result = {};\n      const len = this.options.length;\n\n      for (let i = 0; i < len; i++) {\n        const key = this.options[i].attributeName();\n        result[key] = key === this._versionOptionName ? this._version : this[key];\n      }\n\n      return result;\n    }\n\n    return this._optionValues;\n  }\n\n  /**\n   * Argument `name` is missing.\n   *\n   * @param {string} name\n   * @api private\n   */\n  missingArgument(name) {\n    const message = `error: missing required argument '${name}'`;\n    console.error(message);\n\n    this._exit(1, 'commander.missingArgument', message);\n  }\n\n  /**\n   * `Option` is missing an argument, but received `flag` or nothing.\n   *\n   * @param {Option} option\n   * @param {string} [flag]\n   * @api private\n   */\n  optionMissingArgument(option, flag) {\n    let message;\n\n    if (flag) {\n      message = `error: option '${option.flags}' argument missing, got '${flag}'`;\n    } else {\n      message = `error: option '${option.flags}' argument missing`;\n    }\n\n    console.error(message);\n\n    this._exit(1, 'commander.optionMissingArgument', message);\n  }\n\n  /**\n   * `Option` does not have a value, and is a mandatory option.\n   *\n   * @param {Option} option\n   * @api private\n   */\n  missingMandatoryOptionValue(option) {\n    const message = `error: required option '${option.flags}' not specified`;\n    console.error(message);\n\n    this._exit(1, 'commander.missingMandatoryOptionValue', message);\n  }\n\n  /**\n   * Unknown option `flag`.\n   *\n   * @param {string} flag\n   * @api private\n   */\n  unknownOption(flag) {\n    if (this._allowUnknownOption) return;\n    const message = `error: unknown option '${flag}'`;\n    console.error(message);\n\n    this._exit(1, 'commander.unknownOption', message);\n  }\n\n  /**\n   * Unknown command.\n   *\n   * @api private\n   */\n  unknownCommand() {\n    const partCommands = [this.name()];\n\n    for (let parentCmd = this.parent; parentCmd; parentCmd = parentCmd.parent) {\n      partCommands.unshift(parentCmd.name());\n    }\n\n    const fullCommand = partCommands.join(' ');\n    const message = `error: unknown command '${this.args[0]}'. See '${fullCommand} ${this._helpLongFlag}'.`;\n    console.error(message);\n\n    this._exit(1, 'commander.unknownCommand', message);\n  }\n\n  /**\n   * Set the program version to `str`.\n   *\n   * This method auto-registers the \"-V, --version\" flag\n   * which will print the version number when passed.\n   *\n   * You can optionally supply the  flags and description to override the defaults.\n   *\n   * @param {string} str\n   * @param {string} [flags]\n   * @param {string} [description]\n   * @return {this | string} `this` command for chaining, or version string if no arguments\n   * @api public\n   */\n  version(str, flags, description) {\n    if (str === undefined) return this._version;\n    this._version = str;\n    flags = flags || '-V, --version';\n    description = description || 'output the version number';\n    const versionOption = new Option(flags, description);\n    this._versionOptionName = versionOption.long.substr(2) || 'version';\n    this.options.push(versionOption);\n    this.on('option:' + this._versionOptionName, () => {\n      process.stdout.write(str + '\\n');\n\n      this._exit(0, 'commander.version', str);\n    });\n    return this;\n  }\n\n  /**\n   * Set the description to `str`.\n   *\n   * @param {string} str\n   * @param {Object} [argsDescription]\n   * @return {string|Command}\n   * @api public\n   */\n  description(str, argsDescription) {\n    if (str === undefined && argsDescription === undefined) return this._description;\n    this._description = str;\n    this._argsDescription = argsDescription;\n    return this;\n  }\n\n  /**\n   * Set an alias for the command.\n   *\n   * You may call more than once to add multiple aliases. Only the first alias is shown in the auto-generated help.\n   *\n   * @param {string} [alias]\n   * @return {string|Command}\n   * @api public\n   */\n  alias(alias) {\n    if (alias === undefined) return this._aliases[0]; // just return first, for backwards compatibility\n\n    let command = this;\n\n    if (this.commands.length !== 0 && this.commands[this.commands.length - 1]._executableHandler) {\n      // assume adding alias for last added executable subcommand, rather than this\n      command = this.commands[this.commands.length - 1];\n    }\n\n    if (alias === command._name) throw new Error('Command alias can\\'t be the same as its name');\n\n    command._aliases.push(alias);\n\n    return this;\n  }\n\n  /**\n   * Set aliases for the command.\n   *\n   * Only the first alias is shown in the auto-generated help.\n   *\n   * @param {string[]} [aliases]\n   * @return {string[]|Command}\n   * @api public\n   */\n  aliases(aliases) {\n    // Getter for the array of aliases is the main reason for having aliases() in addition to alias().\n    if (aliases === undefined) return this._aliases;\n    aliases.forEach(alias => this.alias(alias));\n    return this;\n  }\n\n  /**\n   * Set / get the command usage `str`.\n   *\n   * @param {string} [str]\n   * @return {String|Command}\n   * @api public\n   */\n  usage(str) {\n    if (str === undefined) {\n      if (this._usage) return this._usage;\n\n      const args = this._args.map(arg => {\n        return humanReadableArgName(arg);\n      });\n\n      return '[options]' + (this.commands.length ? ' [command]' : '') + (this._args.length ? ' ' + args.join(' ') : '');\n    }\n\n    this._usage = str;\n    return this;\n  }\n\n  /**\n   * Get or set the name of the command\n   *\n   * @param {string} [str]\n   * @return {String|Command}\n   * @api public\n   */\n  name(str) {\n    if (str === undefined) return this._name;\n    this._name = str;\n    return this;\n  }\n\n  /**\n   * Return prepared commands.\n   *\n   * @return {Array}\n   * @api private\n   */\n  prepareCommands() {\n    const commandDetails = this.commands.filter(cmd => {\n      return !cmd._hidden;\n    }).map(cmd => {\n      const args = cmd._args.map(arg => {\n        return humanReadableArgName(arg);\n      }).join(' ');\n\n      return [cmd._name + (cmd._aliases[0] ? '|' + cmd._aliases[0] : '') + (cmd.options.length ? ' [options]' : '') + (args ? ' ' + args : ''), cmd._description];\n    });\n\n    if (this._lazyHasImplicitHelpCommand()) {\n      commandDetails.push([this._helpCommandnameAndArgs, this._helpCommandDescription]);\n    }\n\n    return commandDetails;\n  }\n\n  /**\n   * Return the largest command length.\n   *\n   * @return {number}\n   * @api private\n   */\n  largestCommandLength() {\n    const commands = this.prepareCommands();\n    return commands.reduce((max, command) => {\n      return Math.max(max, command[0].length);\n    }, 0);\n  }\n\n  /**\n   * Return the largest option length.\n   *\n   * @return {number}\n   * @api private\n   */\n  largestOptionLength() {\n    const options = [].slice.call(this.options);\n    options.push({\n      flags: this._helpFlags\n    });\n    return options.reduce((max, option) => {\n      return Math.max(max, option.flags.length);\n    }, 0);\n  }\n\n  /**\n   * Return the largest arg length.\n   *\n   * @return {number}\n   * @api private\n   */\n  largestArgLength() {\n    return this._args.reduce((max, arg) => {\n      return Math.max(max, arg.name.length);\n    }, 0);\n  }\n\n  /**\n   * Return the pad width.\n   *\n   * @return {number}\n   * @api private\n   */\n  padWidth() {\n    let width = this.largestOptionLength();\n\n    if (this._argsDescription && this._args.length) {\n      if (this.largestArgLength() > width) {\n        width = this.largestArgLength();\n      }\n    }\n\n    if (this.commands && this.commands.length) {\n      if (this.largestCommandLength() > width) {\n        width = this.largestCommandLength();\n      }\n    }\n\n    return width;\n  }\n\n  /**\n   * Return help for options.\n   *\n   * @return {string}\n   * @api private\n   */\n  optionHelp() {\n    const width = this.padWidth();\n    const columns = 80 || false;\n    const descriptionWidth = columns - width - 4;\n\n    function padOptionDetails(flags, description) {\n      return pad(flags, width) + '  ' + optionalWrap(description, descriptionWidth, width + 2);\n    }\n\n    ; // Explicit options (including version)\n\n    const help = this.options.map(option => {\n      const fullDesc = option.description + (!option.negate && option.defaultValue !== undefined ? ' (default: ' + JSON.stringify(option.defaultValue) + ')' : '');\n      return padOptionDetails(option.flags, fullDesc);\n    }); // Implicit help\n\n    const showShortHelpFlag = this._helpShortFlag && !this._findOption(this._helpShortFlag);\n    const showLongHelpFlag = !this._findOption(this._helpLongFlag);\n\n    if (showShortHelpFlag || showLongHelpFlag) {\n      let helpFlags = this._helpFlags;\n\n      if (!showShortHelpFlag) {\n        helpFlags = this._helpLongFlag;\n      } else if (!showLongHelpFlag) {\n        helpFlags = this._helpShortFlag;\n      }\n\n      help.push(padOptionDetails(helpFlags, this._helpDescription));\n    }\n\n    return help.join('\\n');\n  }\n\n  /**\n   * Return command help documentation.\n   *\n   * @return {string}\n   * @api private\n   */\n  commandHelp() {\n    if (!this.commands.length && !this._lazyHasImplicitHelpCommand()) return '';\n    const commands = this.prepareCommands();\n    const width = this.padWidth();\n    const columns = 80 || false;\n    const descriptionWidth = columns - width - 4;\n    return ['Commands:', commands.map(cmd => {\n      const desc = cmd[1] ? '  ' + cmd[1] : '';\n      return (desc ? pad(cmd[0], width) : cmd[0]) + optionalWrap(desc, descriptionWidth, width + 2);\n    }).join('\\n').replace(/^/gm, '  '), ''].join('\\n');\n  }\n\n  /**\n   * Return program help documentation.\n   *\n   * @return {string}\n   * @api public\n   */\n  helpInformation() {\n    let desc = [];\n\n    if (this._description) {\n      desc = [this._description, ''];\n      const argsDescription = this._argsDescription;\n\n      if (argsDescription && this._args.length) {\n        const width = this.padWidth();\n        const columns = 80 || false;\n        const descriptionWidth = columns - width - 5;\n        desc.push('Arguments:');\n        desc.push('');\n\n        this._args.forEach(arg => {\n          desc.push('  ' + pad(arg.name, width) + '  ' + wrap(argsDescription[arg.name], descriptionWidth, width + 4));\n        });\n\n        desc.push('');\n      }\n    }\n\n    let cmdName = this._name;\n\n    if (this._aliases[0]) {\n      cmdName = cmdName + '|' + this._aliases[0];\n    }\n\n    let parentCmdNames = '';\n\n    for (let parentCmd = this.parent; parentCmd; parentCmd = parentCmd.parent) {\n      parentCmdNames = parentCmd.name() + ' ' + parentCmdNames;\n    }\n\n    const usage = ['Usage: ' + parentCmdNames + cmdName + ' ' + this.usage(), ''];\n    let cmds = [];\n    const commandHelp = this.commandHelp();\n    if (commandHelp) cmds = [commandHelp];\n    const options = ['Options:', '' + this.optionHelp().replace(/^/gm, '  '), ''];\n    return usage.concat(desc).concat(options).concat(cmds).join('\\n');\n  }\n\n  /**\n   * Output help information for this command.\n   *\n   * When listener(s) are available for the helpLongFlag\n   * those callbacks are invoked.\n   *\n   * @api public\n   */\n  outputHelp(cb) {\n    if (!cb) {\n      cb = passthru => {\n        return passthru;\n      };\n    }\n\n    const cbOutput = cb(this.helpInformation());\n\n    if (typeof cbOutput !== 'string' && !Buffer.isBuffer(cbOutput)) {\n      throw new Error('outputHelp callback must return a string or a Buffer');\n    }\n\n    process.stdout.write(cbOutput);\n    this.emit(this._helpLongFlag);\n  }\n\n  /**\n   * You can pass in flags and a description to override the help\n   * flags and help description for your command.\n   *\n   * @param {string} [flags]\n   * @param {string} [description]\n   * @return {Command} `this` command for chaining\n   * @api public\n   */\n  helpOption(flags, description) {\n    this._helpFlags = flags || this._helpFlags;\n    this._helpDescription = description || this._helpDescription;\n\n    const splitFlags = this._helpFlags.split(/[ ,|]+/);\n\n    this._helpShortFlag = undefined;\n    if (splitFlags.length > 1) this._helpShortFlag = splitFlags.shift();\n    this._helpLongFlag = splitFlags.shift();\n    return this;\n  }\n\n  /**\n   * Output help information and exit.\n   *\n   * @param {Function} [cb]\n   * @api public\n   */\n  help(cb) {\n    this.outputHelp(cb); // exitCode: preserving original behaviour which was calling process.exit()\n    // message: do not have all displayed text available so only passing placeholder.\n\n    this._exit(process.exitCode || 0, 'commander.help', '(outputHelp)');\n  }\n\n  /**\n   * Output help information and exit. Display for error situations.\n   *\n   * @api private\n   */\n  _helpAndError() {\n    this.outputHelp(); // message: do not have all displayed text available so only passing placeholder.\n\n    this._exit(1, 'commander.help', '(outputHelp)');\n  }\n\n}\n\n;\n/**\n * Expose the root command.\n */\n\nexports = module.exports = new Command();\nexports.program = exports; // More explicit access to global command.\n\n/**\n * Expose classes\n */\n\nexports.Command = Command;\nexports.Option = Option;\nexports.CommanderError = CommanderError;\n/**\n * Camel-case the given `flag`\n *\n * @param {string} flag\n * @return {string}\n * @api private\n */\n\nfunction camelcase(flag) {\n  return flag.split('-').reduce((str, word) => {\n    return str + word[0].toUpperCase() + word.slice(1);\n  });\n}\n/**\n * Pad `str` to `width`.\n *\n * @param {string} str\n * @param {number} width\n * @return {string}\n * @api private\n */\n\n\nfunction pad(str, width) {\n  const len = Math.max(0, width - str.length);\n  return str + Array(len + 1).join(' ');\n}\n/**\n * Wraps the given string with line breaks at the specified width while breaking\n * words and indenting every but the first line on the left.\n *\n * @param {string} str\n * @param {number} width\n * @param {number} indent\n * @return {string}\n * @api private\n */\n\n\nfunction wrap(str, width, indent) {\n  const regex = new RegExp('.{1,' + (width - 1) + '}([\\\\s\\u200B]|$)|[^\\\\s\\u200B]+?([\\\\s\\u200B]|$)', 'g');\n  const lines = str.match(regex) || [];\n  return lines.map((line, i) => {\n    if (line.slice(-1) === '\\n') {\n      line = line.slice(0, line.length - 1);\n    }\n\n    return (i > 0 && indent ? Array(indent + 1).join(' ') : '') + line.trimRight();\n  }).join('\\n');\n}\n/**\n * Optionally wrap the given str to a max width of width characters per line\n * while indenting with indent spaces. Do not wrap if insufficient width or\n * string is manually formatted.\n *\n * @param {string} str\n * @param {number} width\n * @param {number} indent\n * @return {string}\n * @api private\n */\n\n\nfunction optionalWrap(str, width, indent) {\n  // Detect manually wrapped and indented strings by searching for line breaks\n  // followed by multiple spaces/tabs.\n  if (str.match(/[\\n]\\s+/)) return str; // Do not wrap to narrow columns (or can end up with a word per line).\n\n  const minWidth = 40;\n  if (width < minWidth) return str;\n  return wrap(str, width, indent);\n}\n/**\n * Output help information if help flags specified\n *\n * @param {Command} cmd - command to output help for\n * @param {Array} args - array of options to search for help flags\n * @api private\n */\n\n\nfunction outputHelpIfRequested(cmd, args) {\n  const helpOption = args.find(arg => arg === cmd._helpLongFlag || arg === cmd._helpShortFlag);\n\n  if (helpOption) {\n    cmd.outputHelp(); // (Do not have all displayed text available so only passing placeholder.)\n\n    cmd._exit(0, 'commander.helpDisplayed', '(outputHelp)');\n  }\n}\n/**\n * Takes an argument and returns its human readable equivalent for help usage.\n *\n * @param {Object} arg\n * @return {string}\n * @api private\n */\n\n\nfunction humanReadableArgName(arg) {\n  const nameOutput = arg.name + (arg.variadic === true ? '...' : '');\n  return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']';\n}\n/**\n * Scan arguments and increment port number for inspect calls (to avoid conflicts when spawning new command).\n *\n * @param {string[]} args - array of arguments from node.execArgv\n * @returns {string[]}\n * @api private\n */\n\n\nfunction incrementNodeInspectorPort(args) {\n  // Testing for these options:\n  //  --inspect[=[host:]port]\n  //  --inspect-brk[=[host:]port]\n  //  --inspect-port=[host:]port\n  return args.map(arg => {\n    let result = arg;\n\n    if (arg.indexOf('--inspect') === 0) {\n      let debugOption;\n      let debugHost = '127.0.0.1';\n      let debugPort = '9229';\n      let match;\n\n      if ((match = arg.match(/^(--inspect(-brk)?)$/)) !== null) {\n        // e.g. --inspect\n        debugOption = match[1];\n      } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+)$/)) !== null) {\n        debugOption = match[1];\n\n        if (/^\\d+$/.test(match[3])) {\n          // e.g. --inspect=1234\n          debugPort = match[3];\n        } else {\n          // e.g. --inspect=localhost\n          debugHost = match[3];\n        }\n      } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+):(\\d+)$/)) !== null) {\n        // e.g. --inspect=localhost:1234\n        debugOption = match[1];\n        debugHost = match[3];\n        debugPort = match[4];\n      }\n\n      if (debugOption && debugPort !== '0') {\n        result = `${debugOption}=${debugHost}:${parseInt(debugPort) + 1}`;\n      }\n    }\n\n    return result;\n  });\n}\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../process/browser.js */ \"./node_modules/process/browser.js\"), __webpack_require__(/*! ./../buffer/index.js */ \"./node_modules/buffer/index.js\").Buffer))\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/commander/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar replace = String.prototype.replace;\nvar percentTwenties = /%20/g;\n\nvar util = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar Format = {\n  RFC1738: 'RFC1738',\n  RFC3986: 'RFC3986'\n};\nmodule.exports = util.assign({\n  'default': Format.RFC3986,\n  formatters: {\n    RFC1738: function (value) {\n      return replace.call(value, percentTwenties, '+');\n    },\n    RFC3986: function (value) {\n      return String(value);\n    }\n  }\n}, Format);\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar stringify = __webpack_require__(/*! ./stringify */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js\");\n\nvar parse = __webpack_require__(/*! ./parse */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js\");\n\nvar formats = __webpack_require__(/*! ./formats */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js\");\n\nmodule.exports = {\n  formats: formats,\n  parse: parse,\n  stringify: stringify\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar utils = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar has = Object.prototype.hasOwnProperty;\nvar isArray = Array.isArray;\nvar defaults = {\n  allowDots: false,\n  allowPrototypes: false,\n  arrayLimit: 20,\n  charset: 'utf-8',\n  charsetSentinel: false,\n  comma: false,\n  decoder: utils.decode,\n  delimiter: '&',\n  depth: 5,\n  ignoreQueryPrefix: false,\n  interpretNumericEntities: false,\n  parameterLimit: 1000,\n  parseArrays: true,\n  plainObjects: false,\n  strictNullHandling: false\n};\n\nvar interpretNumericEntities = function (str) {\n  return str.replace(/&#(\\d+);/g, function ($0, numberStr) {\n    return String.fromCharCode(parseInt(numberStr, 10));\n  });\n};\n\nvar parseArrayValue = function (val, options) {\n  if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {\n    return val.split(',');\n  }\n\n  return val;\n}; // This is what browsers will submit when the ✓ character occurs in an\n// application/x-www-form-urlencoded body and the encoding of the page containing\n// the form is iso-8859-1, or when the submitted form has an accept-charset\n// attribute of iso-8859-1. Presumably also with other charsets that do not contain\n// the ✓ character, such as us-ascii.\n\n\nvar isoSentinel = 'utf8=%26%2310003%3B'; // encodeURIComponent('&#10003;')\n// These are the percent-encoded utf-8 octets representing a checkmark, indicating that the request actually is utf-8 encoded.\n\nvar charsetSentinel = 'utf8=%E2%9C%93'; // encodeURIComponent('✓')\n\nvar parseValues = function parseQueryStringValues(str, options) {\n  var obj = {};\n  var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\\?/, '') : str;\n  var limit = options.parameterLimit === Infinity ? undefined : options.parameterLimit;\n  var parts = cleanStr.split(options.delimiter, limit);\n  var skipIndex = -1; // Keep track of where the utf8 sentinel was found\n\n  var i;\n  var charset = options.charset;\n\n  if (options.charsetSentinel) {\n    for (i = 0; i < parts.length; ++i) {\n      if (parts[i].indexOf('utf8=') === 0) {\n        if (parts[i] === charsetSentinel) {\n          charset = 'utf-8';\n        } else if (parts[i] === isoSentinel) {\n          charset = 'iso-8859-1';\n        }\n\n        skipIndex = i;\n        i = parts.length; // The eslint settings do not allow break;\n      }\n    }\n  }\n\n  for (i = 0; i < parts.length; ++i) {\n    if (i === skipIndex) {\n      continue;\n    }\n\n    var part = parts[i];\n    var bracketEqualsPos = part.indexOf(']=');\n    var pos = bracketEqualsPos === -1 ? part.indexOf('=') : bracketEqualsPos + 1;\n    var key, val;\n\n    if (pos === -1) {\n      key = options.decoder(part, defaults.decoder, charset, 'key');\n      val = options.strictNullHandling ? null : '';\n    } else {\n      key = options.decoder(part.slice(0, pos), defaults.decoder, charset, 'key');\n      val = utils.maybeMap(parseArrayValue(part.slice(pos + 1), options), function (encodedVal) {\n        return options.decoder(encodedVal, defaults.decoder, charset, 'value');\n      });\n    }\n\n    if (val && options.interpretNumericEntities && charset === 'iso-8859-1') {\n      val = interpretNumericEntities(val);\n    }\n\n    if (part.indexOf('[]=') > -1) {\n      val = isArray(val) ? [val] : val;\n    }\n\n    if (has.call(obj, key)) {\n      obj[key] = utils.combine(obj[key], val);\n    } else {\n      obj[key] = val;\n    }\n  }\n\n  return obj;\n};\n\nvar parseObject = function (chain, val, options, valuesParsed) {\n  var leaf = valuesParsed ? val : parseArrayValue(val, options);\n\n  for (var i = chain.length - 1; i >= 0; --i) {\n    var obj;\n    var root = chain[i];\n\n    if (root === '[]' && options.parseArrays) {\n      obj = [].concat(leaf);\n    } else {\n      obj = options.plainObjects ? Object.create(null) : {};\n      var cleanRoot = root.charAt(0) === '[' && root.charAt(root.length - 1) === ']' ? root.slice(1, -1) : root;\n      var index = parseInt(cleanRoot, 10);\n\n      if (!options.parseArrays && cleanRoot === '') {\n        obj = {\n          0: leaf\n        };\n      } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && options.parseArrays && index <= options.arrayLimit) {\n        obj = [];\n        obj[index] = leaf;\n      } else {\n        obj[cleanRoot] = leaf;\n      }\n    }\n\n    leaf = obj; // eslint-disable-line no-param-reassign\n  }\n\n  return leaf;\n};\n\nvar parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {\n  if (!givenKey) {\n    return;\n  } // Transform dot notation to bracket notation\n\n\n  var key = options.allowDots ? givenKey.replace(/\\.([^.[]+)/g, '[$1]') : givenKey; // The regex chunks\n\n  var brackets = /(\\[[^[\\]]*])/;\n  var child = /(\\[[^[\\]]*])/g; // Get the parent\n\n  var segment = options.depth > 0 && brackets.exec(key);\n  var parent = segment ? key.slice(0, segment.index) : key; // Stash the parent if it exists\n\n  var keys = [];\n\n  if (parent) {\n    // If we aren't using plain objects, optionally prefix keys that would overwrite object prototype properties\n    if (!options.plainObjects && has.call(Object.prototype, parent)) {\n      if (!options.allowPrototypes) {\n        return;\n      }\n    }\n\n    keys.push(parent);\n  } // Loop through children appending to the array until we hit depth\n\n\n  var i = 0;\n\n  while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {\n    i += 1;\n\n    if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {\n      if (!options.allowPrototypes) {\n        return;\n      }\n    }\n\n    keys.push(segment[1]);\n  } // If there's a remainder, just add whatever is left\n\n\n  if (segment) {\n    keys.push('[' + key.slice(segment.index) + ']');\n  }\n\n  return parseObject(keys, val, options, valuesParsed);\n};\n\nvar normalizeParseOptions = function normalizeParseOptions(opts) {\n  if (!opts) {\n    return defaults;\n  }\n\n  if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {\n    throw new TypeError('Decoder has to be a function.');\n  }\n\n  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {\n    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');\n  }\n\n  var charset = typeof opts.charset === 'undefined' ? defaults.charset : opts.charset;\n  return {\n    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,\n    allowPrototypes: typeof opts.allowPrototypes === 'boolean' ? opts.allowPrototypes : defaults.allowPrototypes,\n    arrayLimit: typeof opts.arrayLimit === 'number' ? opts.arrayLimit : defaults.arrayLimit,\n    charset: charset,\n    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,\n    comma: typeof opts.comma === 'boolean' ? opts.comma : defaults.comma,\n    decoder: typeof opts.decoder === 'function' ? opts.decoder : defaults.decoder,\n    delimiter: typeof opts.delimiter === 'string' || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults.delimiter,\n    // eslint-disable-next-line no-implicit-coercion, no-extra-parens\n    depth: typeof opts.depth === 'number' || opts.depth === false ? +opts.depth : defaults.depth,\n    ignoreQueryPrefix: opts.ignoreQueryPrefix === true,\n    interpretNumericEntities: typeof opts.interpretNumericEntities === 'boolean' ? opts.interpretNumericEntities : defaults.interpretNumericEntities,\n    parameterLimit: typeof opts.parameterLimit === 'number' ? opts.parameterLimit : defaults.parameterLimit,\n    parseArrays: opts.parseArrays !== false,\n    plainObjects: typeof opts.plainObjects === 'boolean' ? opts.plainObjects : defaults.plainObjects,\n    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling\n  };\n};\n\nmodule.exports = function (str, opts) {\n  var options = normalizeParseOptions(opts);\n\n  if (str === '' || str === null || typeof str === 'undefined') {\n    return options.plainObjects ? Object.create(null) : {};\n  }\n\n  var tempObj = typeof str === 'string' ? parseValues(str, options) : str;\n  var obj = options.plainObjects ? Object.create(null) : {}; // Iterate over the keys and setup the new object\n\n  var keys = Object.keys(tempObj);\n\n  for (var i = 0; i < keys.length; ++i) {\n    var key = keys[i];\n    var newObj = parseKeys(key, tempObj[key], options, typeof str === 'string');\n    obj = utils.merge(obj, newObj, options);\n  }\n\n  return utils.compact(obj);\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar utils = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar formats = __webpack_require__(/*! ./formats */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js\");\n\nvar has = Object.prototype.hasOwnProperty;\nvar arrayPrefixGenerators = {\n  brackets: function brackets(prefix) {\n    return prefix + '[]';\n  },\n  comma: 'comma',\n  indices: function indices(prefix, key) {\n    return prefix + '[' + key + ']';\n  },\n  repeat: function repeat(prefix) {\n    return prefix;\n  }\n};\nvar isArray = Array.isArray;\nvar push = Array.prototype.push;\n\nvar pushToArray = function (arr, valueOrArray) {\n  push.apply(arr, isArray(valueOrArray) ? valueOrArray : [valueOrArray]);\n};\n\nvar toISO = Date.prototype.toISOString;\nvar defaultFormat = formats['default'];\nvar defaults = {\n  addQueryPrefix: false,\n  allowDots: false,\n  charset: 'utf-8',\n  charsetSentinel: false,\n  delimiter: '&',\n  encode: true,\n  encoder: utils.encode,\n  encodeValuesOnly: false,\n  format: defaultFormat,\n  formatter: formats.formatters[defaultFormat],\n  // deprecated\n  indices: false,\n  serializeDate: function serializeDate(date) {\n    return toISO.call(date);\n  },\n  skipNulls: false,\n  strictNullHandling: false\n};\n\nvar isNonNullishPrimitive = function isNonNullishPrimitive(v) {\n  return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' || typeof v === 'symbol' || typeof v === 'bigint';\n};\n\nvar stringify = function stringify(object, prefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, formatter, encodeValuesOnly, charset) {\n  var obj = object;\n\n  if (typeof filter === 'function') {\n    obj = filter(prefix, obj);\n  } else if (obj instanceof Date) {\n    obj = serializeDate(obj);\n  } else if (generateArrayPrefix === 'comma' && isArray(obj)) {\n    obj = utils.maybeMap(obj, function (value) {\n      if (value instanceof Date) {\n        return serializeDate(value);\n      }\n\n      return value;\n    }).join(',');\n  }\n\n  if (obj === null) {\n    if (strictNullHandling) {\n      return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key') : prefix;\n    }\n\n    obj = '';\n  }\n\n  if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {\n    if (encoder) {\n      var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key');\n      return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value'))];\n    }\n\n    return [formatter(prefix) + '=' + formatter(String(obj))];\n  }\n\n  var values = [];\n\n  if (typeof obj === 'undefined') {\n    return values;\n  }\n\n  var objKeys;\n\n  if (isArray(filter)) {\n    objKeys = filter;\n  } else {\n    var keys = Object.keys(obj);\n    objKeys = sort ? keys.sort(sort) : keys;\n  }\n\n  for (var i = 0; i < objKeys.length; ++i) {\n    var key = objKeys[i];\n    var value = obj[key];\n\n    if (skipNulls && value === null) {\n      continue;\n    }\n\n    var keyPrefix = isArray(obj) ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix : prefix + (allowDots ? '.' + key : '[' + key + ']');\n    pushToArray(values, stringify(value, keyPrefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, formatter, encodeValuesOnly, charset));\n  }\n\n  return values;\n};\n\nvar normalizeStringifyOptions = function normalizeStringifyOptions(opts) {\n  if (!opts) {\n    return defaults;\n  }\n\n  if (opts.encoder !== null && opts.encoder !== undefined && typeof opts.encoder !== 'function') {\n    throw new TypeError('Encoder has to be a function.');\n  }\n\n  var charset = opts.charset || defaults.charset;\n\n  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {\n    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');\n  }\n\n  var format = formats['default'];\n\n  if (typeof opts.format !== 'undefined') {\n    if (!has.call(formats.formatters, opts.format)) {\n      throw new TypeError('Unknown format option provided.');\n    }\n\n    format = opts.format;\n  }\n\n  var formatter = formats.formatters[format];\n  var filter = defaults.filter;\n\n  if (typeof opts.filter === 'function' || isArray(opts.filter)) {\n    filter = opts.filter;\n  }\n\n  return {\n    addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opts.addQueryPrefix : defaults.addQueryPrefix,\n    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,\n    charset: charset,\n    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,\n    delimiter: typeof opts.delimiter === 'undefined' ? defaults.delimiter : opts.delimiter,\n    encode: typeof opts.encode === 'boolean' ? opts.encode : defaults.encode,\n    encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,\n    encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults.encodeValuesOnly,\n    filter: filter,\n    formatter: formatter,\n    serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults.serializeDate,\n    skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults.skipNulls,\n    sort: typeof opts.sort === 'function' ? opts.sort : null,\n    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling\n  };\n};\n\nmodule.exports = function (object, opts) {\n  var obj = object;\n  var options = normalizeStringifyOptions(opts);\n  var objKeys;\n  var filter;\n\n  if (typeof options.filter === 'function') {\n    filter = options.filter;\n    obj = filter('', obj);\n  } else if (isArray(options.filter)) {\n    filter = options.filter;\n    objKeys = filter;\n  }\n\n  var keys = [];\n\n  if (typeof obj !== 'object' || obj === null) {\n    return '';\n  }\n\n  var arrayFormat;\n\n  if (opts && opts.arrayFormat in arrayPrefixGenerators) {\n    arrayFormat = opts.arrayFormat;\n  } else if (opts && 'indices' in opts) {\n    arrayFormat = opts.indices ? 'indices' : 'repeat';\n  } else {\n    arrayFormat = 'indices';\n  }\n\n  var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];\n\n  if (!objKeys) {\n    objKeys = Object.keys(obj);\n  }\n\n  if (options.sort) {\n    objKeys.sort(options.sort);\n  }\n\n  for (var i = 0; i < objKeys.length; ++i) {\n    var key = objKeys[i];\n\n    if (options.skipNulls && obj[key] === null) {\n      continue;\n    }\n\n    pushToArray(keys, stringify(obj[key], key, generateArrayPrefix, options.strictNullHandling, options.skipNulls, options.encode ? options.encoder : null, options.filter, options.sort, options.allowDots, options.serializeDate, options.formatter, options.encodeValuesOnly, options.charset));\n  }\n\n  var joined = keys.join(options.delimiter);\n  var prefix = options.addQueryPrefix === true ? '?' : '';\n\n  if (options.charsetSentinel) {\n    if (options.charset === 'iso-8859-1') {\n      // encodeURIComponent('&#10003;'), the \"numeric entity\" representation of a checkmark\n      prefix += 'utf8=%26%2310003%3B&';\n    } else {\n      // encodeURIComponent('✓')\n      prefix += 'utf8=%E2%9C%93&';\n    }\n  }\n\n  return joined.length > 0 ? prefix + joined : '';\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar has = Object.prototype.hasOwnProperty;\nvar isArray = Array.isArray;\n\nvar hexTable = function () {\n  var array = [];\n\n  for (var i = 0; i < 256; ++i) {\n    array.push('%' + ((i < 16 ? '0' : '') + i.toString(16)).toUpperCase());\n  }\n\n  return array;\n}();\n\nvar compactQueue = function compactQueue(queue) {\n  while (queue.length > 1) {\n    var item = queue.pop();\n    var obj = item.obj[item.prop];\n\n    if (isArray(obj)) {\n      var compacted = [];\n\n      for (var j = 0; j < obj.length; ++j) {\n        if (typeof obj[j] !== 'undefined') {\n          compacted.push(obj[j]);\n        }\n      }\n\n      item.obj[item.prop] = compacted;\n    }\n  }\n};\n\nvar arrayToObject = function arrayToObject(source, options) {\n  var obj = options && options.plainObjects ? Object.create(null) : {};\n\n  for (var i = 0; i < source.length; ++i) {\n    if (typeof source[i] !== 'undefined') {\n      obj[i] = source[i];\n    }\n  }\n\n  return obj;\n};\n\nvar merge = function merge(target, source, options) {\n  /* eslint no-param-reassign: 0 */\n  if (!source) {\n    return target;\n  }\n\n  if (typeof source !== 'object') {\n    if (isArray(target)) {\n      target.push(source);\n    } else if (target && typeof target === 'object') {\n      if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {\n        target[source] = true;\n      }\n    } else {\n      return [target, source];\n    }\n\n    return target;\n  }\n\n  if (!target || typeof target !== 'object') {\n    return [target].concat(source);\n  }\n\n  var mergeTarget = target;\n\n  if (isArray(target) && !isArray(source)) {\n    mergeTarget = arrayToObject(target, options);\n  }\n\n  if (isArray(target) && isArray(source)) {\n    source.forEach(function (item, i) {\n      if (has.call(target, i)) {\n        var targetItem = target[i];\n\n        if (targetItem && typeof targetItem === 'object' && item && typeof item === 'object') {\n          target[i] = merge(targetItem, item, options);\n        } else {\n          target.push(item);\n        }\n      } else {\n        target[i] = item;\n      }\n    });\n    return target;\n  }\n\n  return Object.keys(source).reduce(function (acc, key) {\n    var value = source[key];\n\n    if (has.call(acc, key)) {\n      acc[key] = merge(acc[key], value, options);\n    } else {\n      acc[key] = value;\n    }\n\n    return acc;\n  }, mergeTarget);\n};\n\nvar assign = function assignSingleSource(target, source) {\n  return Object.keys(source).reduce(function (acc, key) {\n    acc[key] = source[key];\n    return acc;\n  }, target);\n};\n\nvar decode = function (str, decoder, charset) {\n  var strWithoutPlus = str.replace(/\\+/g, ' ');\n\n  if (charset === 'iso-8859-1') {\n    // unescape never throws, no try...catch needed:\n    return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);\n  } // utf-8\n\n\n  try {\n    return decodeURIComponent(strWithoutPlus);\n  } catch (e) {\n    return strWithoutPlus;\n  }\n};\n\nvar encode = function encode(str, defaultEncoder, charset) {\n  // This code was originally written by Brian White (mscdex) for the io.js core querystring library.\n  // It has been adapted here for stricter adherence to RFC 3986\n  if (str.length === 0) {\n    return str;\n  }\n\n  var string = str;\n\n  if (typeof str === 'symbol') {\n    string = Symbol.prototype.toString.call(str);\n  } else if (typeof str !== 'string') {\n    string = String(str);\n  }\n\n  if (charset === 'iso-8859-1') {\n    return escape(string).replace(/%u[0-9a-f]{4}/gi, function ($0) {\n      return '%26%23' + parseInt($0.slice(2), 16) + '%3B';\n    });\n  }\n\n  var out = '';\n\n  for (var i = 0; i < string.length; ++i) {\n    var c = string.charCodeAt(i);\n\n    if (c === 0x2D // -\n    || c === 0x2E // .\n    || c === 0x5F // _\n    || c === 0x7E // ~\n    || c >= 0x30 && c <= 0x39 // 0-9\n    || c >= 0x41 && c <= 0x5A // a-z\n    || c >= 0x61 && c <= 0x7A // A-Z\n    ) {\n        out += string.charAt(i);\n        continue;\n      }\n\n    if (c < 0x80) {\n      out = out + hexTable[c];\n      continue;\n    }\n\n    if (c < 0x800) {\n      out = out + (hexTable[0xC0 | c >> 6] + hexTable[0x80 | c & 0x3F]);\n      continue;\n    }\n\n    if (c < 0xD800 || c >= 0xE000) {\n      out = out + (hexTable[0xE0 | c >> 12] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F]);\n      continue;\n    }\n\n    i += 1;\n    c = 0x10000 + ((c & 0x3FF) << 10 | string.charCodeAt(i) & 0x3FF);\n    out += hexTable[0xF0 | c >> 18] + hexTable[0x80 | c >> 12 & 0x3F] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F];\n  }\n\n  return out;\n};\n\nvar compact = function compact(value) {\n  var queue = [{\n    obj: {\n      o: value\n    },\n    prop: 'o'\n  }];\n  var refs = [];\n\n  for (var i = 0; i < queue.length; ++i) {\n    var item = queue[i];\n    var obj = item.obj[item.prop];\n    var keys = Object.keys(obj);\n\n    for (var j = 0; j < keys.length; ++j) {\n      var key = keys[j];\n      var val = obj[key];\n\n      if (typeof val === 'object' && val !== null && refs.indexOf(val) === -1) {\n        queue.push({\n          obj: obj,\n          prop: key\n        });\n        refs.push(val);\n      }\n    }\n  }\n\n  compactQueue(queue);\n  return value;\n};\n\nvar isRegExp = function isRegExp(obj) {\n  return Object.prototype.toString.call(obj) === '[object RegExp]';\n};\n\nvar isBuffer = function isBuffer(obj) {\n  if (!obj || typeof obj !== 'object') {\n    return false;\n  }\n\n  return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));\n};\n\nvar combine = function combine(a, b) {\n  return [].concat(a, b);\n};\n\nvar maybeMap = function maybeMap(val, fn) {\n  if (isArray(val)) {\n    var mapped = [];\n\n    for (var i = 0; i < val.length; i += 1) {\n      mapped.push(fn(val[i]));\n    }\n\n    return mapped;\n  }\n\n  return fn(val);\n};\n\nmodule.exports = {\n  arrayToObject: arrayToObject,\n  assign: assign,\n  combine: combine,\n  compact: compact,\n  decode: decode,\n  encode: encode,\n  isBuffer: isBuffer,\n  isRegExp: isRegExp,\n  maybeMap: maybeMap,\n  merge: merge\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js?");
+
+/***/ }),
+
+/***/ "./node_modules/events/events.js":
+/*!***************************************!*\
+  !*** ./node_modules/events/events.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("// Copyright Joyent, Inc. and other Node contributors.\n//\n// Permission is hereby granted, free of charge, to any person obtaining a\n// copy of this software and associated documentation files (the\n// \"Software\"), to deal in the Software without restriction, including\n// without limitation the rights to use, copy, modify, merge, publish,\n// distribute, sublicense, and/or sell copies of the Software, and to permit\n// persons to whom the Software is furnished to do so, subject to the\n// following conditions:\n//\n// The above copyright notice and this permission notice shall be included\n// in all copies or substantial portions of the Software.\n//\n// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n// USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n\nvar R = typeof Reflect === 'object' ? Reflect : null;\nvar ReflectApply = R && typeof R.apply === 'function' ? R.apply : function ReflectApply(target, receiver, args) {\n  return Function.prototype.apply.call(target, receiver, args);\n};\nvar ReflectOwnKeys;\n\nif (R && typeof R.ownKeys === 'function') {\n  ReflectOwnKeys = R.ownKeys;\n} else if (Object.getOwnPropertySymbols) {\n  ReflectOwnKeys = function ReflectOwnKeys(target) {\n    return Object.getOwnPropertyNames(target).concat(Object.getOwnPropertySymbols(target));\n  };\n} else {\n  ReflectOwnKeys = function ReflectOwnKeys(target) {\n    return Object.getOwnPropertyNames(target);\n  };\n}\n\nfunction ProcessEmitWarning(warning) {\n  if (console && console.warn) console.warn(warning);\n}\n\nvar NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {\n  return value !== value;\n};\n\nfunction EventEmitter() {\n  EventEmitter.init.call(this);\n}\n\nmodule.exports = EventEmitter; // Backwards-compat with node 0.10.x\n\nEventEmitter.EventEmitter = EventEmitter;\nEventEmitter.prototype._events = undefined;\nEventEmitter.prototype._eventsCount = 0;\nEventEmitter.prototype._maxListeners = undefined; // By default EventEmitters will print a warning if more than 10 listeners are\n// added to it. This is a useful default which helps finding memory leaks.\n\nvar defaultMaxListeners = 10;\n\nfunction checkListener(listener) {\n  if (typeof listener !== 'function') {\n    throw new TypeError('The \"listener\" argument must be of type Function. Received type ' + typeof listener);\n  }\n}\n\nObject.defineProperty(EventEmitter, 'defaultMaxListeners', {\n  enumerable: true,\n  get: function () {\n    return defaultMaxListeners;\n  },\n  set: function (arg) {\n    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {\n      throw new RangeError('The value of \"defaultMaxListeners\" is out of range. It must be a non-negative number. Received ' + arg + '.');\n    }\n\n    defaultMaxListeners = arg;\n  }\n});\n\nEventEmitter.init = function () {\n  if (this._events === undefined || this._events === Object.getPrototypeOf(this)._events) {\n    this._events = Object.create(null);\n    this._eventsCount = 0;\n  }\n\n  this._maxListeners = this._maxListeners || undefined;\n}; // Obviously not all Emitters should be limited to 10. This function allows\n// that to be increased. Set to zero for unlimited.\n\n\nEventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {\n  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {\n    throw new RangeError('The value of \"n\" is out of range. It must be a non-negative number. Received ' + n + '.');\n  }\n\n  this._maxListeners = n;\n  return this;\n};\n\nfunction _getMaxListeners(that) {\n  if (that._maxListeners === undefined) return EventEmitter.defaultMaxListeners;\n  return that._maxListeners;\n}\n\nEventEmitter.prototype.getMaxListeners = function getMaxListeners() {\n  return _getMaxListeners(this);\n};\n\nEventEmitter.prototype.emit = function emit(type) {\n  var args = [];\n\n  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);\n\n  var doError = type === 'error';\n  var events = this._events;\n  if (events !== undefined) doError = doError && events.error === undefined;else if (!doError) return false; // If there is no 'error' event listener then throw.\n\n  if (doError) {\n    var er;\n    if (args.length > 0) er = args[0];\n\n    if (er instanceof Error) {\n      // Note: The comments on the `throw` lines are intentional, they show\n      // up in Node's output if this results in an unhandled exception.\n      throw er; // Unhandled 'error' event\n    } // At least give some kind of context to the user\n\n\n    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));\n    err.context = er;\n    throw err; // Unhandled 'error' event\n  }\n\n  var handler = events[type];\n  if (handler === undefined) return false;\n\n  if (typeof handler === 'function') {\n    ReflectApply(handler, this, args);\n  } else {\n    var len = handler.length;\n    var listeners = arrayClone(handler, len);\n\n    for (var i = 0; i < len; ++i) ReflectApply(listeners[i], this, args);\n  }\n\n  return true;\n};\n\nfunction _addListener(target, type, listener, prepend) {\n  var m;\n  var events;\n  var existing;\n  checkListener(listener);\n  events = target._events;\n\n  if (events === undefined) {\n    events = target._events = Object.create(null);\n    target._eventsCount = 0;\n  } else {\n    // To avoid recursion in the case that type === \"newListener\"! Before\n    // adding it to the listeners, first emit \"newListener\".\n    if (events.newListener !== undefined) {\n      target.emit('newListener', type, listener.listener ? listener.listener : listener); // Re-assign `events` because a newListener handler could have caused the\n      // this._events to be assigned to a new object\n\n      events = target._events;\n    }\n\n    existing = events[type];\n  }\n\n  if (existing === undefined) {\n    // Optimize the case of one listener. Don't need the extra array object.\n    existing = events[type] = listener;\n    ++target._eventsCount;\n  } else {\n    if (typeof existing === 'function') {\n      // Adding the second element, need to change to array.\n      existing = events[type] = prepend ? [listener, existing] : [existing, listener]; // If we've already got an array, just append.\n    } else if (prepend) {\n      existing.unshift(listener);\n    } else {\n      existing.push(listener);\n    } // Check for listener leak\n\n\n    m = _getMaxListeners(target);\n\n    if (m > 0 && existing.length > m && !existing.warned) {\n      existing.warned = true; // No error code for this since it is a Warning\n      // eslint-disable-next-line no-restricted-syntax\n\n      var w = new Error('Possible EventEmitter memory leak detected. ' + existing.length + ' ' + String(type) + ' listeners ' + 'added. Use emitter.setMaxListeners() to ' + 'increase limit');\n      w.name = 'MaxListenersExceededWarning';\n      w.emitter = target;\n      w.type = type;\n      w.count = existing.length;\n      ProcessEmitWarning(w);\n    }\n  }\n\n  return target;\n}\n\nEventEmitter.prototype.addListener = function addListener(type, listener) {\n  return _addListener(this, type, listener, false);\n};\n\nEventEmitter.prototype.on = EventEmitter.prototype.addListener;\n\nEventEmitter.prototype.prependListener = function prependListener(type, listener) {\n  return _addListener(this, type, listener, true);\n};\n\nfunction onceWrapper() {\n  if (!this.fired) {\n    this.target.removeListener(this.type, this.wrapFn);\n    this.fired = true;\n    if (arguments.length === 0) return this.listener.call(this.target);\n    return this.listener.apply(this.target, arguments);\n  }\n}\n\nfunction _onceWrap(target, type, listener) {\n  var state = {\n    fired: false,\n    wrapFn: undefined,\n    target: target,\n    type: type,\n    listener: listener\n  };\n  var wrapped = onceWrapper.bind(state);\n  wrapped.listener = listener;\n  state.wrapFn = wrapped;\n  return wrapped;\n}\n\nEventEmitter.prototype.once = function once(type, listener) {\n  checkListener(listener);\n  this.on(type, _onceWrap(this, type, listener));\n  return this;\n};\n\nEventEmitter.prototype.prependOnceListener = function prependOnceListener(type, listener) {\n  checkListener(listener);\n  this.prependListener(type, _onceWrap(this, type, listener));\n  return this;\n}; // Emits a 'removeListener' event if and only if the listener was removed.\n\n\nEventEmitter.prototype.removeListener = function removeListener(type, listener) {\n  var list, events, position, i, originalListener;\n  checkListener(listener);\n  events = this._events;\n  if (events === undefined) return this;\n  list = events[type];\n  if (list === undefined) return this;\n\n  if (list === listener || list.listener === listener) {\n    if (--this._eventsCount === 0) this._events = Object.create(null);else {\n      delete events[type];\n      if (events.removeListener) this.emit('removeListener', type, list.listener || listener);\n    }\n  } else if (typeof list !== 'function') {\n    position = -1;\n\n    for (i = list.length - 1; i >= 0; i--) {\n      if (list[i] === listener || list[i].listener === listener) {\n        originalListener = list[i].listener;\n        position = i;\n        break;\n      }\n    }\n\n    if (position < 0) return this;\n    if (position === 0) list.shift();else {\n      spliceOne(list, position);\n    }\n    if (list.length === 1) events[type] = list[0];\n    if (events.removeListener !== undefined) this.emit('removeListener', type, originalListener || listener);\n  }\n\n  return this;\n};\n\nEventEmitter.prototype.off = EventEmitter.prototype.removeListener;\n\nEventEmitter.prototype.removeAllListeners = function removeAllListeners(type) {\n  var listeners, events, i;\n  events = this._events;\n  if (events === undefined) return this; // not listening for removeListener, no need to emit\n\n  if (events.removeListener === undefined) {\n    if (arguments.length === 0) {\n      this._events = Object.create(null);\n      this._eventsCount = 0;\n    } else if (events[type] !== undefined) {\n      if (--this._eventsCount === 0) this._events = Object.create(null);else delete events[type];\n    }\n\n    return this;\n  } // emit removeListener for all listeners on all events\n\n\n  if (arguments.length === 0) {\n    var keys = Object.keys(events);\n    var key;\n\n    for (i = 0; i < keys.length; ++i) {\n      key = keys[i];\n      if (key === 'removeListener') continue;\n      this.removeAllListeners(key);\n    }\n\n    this.removeAllListeners('removeListener');\n    this._events = Object.create(null);\n    this._eventsCount = 0;\n    return this;\n  }\n\n  listeners = events[type];\n\n  if (typeof listeners === 'function') {\n    this.removeListener(type, listeners);\n  } else if (listeners !== undefined) {\n    // LIFO order\n    for (i = listeners.length - 1; i >= 0; i--) {\n      this.removeListener(type, listeners[i]);\n    }\n  }\n\n  return this;\n};\n\nfunction _listeners(target, type, unwrap) {\n  var events = target._events;\n  if (events === undefined) return [];\n  var evlistener = events[type];\n  if (evlistener === undefined) return [];\n  if (typeof evlistener === 'function') return unwrap ? [evlistener.listener || evlistener] : [evlistener];\n  return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);\n}\n\nEventEmitter.prototype.listeners = function listeners(type) {\n  return _listeners(this, type, true);\n};\n\nEventEmitter.prototype.rawListeners = function rawListeners(type) {\n  return _listeners(this, type, false);\n};\n\nEventEmitter.listenerCount = function (emitter, type) {\n  if (typeof emitter.listenerCount === 'function') {\n    return emitter.listenerCount(type);\n  } else {\n    return listenerCount.call(emitter, type);\n  }\n};\n\nEventEmitter.prototype.listenerCount = listenerCount;\n\nfunction listenerCount(type) {\n  var events = this._events;\n\n  if (events !== undefined) {\n    var evlistener = events[type];\n\n    if (typeof evlistener === 'function') {\n      return 1;\n    } else if (evlistener !== undefined) {\n      return evlistener.length;\n    }\n  }\n\n  return 0;\n}\n\nEventEmitter.prototype.eventNames = function eventNames() {\n  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];\n};\n\nfunction arrayClone(arr, n) {\n  var copy = new Array(n);\n\n  for (var i = 0; i < n; ++i) copy[i] = arr[i];\n\n  return copy;\n}\n\nfunction spliceOne(list, index) {\n  for (; index + 1 < list.length; index++) list[index] = list[index + 1];\n\n  list.pop();\n}\n\nfunction unwrapListeners(arr) {\n  var ret = new Array(arr.length);\n\n  for (var i = 0; i < ret.length; ++i) {\n    ret[i] = arr[i].listener || arr[i];\n  }\n\n  return ret;\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/events/events.js?");
+
+/***/ }),
+
+/***/ "./node_modules/ieee754/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/ieee754/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("exports.read = function (buffer, offset, isLE, mLen, nBytes) {\n  var e, m;\n  var eLen = nBytes * 8 - mLen - 1;\n  var eMax = (1 << eLen) - 1;\n  var eBias = eMax >> 1;\n  var nBits = -7;\n  var i = isLE ? nBytes - 1 : 0;\n  var d = isLE ? -1 : 1;\n  var s = buffer[offset + i];\n  i += d;\n  e = s & (1 << -nBits) - 1;\n  s >>= -nBits;\n  nBits += eLen;\n\n  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}\n\n  m = e & (1 << -nBits) - 1;\n  e >>= -nBits;\n  nBits += mLen;\n\n  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}\n\n  if (e === 0) {\n    e = 1 - eBias;\n  } else if (e === eMax) {\n    return m ? NaN : (s ? -1 : 1) * Infinity;\n  } else {\n    m = m + Math.pow(2, mLen);\n    e = e - eBias;\n  }\n\n  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);\n};\n\nexports.write = function (buffer, value, offset, isLE, mLen, nBytes) {\n  var e, m, c;\n  var eLen = nBytes * 8 - mLen - 1;\n  var eMax = (1 << eLen) - 1;\n  var eBias = eMax >> 1;\n  var rt = mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0;\n  var i = isLE ? 0 : nBytes - 1;\n  var d = isLE ? 1 : -1;\n  var s = value < 0 || value === 0 && 1 / value < 0 ? 1 : 0;\n  value = Math.abs(value);\n\n  if (isNaN(value) || value === Infinity) {\n    m = isNaN(value) ? 1 : 0;\n    e = eMax;\n  } else {\n    e = Math.floor(Math.log(value) / Math.LN2);\n\n    if (value * (c = Math.pow(2, -e)) < 1) {\n      e--;\n      c *= 2;\n    }\n\n    if (e + eBias >= 1) {\n      value += rt / c;\n    } else {\n      value += rt * Math.pow(2, 1 - eBias);\n    }\n\n    if (value * c >= 2) {\n      e++;\n      c /= 2;\n    }\n\n    if (e + eBias >= eMax) {\n      m = 0;\n      e = eMax;\n    } else if (e + eBias >= 1) {\n      m = (value * c - 1) * Math.pow(2, mLen);\n      e = e + eBias;\n    } else {\n      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);\n      e = 0;\n    }\n  }\n\n  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}\n\n  e = e << mLen | m;\n  eLen += mLen;\n\n  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}\n\n  buffer[offset + i - d] |= s * 128;\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ieee754/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/node-libs-browser/mock/empty.js":
+/*!******************************************************!*\
+  !*** ./node_modules/node-libs-browser/mock/empty.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/node-libs-browser/mock/empty.js?");
+
+/***/ }),
+
+/***/ "./node_modules/path-browserify/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/path-browserify/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,\n// backported and transplited with Babel, with backwards-compat fixes\n// Copyright Joyent, Inc. and other Node contributors.\n//\n// Permission is hereby granted, free of charge, to any person obtaining a\n// copy of this software and associated documentation files (the\n// \"Software\"), to deal in the Software without restriction, including\n// without limitation the rights to use, copy, modify, merge, publish,\n// distribute, sublicense, and/or sell copies of the Software, and to permit\n// persons to whom the Software is furnished to do so, subject to the\n// following conditions:\n//\n// The above copyright notice and this permission notice shall be included\n// in all copies or substantial portions of the Software.\n//\n// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n// USE OR OTHER DEALINGS IN THE SOFTWARE.\n// resolves . and .. elements in a path array with directory names there\n// must be no slashes, empty elements, or device names (c:\\) in the array\n// (so also no leading and trailing slashes - it does not distinguish\n// relative and absolute paths)\nfunction normalizeArray(parts, allowAboveRoot) {\n  // if the path tries to go above the root, `up` ends up > 0\n  var up = 0;\n\n  for (var i = parts.length - 1; i >= 0; i--) {\n    var last = parts[i];\n\n    if (last === '.') {\n      parts.splice(i, 1);\n    } else if (last === '..') {\n      parts.splice(i, 1);\n      up++;\n    } else if (up) {\n      parts.splice(i, 1);\n      up--;\n    }\n  } // if the path is allowed to go above the root, restore leading ..s\n\n\n  if (allowAboveRoot) {\n    for (; up--; up) {\n      parts.unshift('..');\n    }\n  }\n\n  return parts;\n} // path.resolve([from ...], to)\n// posix version\n\n\nexports.resolve = function () {\n  var resolvedPath = '',\n      resolvedAbsolute = false;\n\n  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {\n    var path = i >= 0 ? arguments[i] : process.cwd(); // Skip empty and invalid entries\n\n    if (typeof path !== 'string') {\n      throw new TypeError('Arguments to path.resolve must be strings');\n    } else if (!path) {\n      continue;\n    }\n\n    resolvedPath = path + '/' + resolvedPath;\n    resolvedAbsolute = path.charAt(0) === '/';\n  } // At this point the path should be resolved to a full absolute path, but\n  // handle relative paths to be safe (might happen when process.cwd() fails)\n  // Normalize the path\n\n\n  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function (p) {\n    return !!p;\n  }), !resolvedAbsolute).join('/');\n  return (resolvedAbsolute ? '/' : '') + resolvedPath || '.';\n}; // path.normalize(path)\n// posix version\n\n\nexports.normalize = function (path) {\n  var isAbsolute = exports.isAbsolute(path),\n      trailingSlash = substr(path, -1) === '/'; // Normalize the path\n\n  path = normalizeArray(filter(path.split('/'), function (p) {\n    return !!p;\n  }), !isAbsolute).join('/');\n\n  if (!path && !isAbsolute) {\n    path = '.';\n  }\n\n  if (path && trailingSlash) {\n    path += '/';\n  }\n\n  return (isAbsolute ? '/' : '') + path;\n}; // posix version\n\n\nexports.isAbsolute = function (path) {\n  return path.charAt(0) === '/';\n}; // posix version\n\n\nexports.join = function () {\n  var paths = Array.prototype.slice.call(arguments, 0);\n  return exports.normalize(filter(paths, function (p, index) {\n    if (typeof p !== 'string') {\n      throw new TypeError('Arguments to path.join must be strings');\n    }\n\n    return p;\n  }).join('/'));\n}; // path.relative(from, to)\n// posix version\n\n\nexports.relative = function (from, to) {\n  from = exports.resolve(from).substr(1);\n  to = exports.resolve(to).substr(1);\n\n  function trim(arr) {\n    var start = 0;\n\n    for (; start < arr.length; start++) {\n      if (arr[start] !== '') break;\n    }\n\n    var end = arr.length - 1;\n\n    for (; end >= 0; end--) {\n      if (arr[end] !== '') break;\n    }\n\n    if (start > end) return [];\n    return arr.slice(start, end - start + 1);\n  }\n\n  var fromParts = trim(from.split('/'));\n  var toParts = trim(to.split('/'));\n  var length = Math.min(fromParts.length, toParts.length);\n  var samePartsLength = length;\n\n  for (var i = 0; i < length; i++) {\n    if (fromParts[i] !== toParts[i]) {\n      samePartsLength = i;\n      break;\n    }\n  }\n\n  var outputParts = [];\n\n  for (var i = samePartsLength; i < fromParts.length; i++) {\n    outputParts.push('..');\n  }\n\n  outputParts = outputParts.concat(toParts.slice(samePartsLength));\n  return outputParts.join('/');\n};\n\nexports.sep = '/';\nexports.delimiter = ':';\n\nexports.dirname = function (path) {\n  if (typeof path !== 'string') path = path + '';\n  if (path.length === 0) return '.';\n  var code = path.charCodeAt(0);\n  var hasRoot = code === 47\n  /*/*/\n  ;\n  var end = -1;\n  var matchedSlash = true;\n\n  for (var i = path.length - 1; i >= 1; --i) {\n    code = path.charCodeAt(i);\n\n    if (code === 47\n    /*/*/\n    ) {\n        if (!matchedSlash) {\n          end = i;\n          break;\n        }\n      } else {\n      // We saw the first non-path separator\n      matchedSlash = false;\n    }\n  }\n\n  if (end === -1) return hasRoot ? '/' : '.';\n\n  if (hasRoot && end === 1) {\n    // return '//';\n    // Backwards-compat fix:\n    return '/';\n  }\n\n  return path.slice(0, end);\n};\n\nfunction basename(path) {\n  if (typeof path !== 'string') path = path + '';\n  var start = 0;\n  var end = -1;\n  var matchedSlash = true;\n  var i;\n\n  for (i = path.length - 1; i >= 0; --i) {\n    if (path.charCodeAt(i) === 47\n    /*/*/\n    ) {\n        // If we reached a path separator that was not part of a set of path\n        // separators at the end of the string, stop now\n        if (!matchedSlash) {\n          start = i + 1;\n          break;\n        }\n      } else if (end === -1) {\n      // We saw the first non-path separator, mark this as the end of our\n      // path component\n      matchedSlash = false;\n      end = i + 1;\n    }\n  }\n\n  if (end === -1) return '';\n  return path.slice(start, end);\n} // Uses a mixed approach for backwards-compatibility, as ext behavior changed\n// in new Node.js versions, so only basename() above is backported here\n\n\nexports.basename = function (path, ext) {\n  var f = basename(path);\n\n  if (ext && f.substr(-1 * ext.length) === ext) {\n    f = f.substr(0, f.length - ext.length);\n  }\n\n  return f;\n};\n\nexports.extname = function (path) {\n  if (typeof path !== 'string') path = path + '';\n  var startDot = -1;\n  var startPart = 0;\n  var end = -1;\n  var matchedSlash = true; // Track the state of characters (if any) we see before our first dot and\n  // after any path separator we find\n\n  var preDotState = 0;\n\n  for (var i = path.length - 1; i >= 0; --i) {\n    var code = path.charCodeAt(i);\n\n    if (code === 47\n    /*/*/\n    ) {\n        // If we reached a path separator that was not part of a set of path\n        // separators at the end of the string, stop now\n        if (!matchedSlash) {\n          startPart = i + 1;\n          break;\n        }\n\n        continue;\n      }\n\n    if (end === -1) {\n      // We saw the first non-path separator, mark this as the end of our\n      // extension\n      matchedSlash = false;\n      end = i + 1;\n    }\n\n    if (code === 46\n    /*.*/\n    ) {\n        // If this is our first dot, mark it as the start of our extension\n        if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;\n      } else if (startDot !== -1) {\n      // We saw a non-dot and non-path separator before our dot, so we should\n      // have a good chance at having a non-empty extension\n      preDotState = -1;\n    }\n  }\n\n  if (startDot === -1 || end === -1 || // We saw a non-dot character immediately before the dot\n  preDotState === 0 || // The (right-most) trimmed path component is exactly '..'\n  preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {\n    return '';\n  }\n\n  return path.slice(startDot, end);\n};\n\nfunction filter(xs, f) {\n  if (xs.filter) return xs.filter(f);\n  var res = [];\n\n  for (var i = 0; i < xs.length; i++) {\n    if (f(xs[i], i, xs)) res.push(xs[i]);\n  }\n\n  return res;\n} // String.prototype.substr - negative index don't work in IE8\n\n\nvar substr = 'ab'.substr(-1) === 'b' ? function (str, start, len) {\n  return str.substr(start, len);\n} : function (str, start, len) {\n  if (start < 0) start = str.length + start;\n  return str.substr(start, len);\n};\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../process/browser.js */ \"./node_modules/process/browser.js\")))\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/path-browserify/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("// shim for using process in browser\nvar process = module.exports = {}; // cached from whatever global is present so that test runners that stub it\n// don't break things.  But we need to wrap it in a try catch in case it is\n// wrapped in strict mode code which doesn't define any globals.  It's inside a\n// function because try/catches deoptimize in certain engines.\n\nvar cachedSetTimeout;\nvar cachedClearTimeout;\n\nfunction defaultSetTimout() {\n  throw new Error('setTimeout has not been defined');\n}\n\nfunction defaultClearTimeout() {\n  throw new Error('clearTimeout has not been defined');\n}\n\n(function () {\n  try {\n    if (typeof setTimeout === 'function') {\n      cachedSetTimeout = setTimeout;\n    } else {\n      cachedSetTimeout = defaultSetTimout;\n    }\n  } catch (e) {\n    cachedSetTimeout = defaultSetTimout;\n  }\n\n  try {\n    if (typeof clearTimeout === 'function') {\n      cachedClearTimeout = clearTimeout;\n    } else {\n      cachedClearTimeout = defaultClearTimeout;\n    }\n  } catch (e) {\n    cachedClearTimeout = defaultClearTimeout;\n  }\n})();\n\nfunction runTimeout(fun) {\n  if (cachedSetTimeout === setTimeout) {\n    //normal enviroments in sane situations\n    return setTimeout(fun, 0);\n  } // if setTimeout wasn't available but was latter defined\n\n\n  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {\n    cachedSetTimeout = setTimeout;\n    return setTimeout(fun, 0);\n  }\n\n  try {\n    // when when somebody has screwed with setTimeout but no I.E. maddness\n    return cachedSetTimeout(fun, 0);\n  } catch (e) {\n    try {\n      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally\n      return cachedSetTimeout.call(null, fun, 0);\n    } catch (e) {\n      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error\n      return cachedSetTimeout.call(this, fun, 0);\n    }\n  }\n}\n\nfunction runClearTimeout(marker) {\n  if (cachedClearTimeout === clearTimeout) {\n    //normal enviroments in sane situations\n    return clearTimeout(marker);\n  } // if clearTimeout wasn't available but was latter defined\n\n\n  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {\n    cachedClearTimeout = clearTimeout;\n    return clearTimeout(marker);\n  }\n\n  try {\n    // when when somebody has screwed with setTimeout but no I.E. maddness\n    return cachedClearTimeout(marker);\n  } catch (e) {\n    try {\n      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally\n      return cachedClearTimeout.call(null, marker);\n    } catch (e) {\n      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.\n      // Some versions of I.E. have different rules for clearTimeout vs setTimeout\n      return cachedClearTimeout.call(this, marker);\n    }\n  }\n}\n\nvar queue = [];\nvar draining = false;\nvar currentQueue;\nvar queueIndex = -1;\n\nfunction cleanUpNextTick() {\n  if (!draining || !currentQueue) {\n    return;\n  }\n\n  draining = false;\n\n  if (currentQueue.length) {\n    queue = currentQueue.concat(queue);\n  } else {\n    queueIndex = -1;\n  }\n\n  if (queue.length) {\n    drainQueue();\n  }\n}\n\nfunction drainQueue() {\n  if (draining) {\n    return;\n  }\n\n  var timeout = runTimeout(cleanUpNextTick);\n  draining = true;\n  var len = queue.length;\n\n  while (len) {\n    currentQueue = queue;\n    queue = [];\n\n    while (++queueIndex < len) {\n      if (currentQueue) {\n        currentQueue[queueIndex].run();\n      }\n    }\n\n    queueIndex = -1;\n    len = queue.length;\n  }\n\n  currentQueue = null;\n  draining = false;\n  runClearTimeout(timeout);\n}\n\nprocess.nextTick = function (fun) {\n  var args = new Array(arguments.length - 1);\n\n  if (arguments.length > 1) {\n    for (var i = 1; i < arguments.length; i++) {\n      args[i - 1] = arguments[i];\n    }\n  }\n\n  queue.push(new Item(fun, args));\n\n  if (queue.length === 1 && !draining) {\n    runTimeout(drainQueue);\n  }\n}; // v8 likes predictible objects\n\n\nfunction Item(fun, array) {\n  this.fun = fun;\n  this.array = array;\n}\n\nItem.prototype.run = function () {\n  this.fun.apply(null, this.array);\n};\n\nprocess.title = 'browser';\nprocess.browser = true;\nprocess.env = {};\nprocess.argv = [];\nprocess.version = ''; // empty string to avoid regexp issues\n\nprocess.versions = {};\n\nfunction noop() {}\n\nprocess.on = noop;\nprocess.addListener = noop;\nprocess.once = noop;\nprocess.off = noop;\nprocess.removeListener = noop;\nprocess.removeAllListeners = noop;\nprocess.emit = noop;\nprocess.prependListener = noop;\nprocess.prependOnceListener = noop;\n\nprocess.listeners = function (name) {\n  return [];\n};\n\nprocess.binding = function (name) {\n  throw new Error('process.binding is not supported');\n};\n\nprocess.cwd = function () {\n  return '/';\n};\n\nprocess.chdir = function (dir) {\n  throw new Error('process.chdir is not supported');\n};\n\nprocess.umask = function () {\n  return 0;\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/process/browser.js?");
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("var g; // This works in non-strict mode\n\ng = function () {\n  return this;\n}();\n\ntry {\n  // This works if eval is allowed (see CSP)\n  g = g || new Function(\"return this\")();\n} catch (e) {\n  // This works if the window reference is available\n  if (typeof window === \"object\") g = window;\n} // g can still be undefined, but nothing to do about it...\n// We return undefined, instead of nothing here, so it's\n// easier to handle this case. if(!global) { ...}\n\n\nmodule.exports = g;\n\n//# sourceURL=webpack://__ember_auto_import__/(webpack)/buildin/global.js?");
+
+/***/ })
+
+}]);;
 var __ember_auto_import__ =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// install a JSONP callback for chunk loading
@@ -108291,184 +111357,37 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../../../tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js":
-/*!**********************************************************************!*\
-  !*** /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js ***!
-  \**********************************************************************/
+/***/ "../../../../../../../tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js":
+/*!***********************************************************************!*\
+  !*** /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('qs', [], function() { return __webpack_require__(/*! ./node_modules/ember-query-params-service/node_modules/qs/lib/index.js */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('commander', [], function() { return __webpack_require__(/*! ./node_modules/commander/index.js */ \"./node_modules/commander/index.js\"); });\n    d('qs', [], function() { return __webpack_require__(/*! ./node_modules/ember-query-params-service/node_modules/qs/lib/index.js */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../../../tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js":
-/*!********************************************************************!*\
-  !*** /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js ***!
-  \********************************************************************/
+/***/ "../../../../../../../tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js":
+/*!*********************************************************************!*\
+  !*** /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js?");
 
 /***/ }),
 
 /***/ 0:
-/*!*****************************************************************************************************************************************!*\
-  !*** multi /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js ***!
-  \*****************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************!*\
+  !*** multi /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js ***!
+  \*******************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js */\"../../../../../../../tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js */\"../../../../../../../tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/l.js_/tmp/broccoli-174dLcYXvWqSzNk/cache-328-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js */\"../../../../../../../tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js */\"../../../../../../../tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/l.js_/tmp/broccoli-5748hApGJnSQqARt/cache-333-bundler/staging/app.js?");
 
 /***/ })
 
-/******/ });;
-(window["webpackJsonp_ember_auto_import_"] = window["webpackJsonp_ember_auto_import_"] || []).push([["vendors~app"],{
-
-/***/ "./node_modules/@glimmer/env/dist/modules/es2017/index.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@glimmer/env/dist/modules/es2017/index.js ***!
-  \****************************************************************/
-/*! exports provided: DEBUG, CI */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"DEBUG\", function() { return DEBUG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CI\", function() { return CI; });\nconst DEBUG = false;\nconst CI = false;\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/env/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/index.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js ***!
-  \*********************************************************************/
-/*! exports provided: tracked, setPropertyDidChange */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _src_tracked__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/tracked */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"tracked\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"setPropertyDidChange\"]; });\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js ***!
-  \***************************************************************************/
-/*! exports provided: tracked, setPropertyDidChange */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return tracked; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return setPropertyDidChange; });\n/* harmony import */ var _glimmer_env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @glimmer/env */ \"./node_modules/@glimmer/env/dist/modules/es2017/index.js\");\n/* harmony import */ var _glimmer_validator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @glimmer/validator */ \"./node_modules/@glimmer/validator/dist/modules/es2017/index.js\");\n\n\n/**\n * @decorator\n *\n * Marks a property as tracked.\n *\n * By default, a component's properties are expected to be static,\n * meaning you are not able to update them and have the template update accordingly.\n * Marking a property as tracked means that when that property changes,\n * a rerender of the component is scheduled so the template is kept up to date.\n *\n * @example\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    remainingApples = 10\n * }\n * ```\n *\n * When something changes the component's `remainingApples` property, the rerender\n * will be scheduled.\n *\n * @example Computed Properties\n *\n * In the case that you have a getter that depends on other properties, tracked\n * properties accessed within the getter will automatically be tracked for you.\n * That means when any of those dependent tracked properties is changed, a\n * rerender of the component will be scheduled.\n *\n * In the following example we have two properties,\n * `eatenApples`, and `remainingApples`.\n *\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * const totalApples = 100;\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    eatenApples = 0\n *\n *    get remainingApples() {\n *      return totalApples - this.eatenApples;\n *    }\n *\n *    increment() {\n *      this.eatenApples = this.eatenApples + 1;\n *    }\n *  }\n * ```\n */\n\nlet tracked = (...args) => {\n  let [target, key, descriptor] = args; // Error on `@tracked()`, `@tracked(...args)`, and `@tracked get propName()`\n\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && typeof target === 'string') throwTrackedWithArgumentsError(args);\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && target === undefined) throwTrackedWithEmptyArgumentsError();\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && descriptor && descriptor.get) throwTrackedComputedPropertyError();\n\n  if (descriptor) {\n    return descriptorForField(target, key, descriptor);\n  } else {\n    // In TypeScript's implementation, decorators on simple class fields do not\n    // receive a descriptor, so we define the property on the target directly.\n    Object.defineProperty(target, key, descriptorForField(target, key));\n  }\n};\n\nfunction throwTrackedComputedPropertyError() {\n  throw new Error(`The @tracked decorator does not need to be applied to getters. Properties implemented using a getter will recompute automatically when any tracked properties they access change.`);\n}\n\nfunction throwTrackedWithArgumentsError(args) {\n  throw new Error(`You attempted to use @tracked with ${args.length > 1 ? 'arguments' : 'an argument'} ( @tracked(${args.map(d => `'${d}'`).join(', ')}) ), which is no longer necessary nor supported. Dependencies are now automatically tracked, so you can just use ${'`@tracked`'}.`);\n}\n\nfunction throwTrackedWithEmptyArgumentsError() {\n  throw new Error('You attempted to use @tracked(), which is no longer necessary nor supported. Remove the parentheses and you will be good to go!');\n}\n\nfunction descriptorForField(_target, key, desc) {\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && desc && (desc.value || desc.get || desc.set)) {\n    throw new Error(`You attempted to use @tracked on ${key}, but that element is not a class field. @tracked is only usable on class fields. Native getters and setters will autotrack add any tracked fields they encounter, so there is no need mark getters and setters with @tracked.`);\n  }\n\n  let {\n    getter,\n    setter\n  } = Object(_glimmer_validator__WEBPACK_IMPORTED_MODULE_1__[\"trackedData\"])(key, desc && desc.initializer);\n  return {\n    enumerable: true,\n    configurable: true,\n\n    get() {\n      return getter(this);\n    },\n\n    set(newValue) {\n      setter(this, newValue);\n      propertyDidChange();\n    }\n\n  };\n}\n\nlet propertyDidChange = function () {};\n\nfunction setPropertyDidChange(cb) {\n  propertyDidChange = cb;\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/index.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/index.js ***!
-  \**********************************************************************/
-/*! exports provided: ALLOW_CYCLES, bump, combine, COMPUTE, CONSTANT_TAG, CONSTANT, createCombinatorTag, createTag, createUpdatableTag, CURRENT_TAG, dirty, INITIAL, isConst, isConstTag, update, validate, value, VOLATILE_TAG, VOLATILE, dirtyTag, tagFor, updateTag, track, consume, EPOCH, trackedData */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"ALLOW_CYCLES\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"bump\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"COMPUTE\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createCombinatorTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CURRENT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"INITIAL\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConst\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"validate\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"value\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE\"]; });\n\n/* harmony import */ var _lib_meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib/meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"updateTag\"]; });\n\n/* harmony import */ var _lib_tracking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib/tracking */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"track\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"consume\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"EPOCH\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"trackedData\"]; });\n\n\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js ***!
-  \*************************************************************************/
-/*! exports provided: dirtyTag, tagFor, updateTag */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return dirtyTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return tagFor; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return updateTag; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n\nconst TRACKED_TAGS = new WeakMap();\n\nfunction isObject(u) {\n  return typeof u === 'object' && u !== null;\n}\n\nfunction dirtyTag(obj, key) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (tag === undefined) {\n      updateTag(obj, key, Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])());\n    } else if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(tag);\n    }\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\nfunction tagFor(obj, key) {\n  if (isObject(obj)) {\n    let tags = TRACKED_TAGS.get(obj);\n\n    if (tags === undefined) {\n      tags = new Map();\n      TRACKED_TAGS.set(obj, tags);\n    } else if (tags.has(key)) {\n      return tags.get(key);\n    }\n\n    let tag = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])();\n    tags.set(key, tag);\n    return tag;\n  } else {\n    return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n  }\n}\nfunction updateTag(obj, key, newTag) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"])(tag, newTag);\n    }\n\n    return tag;\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js ***!
-  \*****************************************************************************/
-/*! exports provided: track, consume, EPOCH, trackedData */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return track; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return consume; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return EPOCH; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return trackedData; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony import */ var _meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n\n\n\n/**\n * Whenever a tracked computed property is entered, the current tracker is\n * saved off and a new tracker is replaced.\n *\n * Any tracked properties consumed are added to the current tracker.\n *\n * When a tracked computed property is exited, the tracker's tags are\n * combined and added to the parent tracker.\n *\n * The consequence is that each tracked computed property has a tag\n * that corresponds to the tracked properties consumed inside of\n * itself, including child tracked computed properties.\n */\n\nlet CURRENT_TRACKER = null;\n/**\n * An object that that tracks @tracked properties that were consumed.\n */\n\nclass Tracker {\n  constructor() {\n    this.tags = new Set();\n    this.last = null;\n  }\n\n  add(tag) {\n    this.tags.add(tag);\n    this.last = tag;\n  }\n\n  combine() {\n    let {\n      tags\n    } = this;\n\n    if (tags.size === 0) {\n      return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n    } else if (tags.size === 1) {\n      return this.last;\n    } else {\n      let tagsArr = [];\n      tags.forEach(tag => tagsArr.push(tag));\n      return Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"])(tagsArr);\n    }\n  }\n\n}\n\nfunction track(callback) {\n  let parent = CURRENT_TRACKER;\n  let current = new Tracker();\n  CURRENT_TRACKER = current;\n\n  try {\n    callback();\n  } finally {\n    CURRENT_TRACKER = parent;\n  }\n\n  return current.combine();\n}\nfunction consume(tag) {\n  if (CURRENT_TRACKER !== null) {\n    CURRENT_TRACKER.add(tag);\n  }\n} //////////\n\nconst EPOCH = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"])();\nfunction trackedData(key, initializer) {\n  let values = new WeakMap();\n  let hasInitializer = typeof initializer === 'function';\n\n  function getter(self) {\n    consume(Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"])(self, key));\n    let value; // If the field has never been initialized, we should initialize it\n\n    if (hasInitializer && !values.has(self)) {\n      value = initializer();\n      values.set(self, value);\n    } else {\n      value = values.get(self);\n    }\n\n    return value;\n  }\n\n  function setter(self, value) {\n    Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(EPOCH);\n    Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"])(self, key);\n    values.set(self, value);\n  }\n\n  return {\n    getter,\n    setter\n  };\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js ***!
-  \*******************************************************************************/
-/*! exports provided: CONSTANT, INITIAL, VOLATILE, bump, COMPUTE, value, validate, ALLOW_CYCLES, dirty, update, createTag, createUpdatableTag, CONSTANT_TAG, isConst, isConstTag, VOLATILE_TAG, CURRENT_TAG, combine, createCombinatorTag */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return CONSTANT; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return INITIAL; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return VOLATILE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return bump; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return COMPUTE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return value; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return validate; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return ALLOW_CYCLES; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return dirty; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return update; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return createTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return createUpdatableTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return CONSTANT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return isConst; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return isConstTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return VOLATILE_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return CURRENT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return combine; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return createCombinatorTag; });\nconst symbol = typeof Symbol !== 'undefined' ? Symbol : key => `__${key}${Math.floor(Math.random() * Date.now())}__`;\nconst CONSTANT = 0;\nconst INITIAL = 1;\nconst VOLATILE = 9007199254740991; // MAX_INT\n\nlet $REVISION = INITIAL;\nfunction bump() {\n  $REVISION++;\n} //////////\n\nconst COMPUTE = symbol('TAG_COMPUTE'); //////////\n\n/**\n * `value` receives a tag and returns an opaque Revision based on that tag. This\n * snapshot can then later be passed to `validate` with the same tag to\n * determine if the tag has changed at all since the time that `value` was\n * called.\n *\n * The current implementation returns the global revision count directly for\n * performance reasons. This is an implementation detail, and should not be\n * relied on directly by users of these APIs. Instead, Revisions should be\n * treated as if they are opaque/unknown, and should only be interacted with via\n * the `value`/`validate` API.\n *\n * @param tag\n */\n\nfunction value(_tag) {\n  return $REVISION;\n}\n/**\n * `validate` receives a tag and a snapshot from a previous call to `value` with\n * the same tag, and determines if the tag is still valid compared to the\n * snapshot. If the tag's state has changed at all since then, `validate` will\n * return false, otherwise it will return true. This is used to determine if a\n * calculation related to the tags should be rerun.\n *\n * @param tag\n * @param snapshot\n */\n\nfunction validate(tag, snapshot) {\n  return snapshot >= tag[COMPUTE]();\n}\nconst TYPE = symbol('TAG_TYPE');\nlet ALLOW_CYCLES;\n\nif (false) {}\n\nclass MonomorphicTagImpl {\n  constructor(type) {\n    this.revision = INITIAL;\n    this.lastChecked = INITIAL;\n    this.lastValue = INITIAL;\n    this.isUpdating = false;\n    this.subtag = null;\n    this.subtags = null;\n    this[TYPE] = type;\n  }\n\n  [COMPUTE]() {\n    let {\n      lastChecked\n    } = this;\n\n    if (lastChecked !== $REVISION) {\n      this.isUpdating = true;\n      this.lastChecked = $REVISION;\n\n      try {\n        let {\n          subtags,\n          subtag,\n          revision\n        } = this;\n\n        if (subtag !== null) {\n          revision = Math.max(revision, subtag[COMPUTE]());\n        }\n\n        if (subtags !== null) {\n          for (let i = 0; i < subtags.length; i++) {\n            let value = subtags[i][COMPUTE]();\n            revision = Math.max(value, revision);\n          }\n        }\n\n        this.lastValue = revision;\n      } finally {\n        this.isUpdating = false;\n      }\n    }\n\n    if (this.isUpdating === true) {\n      if (false) {}\n\n      this.lastChecked = ++$REVISION;\n    }\n\n    return this.lastValue;\n  }\n\n  static update(_tag, subtag) {\n    if (false\n    /* Updatable */\n    ) {} // TODO: TS 3.7 should allow us to do this via assertion\n\n\n    let tag = _tag;\n\n    if (subtag === CONSTANT_TAG) {\n      tag.subtag = null;\n    } else {\n      tag.subtag = subtag; // subtag could be another type of tag, e.g. CURRENT_TAG or VOLATILE_TAG.\n      // If so, lastChecked/lastValue will be undefined, result in these being\n      // NaN. This is fine, it will force the system to recompute.\n\n      tag.lastChecked = Math.min(tag.lastChecked, subtag.lastChecked);\n      tag.lastValue = Math.max(tag.lastValue, subtag.lastValue);\n    }\n  }\n\n  static dirty(tag) {\n    if (false) {}\n\n    tag.revision = ++$REVISION;\n  }\n\n}\n\nconst dirty = MonomorphicTagImpl.dirty;\nconst update = MonomorphicTagImpl.update; //////////\n\nfunction createTag() {\n  return new MonomorphicTagImpl(0\n  /* Dirtyable */\n  );\n}\nfunction createUpdatableTag() {\n  return new MonomorphicTagImpl(1\n  /* Updatable */\n  );\n} //////////\n\nconst CONSTANT_TAG = new MonomorphicTagImpl(3\n/* Constant */\n);\nfunction isConst({\n  tag\n}) {\n  return tag === CONSTANT_TAG;\n}\nfunction isConstTag(tag) {\n  return tag === CONSTANT_TAG;\n} //////////\n\nclass VolatileTag {\n  [COMPUTE]() {\n    return VOLATILE;\n  }\n\n}\n\nconst VOLATILE_TAG = new VolatileTag(); //////////\n\nclass CurrentTag {\n  [COMPUTE]() {\n    return $REVISION;\n  }\n\n}\n\nconst CURRENT_TAG = new CurrentTag(); //////////\n\nfunction combine(tags) {\n  let optimized = [];\n\n  for (let i = 0, l = tags.length; i < l; i++) {\n    let tag = tags[i];\n    if (tag === CONSTANT_TAG) continue;\n    optimized.push(tag);\n  }\n\n  return createCombinatorTag(optimized);\n}\nfunction createCombinatorTag(tags) {\n  switch (tags.length) {\n    case 0:\n      return CONSTANT_TAG;\n\n    case 1:\n      return tags[0];\n\n    default:\n      let tag = new MonomorphicTagImpl(2\n      /* Combinator */\n      );\n      tag.subtags = tags;\n      return tag;\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js?");
-
-/***/ }),
-
-/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js":
-/*!********************************************************************************!*\
-  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js ***!
-  \********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar replace = String.prototype.replace;\nvar percentTwenties = /%20/g;\n\nvar util = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar Format = {\n  RFC1738: 'RFC1738',\n  RFC3986: 'RFC3986'\n};\nmodule.exports = util.assign({\n  'default': Format.RFC3986,\n  formatters: {\n    RFC1738: function (value) {\n      return replace.call(value, percentTwenties, '+');\n    },\n    RFC3986: function (value) {\n      return String(value);\n    }\n  }\n}, Format);\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js?");
-
-/***/ }),
-
-/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/index.js":
-/*!******************************************************************************!*\
-  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/index.js ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar stringify = __webpack_require__(/*! ./stringify */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js\");\n\nvar parse = __webpack_require__(/*! ./parse */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js\");\n\nvar formats = __webpack_require__(/*! ./formats */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js\");\n\nmodule.exports = {\n  formats: formats,\n  parse: parse,\n  stringify: stringify\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js":
-/*!******************************************************************************!*\
-  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar utils = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar has = Object.prototype.hasOwnProperty;\nvar isArray = Array.isArray;\nvar defaults = {\n  allowDots: false,\n  allowPrototypes: false,\n  arrayLimit: 20,\n  charset: 'utf-8',\n  charsetSentinel: false,\n  comma: false,\n  decoder: utils.decode,\n  delimiter: '&',\n  depth: 5,\n  ignoreQueryPrefix: false,\n  interpretNumericEntities: false,\n  parameterLimit: 1000,\n  parseArrays: true,\n  plainObjects: false,\n  strictNullHandling: false\n};\n\nvar interpretNumericEntities = function (str) {\n  return str.replace(/&#(\\d+);/g, function ($0, numberStr) {\n    return String.fromCharCode(parseInt(numberStr, 10));\n  });\n};\n\nvar parseArrayValue = function (val, options) {\n  if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {\n    return val.split(',');\n  }\n\n  return val;\n}; // This is what browsers will submit when the ✓ character occurs in an\n// application/x-www-form-urlencoded body and the encoding of the page containing\n// the form is iso-8859-1, or when the submitted form has an accept-charset\n// attribute of iso-8859-1. Presumably also with other charsets that do not contain\n// the ✓ character, such as us-ascii.\n\n\nvar isoSentinel = 'utf8=%26%2310003%3B'; // encodeURIComponent('&#10003;')\n// These are the percent-encoded utf-8 octets representing a checkmark, indicating that the request actually is utf-8 encoded.\n\nvar charsetSentinel = 'utf8=%E2%9C%93'; // encodeURIComponent('✓')\n\nvar parseValues = function parseQueryStringValues(str, options) {\n  var obj = {};\n  var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\\?/, '') : str;\n  var limit = options.parameterLimit === Infinity ? undefined : options.parameterLimit;\n  var parts = cleanStr.split(options.delimiter, limit);\n  var skipIndex = -1; // Keep track of where the utf8 sentinel was found\n\n  var i;\n  var charset = options.charset;\n\n  if (options.charsetSentinel) {\n    for (i = 0; i < parts.length; ++i) {\n      if (parts[i].indexOf('utf8=') === 0) {\n        if (parts[i] === charsetSentinel) {\n          charset = 'utf-8';\n        } else if (parts[i] === isoSentinel) {\n          charset = 'iso-8859-1';\n        }\n\n        skipIndex = i;\n        i = parts.length; // The eslint settings do not allow break;\n      }\n    }\n  }\n\n  for (i = 0; i < parts.length; ++i) {\n    if (i === skipIndex) {\n      continue;\n    }\n\n    var part = parts[i];\n    var bracketEqualsPos = part.indexOf(']=');\n    var pos = bracketEqualsPos === -1 ? part.indexOf('=') : bracketEqualsPos + 1;\n    var key, val;\n\n    if (pos === -1) {\n      key = options.decoder(part, defaults.decoder, charset, 'key');\n      val = options.strictNullHandling ? null : '';\n    } else {\n      key = options.decoder(part.slice(0, pos), defaults.decoder, charset, 'key');\n      val = utils.maybeMap(parseArrayValue(part.slice(pos + 1), options), function (encodedVal) {\n        return options.decoder(encodedVal, defaults.decoder, charset, 'value');\n      });\n    }\n\n    if (val && options.interpretNumericEntities && charset === 'iso-8859-1') {\n      val = interpretNumericEntities(val);\n    }\n\n    if (part.indexOf('[]=') > -1) {\n      val = isArray(val) ? [val] : val;\n    }\n\n    if (has.call(obj, key)) {\n      obj[key] = utils.combine(obj[key], val);\n    } else {\n      obj[key] = val;\n    }\n  }\n\n  return obj;\n};\n\nvar parseObject = function (chain, val, options, valuesParsed) {\n  var leaf = valuesParsed ? val : parseArrayValue(val, options);\n\n  for (var i = chain.length - 1; i >= 0; --i) {\n    var obj;\n    var root = chain[i];\n\n    if (root === '[]' && options.parseArrays) {\n      obj = [].concat(leaf);\n    } else {\n      obj = options.plainObjects ? Object.create(null) : {};\n      var cleanRoot = root.charAt(0) === '[' && root.charAt(root.length - 1) === ']' ? root.slice(1, -1) : root;\n      var index = parseInt(cleanRoot, 10);\n\n      if (!options.parseArrays && cleanRoot === '') {\n        obj = {\n          0: leaf\n        };\n      } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && options.parseArrays && index <= options.arrayLimit) {\n        obj = [];\n        obj[index] = leaf;\n      } else {\n        obj[cleanRoot] = leaf;\n      }\n    }\n\n    leaf = obj; // eslint-disable-line no-param-reassign\n  }\n\n  return leaf;\n};\n\nvar parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {\n  if (!givenKey) {\n    return;\n  } // Transform dot notation to bracket notation\n\n\n  var key = options.allowDots ? givenKey.replace(/\\.([^.[]+)/g, '[$1]') : givenKey; // The regex chunks\n\n  var brackets = /(\\[[^[\\]]*])/;\n  var child = /(\\[[^[\\]]*])/g; // Get the parent\n\n  var segment = options.depth > 0 && brackets.exec(key);\n  var parent = segment ? key.slice(0, segment.index) : key; // Stash the parent if it exists\n\n  var keys = [];\n\n  if (parent) {\n    // If we aren't using plain objects, optionally prefix keys that would overwrite object prototype properties\n    if (!options.plainObjects && has.call(Object.prototype, parent)) {\n      if (!options.allowPrototypes) {\n        return;\n      }\n    }\n\n    keys.push(parent);\n  } // Loop through children appending to the array until we hit depth\n\n\n  var i = 0;\n\n  while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {\n    i += 1;\n\n    if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {\n      if (!options.allowPrototypes) {\n        return;\n      }\n    }\n\n    keys.push(segment[1]);\n  } // If there's a remainder, just add whatever is left\n\n\n  if (segment) {\n    keys.push('[' + key.slice(segment.index) + ']');\n  }\n\n  return parseObject(keys, val, options, valuesParsed);\n};\n\nvar normalizeParseOptions = function normalizeParseOptions(opts) {\n  if (!opts) {\n    return defaults;\n  }\n\n  if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {\n    throw new TypeError('Decoder has to be a function.');\n  }\n\n  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {\n    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');\n  }\n\n  var charset = typeof opts.charset === 'undefined' ? defaults.charset : opts.charset;\n  return {\n    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,\n    allowPrototypes: typeof opts.allowPrototypes === 'boolean' ? opts.allowPrototypes : defaults.allowPrototypes,\n    arrayLimit: typeof opts.arrayLimit === 'number' ? opts.arrayLimit : defaults.arrayLimit,\n    charset: charset,\n    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,\n    comma: typeof opts.comma === 'boolean' ? opts.comma : defaults.comma,\n    decoder: typeof opts.decoder === 'function' ? opts.decoder : defaults.decoder,\n    delimiter: typeof opts.delimiter === 'string' || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults.delimiter,\n    // eslint-disable-next-line no-implicit-coercion, no-extra-parens\n    depth: typeof opts.depth === 'number' || opts.depth === false ? +opts.depth : defaults.depth,\n    ignoreQueryPrefix: opts.ignoreQueryPrefix === true,\n    interpretNumericEntities: typeof opts.interpretNumericEntities === 'boolean' ? opts.interpretNumericEntities : defaults.interpretNumericEntities,\n    parameterLimit: typeof opts.parameterLimit === 'number' ? opts.parameterLimit : defaults.parameterLimit,\n    parseArrays: opts.parseArrays !== false,\n    plainObjects: typeof opts.plainObjects === 'boolean' ? opts.plainObjects : defaults.plainObjects,\n    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling\n  };\n};\n\nmodule.exports = function (str, opts) {\n  var options = normalizeParseOptions(opts);\n\n  if (str === '' || str === null || typeof str === 'undefined') {\n    return options.plainObjects ? Object.create(null) : {};\n  }\n\n  var tempObj = typeof str === 'string' ? parseValues(str, options) : str;\n  var obj = options.plainObjects ? Object.create(null) : {}; // Iterate over the keys and setup the new object\n\n  var keys = Object.keys(tempObj);\n\n  for (var i = 0; i < keys.length; ++i) {\n    var key = keys[i];\n    var newObj = parseKeys(key, tempObj[key], options, typeof str === 'string');\n    obj = utils.merge(obj, newObj, options);\n  }\n\n  return utils.compact(obj);\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/parse.js?");
-
-/***/ }),
-
-/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js":
-/*!**********************************************************************************!*\
-  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar utils = __webpack_require__(/*! ./utils */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js\");\n\nvar formats = __webpack_require__(/*! ./formats */ \"./node_modules/ember-query-params-service/node_modules/qs/lib/formats.js\");\n\nvar has = Object.prototype.hasOwnProperty;\nvar arrayPrefixGenerators = {\n  brackets: function brackets(prefix) {\n    return prefix + '[]';\n  },\n  comma: 'comma',\n  indices: function indices(prefix, key) {\n    return prefix + '[' + key + ']';\n  },\n  repeat: function repeat(prefix) {\n    return prefix;\n  }\n};\nvar isArray = Array.isArray;\nvar push = Array.prototype.push;\n\nvar pushToArray = function (arr, valueOrArray) {\n  push.apply(arr, isArray(valueOrArray) ? valueOrArray : [valueOrArray]);\n};\n\nvar toISO = Date.prototype.toISOString;\nvar defaultFormat = formats['default'];\nvar defaults = {\n  addQueryPrefix: false,\n  allowDots: false,\n  charset: 'utf-8',\n  charsetSentinel: false,\n  delimiter: '&',\n  encode: true,\n  encoder: utils.encode,\n  encodeValuesOnly: false,\n  format: defaultFormat,\n  formatter: formats.formatters[defaultFormat],\n  // deprecated\n  indices: false,\n  serializeDate: function serializeDate(date) {\n    return toISO.call(date);\n  },\n  skipNulls: false,\n  strictNullHandling: false\n};\n\nvar isNonNullishPrimitive = function isNonNullishPrimitive(v) {\n  return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' || typeof v === 'symbol' || typeof v === 'bigint';\n};\n\nvar stringify = function stringify(object, prefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, formatter, encodeValuesOnly, charset) {\n  var obj = object;\n\n  if (typeof filter === 'function') {\n    obj = filter(prefix, obj);\n  } else if (obj instanceof Date) {\n    obj = serializeDate(obj);\n  } else if (generateArrayPrefix === 'comma' && isArray(obj)) {\n    obj = utils.maybeMap(obj, function (value) {\n      if (value instanceof Date) {\n        return serializeDate(value);\n      }\n\n      return value;\n    }).join(',');\n  }\n\n  if (obj === null) {\n    if (strictNullHandling) {\n      return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key') : prefix;\n    }\n\n    obj = '';\n  }\n\n  if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {\n    if (encoder) {\n      var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key');\n      return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value'))];\n    }\n\n    return [formatter(prefix) + '=' + formatter(String(obj))];\n  }\n\n  var values = [];\n\n  if (typeof obj === 'undefined') {\n    return values;\n  }\n\n  var objKeys;\n\n  if (isArray(filter)) {\n    objKeys = filter;\n  } else {\n    var keys = Object.keys(obj);\n    objKeys = sort ? keys.sort(sort) : keys;\n  }\n\n  for (var i = 0; i < objKeys.length; ++i) {\n    var key = objKeys[i];\n    var value = obj[key];\n\n    if (skipNulls && value === null) {\n      continue;\n    }\n\n    var keyPrefix = isArray(obj) ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix : prefix + (allowDots ? '.' + key : '[' + key + ']');\n    pushToArray(values, stringify(value, keyPrefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, formatter, encodeValuesOnly, charset));\n  }\n\n  return values;\n};\n\nvar normalizeStringifyOptions = function normalizeStringifyOptions(opts) {\n  if (!opts) {\n    return defaults;\n  }\n\n  if (opts.encoder !== null && opts.encoder !== undefined && typeof opts.encoder !== 'function') {\n    throw new TypeError('Encoder has to be a function.');\n  }\n\n  var charset = opts.charset || defaults.charset;\n\n  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {\n    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');\n  }\n\n  var format = formats['default'];\n\n  if (typeof opts.format !== 'undefined') {\n    if (!has.call(formats.formatters, opts.format)) {\n      throw new TypeError('Unknown format option provided.');\n    }\n\n    format = opts.format;\n  }\n\n  var formatter = formats.formatters[format];\n  var filter = defaults.filter;\n\n  if (typeof opts.filter === 'function' || isArray(opts.filter)) {\n    filter = opts.filter;\n  }\n\n  return {\n    addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opts.addQueryPrefix : defaults.addQueryPrefix,\n    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,\n    charset: charset,\n    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,\n    delimiter: typeof opts.delimiter === 'undefined' ? defaults.delimiter : opts.delimiter,\n    encode: typeof opts.encode === 'boolean' ? opts.encode : defaults.encode,\n    encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,\n    encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults.encodeValuesOnly,\n    filter: filter,\n    formatter: formatter,\n    serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults.serializeDate,\n    skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults.skipNulls,\n    sort: typeof opts.sort === 'function' ? opts.sort : null,\n    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling\n  };\n};\n\nmodule.exports = function (object, opts) {\n  var obj = object;\n  var options = normalizeStringifyOptions(opts);\n  var objKeys;\n  var filter;\n\n  if (typeof options.filter === 'function') {\n    filter = options.filter;\n    obj = filter('', obj);\n  } else if (isArray(options.filter)) {\n    filter = options.filter;\n    objKeys = filter;\n  }\n\n  var keys = [];\n\n  if (typeof obj !== 'object' || obj === null) {\n    return '';\n  }\n\n  var arrayFormat;\n\n  if (opts && opts.arrayFormat in arrayPrefixGenerators) {\n    arrayFormat = opts.arrayFormat;\n  } else if (opts && 'indices' in opts) {\n    arrayFormat = opts.indices ? 'indices' : 'repeat';\n  } else {\n    arrayFormat = 'indices';\n  }\n\n  var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];\n\n  if (!objKeys) {\n    objKeys = Object.keys(obj);\n  }\n\n  if (options.sort) {\n    objKeys.sort(options.sort);\n  }\n\n  for (var i = 0; i < objKeys.length; ++i) {\n    var key = objKeys[i];\n\n    if (options.skipNulls && obj[key] === null) {\n      continue;\n    }\n\n    pushToArray(keys, stringify(obj[key], key, generateArrayPrefix, options.strictNullHandling, options.skipNulls, options.encode ? options.encoder : null, options.filter, options.sort, options.allowDots, options.serializeDate, options.formatter, options.encodeValuesOnly, options.charset));\n  }\n\n  var joined = keys.join(options.delimiter);\n  var prefix = options.addQueryPrefix === true ? '?' : '';\n\n  if (options.charsetSentinel) {\n    if (options.charset === 'iso-8859-1') {\n      // encodeURIComponent('&#10003;'), the \"numeric entity\" representation of a checkmark\n      prefix += 'utf8=%26%2310003%3B&';\n    } else {\n      // encodeURIComponent('✓')\n      prefix += 'utf8=%E2%9C%93&';\n    }\n  }\n\n  return joined.length > 0 ? prefix + joined : '';\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/stringify.js?");
-
-/***/ }),
-
-/***/ "./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js":
-/*!******************************************************************************!*\
-  !*** ./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nvar has = Object.prototype.hasOwnProperty;\nvar isArray = Array.isArray;\n\nvar hexTable = function () {\n  var array = [];\n\n  for (var i = 0; i < 256; ++i) {\n    array.push('%' + ((i < 16 ? '0' : '') + i.toString(16)).toUpperCase());\n  }\n\n  return array;\n}();\n\nvar compactQueue = function compactQueue(queue) {\n  while (queue.length > 1) {\n    var item = queue.pop();\n    var obj = item.obj[item.prop];\n\n    if (isArray(obj)) {\n      var compacted = [];\n\n      for (var j = 0; j < obj.length; ++j) {\n        if (typeof obj[j] !== 'undefined') {\n          compacted.push(obj[j]);\n        }\n      }\n\n      item.obj[item.prop] = compacted;\n    }\n  }\n};\n\nvar arrayToObject = function arrayToObject(source, options) {\n  var obj = options && options.plainObjects ? Object.create(null) : {};\n\n  for (var i = 0; i < source.length; ++i) {\n    if (typeof source[i] !== 'undefined') {\n      obj[i] = source[i];\n    }\n  }\n\n  return obj;\n};\n\nvar merge = function merge(target, source, options) {\n  /* eslint no-param-reassign: 0 */\n  if (!source) {\n    return target;\n  }\n\n  if (typeof source !== 'object') {\n    if (isArray(target)) {\n      target.push(source);\n    } else if (target && typeof target === 'object') {\n      if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {\n        target[source] = true;\n      }\n    } else {\n      return [target, source];\n    }\n\n    return target;\n  }\n\n  if (!target || typeof target !== 'object') {\n    return [target].concat(source);\n  }\n\n  var mergeTarget = target;\n\n  if (isArray(target) && !isArray(source)) {\n    mergeTarget = arrayToObject(target, options);\n  }\n\n  if (isArray(target) && isArray(source)) {\n    source.forEach(function (item, i) {\n      if (has.call(target, i)) {\n        var targetItem = target[i];\n\n        if (targetItem && typeof targetItem === 'object' && item && typeof item === 'object') {\n          target[i] = merge(targetItem, item, options);\n        } else {\n          target.push(item);\n        }\n      } else {\n        target[i] = item;\n      }\n    });\n    return target;\n  }\n\n  return Object.keys(source).reduce(function (acc, key) {\n    var value = source[key];\n\n    if (has.call(acc, key)) {\n      acc[key] = merge(acc[key], value, options);\n    } else {\n      acc[key] = value;\n    }\n\n    return acc;\n  }, mergeTarget);\n};\n\nvar assign = function assignSingleSource(target, source) {\n  return Object.keys(source).reduce(function (acc, key) {\n    acc[key] = source[key];\n    return acc;\n  }, target);\n};\n\nvar decode = function (str, decoder, charset) {\n  var strWithoutPlus = str.replace(/\\+/g, ' ');\n\n  if (charset === 'iso-8859-1') {\n    // unescape never throws, no try...catch needed:\n    return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);\n  } // utf-8\n\n\n  try {\n    return decodeURIComponent(strWithoutPlus);\n  } catch (e) {\n    return strWithoutPlus;\n  }\n};\n\nvar encode = function encode(str, defaultEncoder, charset) {\n  // This code was originally written by Brian White (mscdex) for the io.js core querystring library.\n  // It has been adapted here for stricter adherence to RFC 3986\n  if (str.length === 0) {\n    return str;\n  }\n\n  var string = str;\n\n  if (typeof str === 'symbol') {\n    string = Symbol.prototype.toString.call(str);\n  } else if (typeof str !== 'string') {\n    string = String(str);\n  }\n\n  if (charset === 'iso-8859-1') {\n    return escape(string).replace(/%u[0-9a-f]{4}/gi, function ($0) {\n      return '%26%23' + parseInt($0.slice(2), 16) + '%3B';\n    });\n  }\n\n  var out = '';\n\n  for (var i = 0; i < string.length; ++i) {\n    var c = string.charCodeAt(i);\n\n    if (c === 0x2D // -\n    || c === 0x2E // .\n    || c === 0x5F // _\n    || c === 0x7E // ~\n    || c >= 0x30 && c <= 0x39 // 0-9\n    || c >= 0x41 && c <= 0x5A // a-z\n    || c >= 0x61 && c <= 0x7A // A-Z\n    ) {\n        out += string.charAt(i);\n        continue;\n      }\n\n    if (c < 0x80) {\n      out = out + hexTable[c];\n      continue;\n    }\n\n    if (c < 0x800) {\n      out = out + (hexTable[0xC0 | c >> 6] + hexTable[0x80 | c & 0x3F]);\n      continue;\n    }\n\n    if (c < 0xD800 || c >= 0xE000) {\n      out = out + (hexTable[0xE0 | c >> 12] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F]);\n      continue;\n    }\n\n    i += 1;\n    c = 0x10000 + ((c & 0x3FF) << 10 | string.charCodeAt(i) & 0x3FF);\n    out += hexTable[0xF0 | c >> 18] + hexTable[0x80 | c >> 12 & 0x3F] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F];\n  }\n\n  return out;\n};\n\nvar compact = function compact(value) {\n  var queue = [{\n    obj: {\n      o: value\n    },\n    prop: 'o'\n  }];\n  var refs = [];\n\n  for (var i = 0; i < queue.length; ++i) {\n    var item = queue[i];\n    var obj = item.obj[item.prop];\n    var keys = Object.keys(obj);\n\n    for (var j = 0; j < keys.length; ++j) {\n      var key = keys[j];\n      var val = obj[key];\n\n      if (typeof val === 'object' && val !== null && refs.indexOf(val) === -1) {\n        queue.push({\n          obj: obj,\n          prop: key\n        });\n        refs.push(val);\n      }\n    }\n  }\n\n  compactQueue(queue);\n  return value;\n};\n\nvar isRegExp = function isRegExp(obj) {\n  return Object.prototype.toString.call(obj) === '[object RegExp]';\n};\n\nvar isBuffer = function isBuffer(obj) {\n  if (!obj || typeof obj !== 'object') {\n    return false;\n  }\n\n  return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));\n};\n\nvar combine = function combine(a, b) {\n  return [].concat(a, b);\n};\n\nvar maybeMap = function maybeMap(val, fn) {\n  if (isArray(val)) {\n    var mapped = [];\n\n    for (var i = 0; i < val.length; i += 1) {\n      mapped.push(fn(val[i]));\n    }\n\n    return mapped;\n  }\n\n  return fn(val);\n};\n\nmodule.exports = {\n  arrayToObject: arrayToObject,\n  assign: assign,\n  combine: combine,\n  compact: compact,\n  decode: decode,\n  encode: encode,\n  isBuffer: isBuffer,\n  isRegExp: isRegExp,\n  maybeMap: maybeMap,\n  merge: merge\n};\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/ember-query-params-service/node_modules/qs/lib/utils.js?");
-
-/***/ })
-
-}]);//# sourceMappingURL=vendor.map
+/******/ });//# sourceMappingURL=vendor.map

@@ -296,6 +296,32 @@ define("overlay/tests/unit/instance-initializers/spotify-test", ["overlay/instan
     });
   });
 });
+define("overlay/tests/unit/instance-initializers/twitch-chat-test", ["overlay/instance-initializers/twitch-chat", "qunit"], function (_twitchChat, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Instance Initializer | twitch-chat', function (hooks) {
+    hooks.beforeEach(function () {
+      this.TestApplication = Ember.Application.extend();
+      this.TestApplication.instanceInitializer({
+        name: 'initializer under test',
+        initialize: _twitchChat.initialize
+      });
+      this.application = this.TestApplication.create({
+        autoboot: false
+      });
+      this.instance = this.application.buildInstance();
+    });
+    hooks.afterEach(function () {
+      Ember.run(this.instance, 'destroy');
+      Ember.run(this.application, 'destroy');
+    }); // Replace this with your real tests.
+
+    (0, _qunit.test)('it works', async function (assert) {
+      await this.instance.boot();
+      assert.ok(true);
+    });
+  });
+});
 define("overlay/tests/unit/models/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
@@ -381,6 +407,51 @@ define("overlay/tests/unit/services/spotify-test", ["qunit", "ember-qunit"], fun
     (0, _qunit.test)('it exists', function (assert) {
       let service = this.owner.lookup('service:spotify');
       assert.ok(service);
+    });
+  });
+});
+define("overlay/tests/unit/services/twitch-chat-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Service | twitch-chat', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks); // Replace this with your real tests.
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let service = this.owner.lookup('service:twitch-chat');
+      assert.ok(service);
+    });
+  });
+});
+define("overlay/tests/unit/utils/command-base-test", ["overlay/utils/command-base", "qunit"], function (_commandBase, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Utility | command-base', function () {
+    // Replace this with your real tests.
+    (0, _qunit.test)('it works', function (assert) {
+      let result = (0, _commandBase.default)();
+      assert.ok(result);
+    });
+  });
+});
+define("overlay/tests/unit/utils/get-command-test", ["overlay/utils/get-command", "qunit"], function (_getCommand, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Utility | get-command', function () {
+    // Replace this with your real tests.
+    (0, _qunit.test)('it works', function (assert) {
+      let result = (0, _getCommand.default)();
+      assert.ok(result);
+    });
+  });
+});
+define("overlay/tests/unit/utils/test-command-test", ["overlay/utils/test-command", "qunit"], function (_testCommand, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Utility | test-command', function () {
+    // Replace this with your real tests.
+    (0, _qunit.test)('it works', function (assert) {
+      let result = (0, _testCommand.default)();
+      assert.ok(result);
     });
   });
 });

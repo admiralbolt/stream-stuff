@@ -11,6 +11,16 @@
 
   <br><br>
 
+  <div local-class="twitch-chat-controls">
+    {{#if botIsAlive}}
+      <button class="btn" {{action "stopBot"}}>Stop Bot</button>
+    {{else}}
+      <button class="btn" {{action "startBot"}}>Start Bot</button>
+    {{/if}}
+  </div>
+
+  <br><br>
+
   <div local-class="spotify-controls">
     <button class="btn" {{action "authorizeSpotify"}}>Authorize Spotify</button>
     <button class="btn" {{action "getTokens"}}>Get Tokens</button>
