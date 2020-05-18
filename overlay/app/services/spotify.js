@@ -39,10 +39,14 @@ export default class SpotifyService extends Service {
 
   async getTokens(useRefresh) {
     let data = {
-      grant_type: 'authorization_code',
-      code: useRefresh ? this.refreshToken : this.code,
+      grant_type: useRefresh ? 'refresh_token' : 'authorization_code',
+      code: this.code,
       redirect_uri: REDIRECT_URL
     };
+
+    if (useRefresh) {
+      data.refresh_token = this.refreshToken;
+    }
 
     let postData = Object.keys(data).map(key =>
       `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
@@ -62,10 +66,12 @@ export default class SpotifyService extends Service {
     let responseData = await response.json();
 
     localStorage.setItem('spotifyAccessToken', responseData.access_token);
-    localStorage.setItem('spotifyRefreshToken', responseData.refresh_token);
-
     this.accessToken = responseData.access_token;
-    this.refreshToken = responseData.refresh_token;
+
+    if (responseData.refresh_token) {
+      localStorage.setItem('spotifyRefreshToken', responseData.refresh_token);
+      this.refreshToken = responseData.refresh_token;
+    }
   }
 
   async refreshAndRetry() {

@@ -1,12 +1,11 @@
 import TestCommand from 'overlay/utils/test-command';
 
+let COMMANDS = [new TestCommand()];
+let COMMAND_MAP = {};
+COMMANDS.reduce(function(result, item, index, array) {
+  result[item.name] = item;
+}, COMMAND_MAP);
+
 export default function getCommand(name) {
-  let commands = [new TestCommand()];
-
-  let commandMap = {};
-  commands.reduce(function(result, item, index, array) {
-    result[item.name] = item;
-  }, commandMap);
-
-  return commandMap[name] || undefined;
+  return COMMAND_MAP[name] || undefined;
 }

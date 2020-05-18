@@ -11,6 +11,12 @@ export default class MeleeLayoutComponent extends SocketClientComponent {
 
   constructor() {
     super(...arguments, 7000);
+    this.playerNames = {
+      player1: localStorage.getItem('meleePlayer1') || '',
+      player2: localStorage.getItem('meleePlayer2') || '',
+      player3: localStorage.getItem('meleePlayer3') || '',
+      player4: localStorage.getItem('meleePlayer4') || ''
+    };
   }
 
   messageHandler(event) {

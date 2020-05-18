@@ -13,7 +13,6 @@ export default class ControlPanelComponent extends Component {
   @service spotify;
   @service twitchChat;
 
-  layoutMeleeSocket = null;
   spotifySocket = null;
   @tracked isPolling = false;
   @alias('twitchChat.botIsAlive') botIsAlive;
@@ -21,27 +20,11 @@ export default class ControlPanelComponent extends Component {
   // A list of all sounds loaded from the rest api.
   sounds = null;
 
-  player1 = 'Me';
-  player2 = 'BrickLee';
-  player3 = '';
-  player4 = '';
-
   constructor() {
     super(...arguments);
-    this.layoutMeleeSocket = this.websockets.socketFor('ws://localhost:7000/');
     this.spotifySocket = this.websockets.socketFor('ws://localhost:7001/');
     this.isPolling = localStorage.getItem('spotifyPolling');
     if (this.isPolling) this.pollingTask.perform();
-  }
-
-  @action
-  updatePlayerNames() {
-    this.layoutMeleeSocket.send({
-      player1: this.player1,
-      player2: this.player2,
-      player3: this.player3,
-      player4: this.player4
-    }, true);
   }
 
   @action

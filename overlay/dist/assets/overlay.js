@@ -104,8 +104,6 @@
 
       _initializerDefineProperty(this, "twitchChat", _descriptor3, this);
 
-      _defineProperty(this, "layoutMeleeSocket", null);
-
       _defineProperty(this, "spotifySocket", null);
 
       _initializerDefineProperty(this, "isPolling", _descriptor4, this);
@@ -114,27 +112,9 @@
 
       _defineProperty(this, "sounds", null);
 
-      _defineProperty(this, "player1", 'Me');
-
-      _defineProperty(this, "player2", 'BrickLee');
-
-      _defineProperty(this, "player3", '');
-
-      _defineProperty(this, "player4", '');
-
-      this.layoutMeleeSocket = this.websockets.socketFor('ws://localhost:7000/');
       this.spotifySocket = this.websockets.socketFor('ws://localhost:7001/');
       this.isPolling = localStorage.getItem('spotifyPolling');
       if (this.isPolling) this.pollingTask.perform();
-    }
-
-    updatePlayerNames() {
-      this.layoutMeleeSocket.send({
-        player1: this.player1,
-        player2: this.player2,
-        player3: this.player3,
-        player4: this.player4
-      }, true);
     }
 
     startBot() {
@@ -220,7 +200,7 @@
     enumerable: true,
     writable: true,
     initializer: null
-  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "startBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "startBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "stopBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "stopBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "authorizeSpotify", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "authorizeSpotify"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "getTokens", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "getTokens"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "refresh", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "refresh"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "pollingTask", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "pollingTask"), _class.prototype)), _class));
+  }), _applyDecoratedDescriptor(_class.prototype, "startBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "startBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "stopBot", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "stopBot"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "authorizeSpotify", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "authorizeSpotify"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "getTokens", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "getTokens"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "refresh", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "refresh"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "pollingTask", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "pollingTask"), _class.prototype)), _class));
   _exports.default = ControlPanelComponent;
 });
 ;define("overlay/components/control-panel/styles", ["exports"], function (_exports) {
@@ -242,8 +222,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "gFE9WQHh",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,81,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,2,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,122,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,163,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,5,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n    \"],[1,0,0,0,[31,204,5,[27,[26,3,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,6,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,7,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"twitch-chat-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,9,\"BlockHead\"],[]],[[27,[26,8,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopBot\"],null],[10],[1,1,0,0,\"Stop Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startBot\"],null],[10],[1,1,0,0,\"Start Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"spotify-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"authorizeSpotify\"],null],[10],[1,1,0,0,\"Authorize Spotify\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"getTokens\"],null],[10],[1,1,0,0,\"Get Tokens\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"refresh\"],null],[10],[1,1,0,0,\"Refresh\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,9,\"BlockHead\"],[]],[[27,[26,10,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopPolling\"],null],[10],[1,1,0,0,\"Stop Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startPolling\"],null],[10],[1,1,0,0,\"Start Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[7,\"sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"action\",\"local-class\",\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"botIsAlive\",\"if\",\"isPolling\"]}",
+    "id": "yYAeyVNf",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\\n  \"],[7,\"melee-controls\",[],[[],[]],null],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"twitch-chat-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,3,\"BlockHead\"],[]],[[27,[26,2,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopBot\"],null],[10],[1,1,0,0,\"Stop Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startBot\"],null],[10],[1,1,0,0,\"Start Bot\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,1,\"CallHead\"],[]],[\"spotify-controls\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"authorizeSpotify\"],null],[10],[1,1,0,0,\"Authorize Spotify\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"getTokens\"],null],[10],[1,1,0,0,\"Get Tokens\"],[11],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"refresh\"],null],[10],[1,1,0,0,\"Refresh\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,3,\"BlockHead\"],[]],[[27,[26,4,\"Expression\"],[]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"stopPolling\"],null],[10],[1,1,0,0,\"Stop Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"startPolling\"],null],[10],[1,1,0,0,\"Start Polling\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"br\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[7,\"sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"action\",\"local-class\",\"botIsAlive\",\"if\",\"isPolling\"]}",
     "meta": {
       "moduleName": "overlay/components/control-panel/template.hbs"
     }
@@ -290,6 +270,96 @@
     }
   });
 });
+;define("overlay/components/melee-controls/component", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let MeleeControlsComponent = (_class = (_temp = class MeleeControlsComponent extends _component.default {
+    constructor() {
+      super(...arguments);
+
+      _initializerDefineProperty(this, "websockets", _descriptor, this);
+
+      _defineProperty(this, "socket", null);
+
+      _defineProperty(this, "player1", '');
+
+      _defineProperty(this, "player2", '');
+
+      _defineProperty(this, "player3", '');
+
+      _defineProperty(this, "player4", '');
+
+      this.socket = this.websockets.socketFor('ws://localhost:7000/');
+      this.player1 = localStorage.getItem('meleePlayer1') || '';
+      this.player2 = localStorage.getItem('meleePlayer2') || '';
+      this.player3 = localStorage.getItem('meleePlayer3') || '';
+      this.player4 = localStorage.getItem('meleePlayer4') || '';
+    }
+
+    updatePlayerNames() {
+      localStorage.setItem('meleePlayer1', this.player1);
+      localStorage.setItem('meleePlayer2', this.player2);
+      localStorage.setItem('meleePlayer3', this.player3);
+      localStorage.setItem('meleePlayer4', this.player4);
+      this.socket.send({
+        player1: this.player1,
+        player2: this.player2,
+        player3: this.player3,
+        player4: this.player4
+      }, true);
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "websockets", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _applyDecoratedDescriptor(_class.prototype, "updatePlayerNames", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updatePlayerNames"), _class.prototype)), _class);
+  _exports.default = MeleeControlsComponent;
+});
+;define("overlay/components/melee-controls/styles", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  var _default = {};
+  _exports.default = _default;
+});
+;define("overlay/components/melee-controls/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "GyaqENGB",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/melee-controls/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,40,5,[27,[26,2,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,1,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,79,5,[27,[26,2,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,3,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,118,5,[27,[26,2,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,4,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,157,5,[27,[26,2,\"CallHead\"],[]],null,[[\"type\",\"value\"],[\"text\",[27,[26,5,\"Expression\"],[]]]]]],[1,1,0,0,\"\\n\\n  \"],[9,\"button\",false],[23,\"class\",\"btn\",null],[3,0,0,[27,[26,7,\"ModifierHead\"],[]],[[27,[24,0],[]],[27,[26,6,\"Expression\"],[]]],null],[10],[1,1,0,0,\"Update Player Names\"],[11],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"player1\",\"input\",\"player2\",\"player3\",\"player4\",\"updatePlayerNames\",\"action\"]}",
+    "meta": {
+      "moduleName": "overlay/components/melee-controls/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
 ;define("overlay/components/melee-layout/component", ["exports", "overlay/components/socket-client/component"], function (_exports, _component) {
   "use strict";
 
@@ -313,6 +383,13 @@
       super(...arguments, 7000);
 
       _initializerDefineProperty(this, "playerNames", _descriptor, this);
+
+      this.playerNames = {
+        player1: localStorage.getItem('meleePlayer1') || '',
+        player2: localStorage.getItem('meleePlayer2') || '',
+        player3: localStorage.getItem('meleePlayer3') || '',
+        player4: localStorage.getItem('meleePlayer4') || ''
+      };
     }
 
     messageHandler(event) {
@@ -1807,10 +1884,15 @@
 
     async getTokens(useRefresh) {
       let data = {
-        grant_type: 'authorization_code',
-        code: useRefresh ? this.refreshToken : this.code,
+        grant_type: useRefresh ? 'refresh_token' : 'authorization_code',
+        code: this.code,
         redirect_uri: REDIRECT_URL
       };
+
+      if (useRefresh) {
+        data.refresh_token = this.refreshToken;
+      }
+
       let postData = Object.keys(data).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`).join('&');
       let response = await fetch(TOKEN_URL, {
         method: 'POST',
@@ -1824,9 +1906,12 @@
       });
       let responseData = await response.json();
       localStorage.setItem('spotifyAccessToken', responseData.access_token);
-      localStorage.setItem('spotifyRefreshToken', responseData.refresh_token);
       this.accessToken = responseData.access_token;
-      this.refreshToken = responseData.refresh_token;
+
+      if (responseData.refresh_token) {
+        localStorage.setItem('spotifyRefreshToken', responseData.refresh_token);
+        this.refreshToken = responseData.refresh_token;
+      }
     }
 
     async refreshAndRetry() {
@@ -2227,14 +2312,14 @@
     value: true
   });
   _exports.default = getCommand;
+  let COMMANDS = [new _testCommand.default()];
+  let COMMAND_MAP = {};
+  COMMANDS.reduce(function (result, item, index, array) {
+    result[item.name] = item;
+  }, COMMAND_MAP);
 
   function getCommand(name) {
-    let commands = [new _testCommand.default()];
-    let commandMap = {};
-    commands.reduce(function (result, item, index, array) {
-      result[item.name] = item;
-    }, commandMap);
-    return commandMap[name] || undefined;
+    return COMMAND_MAP[name] || undefined;
   }
 });
 ;define("overlay/utils/test-command", ["exports", "commander", "overlay/utils/command-base"], function (_exports, _commander, _commandBase) {
@@ -2292,7 +2377,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+3e7552b8"});
+            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+f5b460eb"});
           }
         
 //# sourceMappingURL=overlay.map
