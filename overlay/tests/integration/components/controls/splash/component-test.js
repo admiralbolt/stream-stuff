@@ -3,22 +3,22 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 
-module('Integration | Component | melee-layout', function(hooks) {
+module('Integration | Component | controls/splash', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`<MeleeLayout />`);
+    await render(hbs`<Controls::Splash />`);
 
     assert.equal(this.element.textContent.trim(), '');
 
     // Template block usage:
     await render(hbs`
-      <MeleeLayout>
+      <Controls::Splash>
         template block text
-      </MeleeLayout>
+      </Controls::Splash>
     `);
 
     assert.equal(this.element.textContent.trim(), 'template block text');

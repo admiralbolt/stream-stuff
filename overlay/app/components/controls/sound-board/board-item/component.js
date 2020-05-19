@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { isEmpty, isNone } from '@ember/utils';
 import { A } from '@ember/array';
-import config from '../../../config/environment';
+import ENV from 'overlay/config/environment';
 
 export default class BoardItemComponent extends Component {
   @service store;
@@ -32,7 +32,7 @@ export default class BoardItemComponent extends Component {
       Accept: 'application/vnd.api+json'
     };
     headers['Content-Disposition'] = `attachment; filename=${this.sound_file.name}`;
-    return this.sound_file.upload(`${config.host}/sounds/upload/?id=${id}`, {
+    return this.sound_file.upload(`${ENV.host}/sounds/upload/?id=${id}`, {
       headers: headers
     });
   }
@@ -49,7 +49,7 @@ export default class BoardItemComponent extends Component {
 
   @action
   play() {
-    fetch(`${config.host}/play_sound/?sound_id=${this.sound.id}`);
+    fetch(`${ENV.host}/play_sound/?sound_id=${this.sound.id}`);
   }
 
   @action

@@ -1,0 +1,9 @@
+<div local-class="melee-controls">
+  <BsForm  @model={{this}} as |form|>
+    <form.element @controlType="text" @label="Player1" @property="player1" />
+    <form.element @controlType="text" @label="Player2" @property="player2" />
+    <form.element @controlType="text" @label="Player3" @property="player3" />
+    <form.element @controlType="text" @label="Player4" @property="player4" />
+    <BsButton @type="primary" @onClick={{action "updatePlayerNames"}}>Update Player Names</BsButton>
+  </BsForm>
+</div>

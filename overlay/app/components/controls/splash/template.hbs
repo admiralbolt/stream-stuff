@@ -1,0 +1,13 @@
+<div local-class="splash-controls">
+  <BsForm @formLayout="vertical" @model={{this}} as |form|>
+    <form.element @controlType="text" @label="Title" @property="title" />
+    <form.element @controlType="textarea" @label="Stream Preview" @property="preview" />
+    <form.element @controlType="number" @label="Timer" @property="timer" />
+    <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
+    {{#if timerRunning}}
+      <BsButton @type="primary" @onClick={{action "stopTimer"}}>Stop Timer</BsButton>
+    {{else}}
+      <BsButton @type="primary" @onClick={{action "startTimer"}}>Start Timer</BsButton>
+    {{/if}}
+  </BsForm>
+</div>

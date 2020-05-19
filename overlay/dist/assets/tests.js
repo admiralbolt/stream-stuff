@@ -36,21 +36,21 @@ define("overlay/tests/integration/components/control-panel/component-test", ["qu
     });
   });
 });
-define("overlay/tests/integration/components/melee-controls/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+define("overlay/tests/integration/components/controls/melee/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
-  (0, _qunit.module)('Integration | Component | melee-controls', function (hooks) {
+  (0, _qunit.module)('Integration | Component | controls/melee', function (hooks) {
     (0, _emberQunit.setupRenderingTest)(hooks);
     (0, _qunit.test)('it renders', async function (assert) {
       // Set any properties with this.set('myProperty', 'value');
       // Handle any actions with this.set('myAction', function(val) { ... });
       await (0, _testHelpers.render)(Ember.HTMLBars.template(
       /*
-        <MeleeControls />
+        <Controls::Melee />
       */
       {
-        id: "OCcrtTpB",
-        block: "{\"symbols\":[],\"statements\":[[7,\"melee-controls\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        id: "ACwXvJG1",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/melee\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
         meta: {}
       }));
       assert.equal(this.element.textContent.trim(), ''); // Template block usage:
@@ -58,14 +58,230 @@ define("overlay/tests/integration/components/melee-controls/component-test", ["q
       await (0, _testHelpers.render)(Ember.HTMLBars.template(
       /*
         
-            <MeleeControls>
+            <Controls::Melee>
               template block text
-            </MeleeControls>
+            </Controls::Melee>
           
       */
       {
-        id: "4cKRs+bF",
-        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"melee-controls\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        id: "C76lP6be",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/melee\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/controls/sound-board/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | controls/sound-board', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Controls::SoundBoard />
+      */
+      {
+        id: "EiJkyi8O",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/sound-board\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Controls::SoundBoard>
+              template block text
+            </Controls::SoundBoard>
+          
+      */
+      {
+        id: "miGvZW7R",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/sound-board\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/controls/splash/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | controls/splash', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Controls::Splash />
+      */
+      {
+        id: "8gQuqv+x",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/splash\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Controls::Splash>
+              template block text
+            </Controls::Splash>
+          
+      */
+      {
+        id: "J8BlgbGS",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/splash\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/controls/spotify/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | controls/spotify', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Controls::Spotify />
+      */
+      {
+        id: "NYEcny36",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/spotify\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Controls::Spotify>
+              template block text
+            </Controls::Spotify>
+          
+      */
+      {
+        id: "lexwHtIm",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/spotify\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/controls/twitch-chat-bot/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | controls/twitch-chat-bot', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Controls::TwitchChatBot />
+      */
+      {
+        id: "EuLifmCp",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/twitch-chat-bot\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Controls::TwitchChatBot>
+              template block text
+            </Controls::TwitchChatBot>
+          
+      */
+      {
+        id: "DOiL9VUV",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/twitch-chat-bot\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/layouts/melee/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | layouts/melee', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Layouts::Melee />
+      */
+      {
+        id: "F0gHqycq",
+        block: "{\"symbols\":[],\"statements\":[[7,\"layouts/melee\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Layouts::Melee>
+              template block text
+            </Layouts::Melee>
+          
+      */
+      {
+        id: "5YXfbzwC",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"layouts/melee\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define("overlay/tests/integration/components/layouts/splash/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | layouts/splash', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Layouts::Splash />
+      */
+      {
+        id: "Y8Y02x1E",
+        block: "{\"symbols\":[],\"statements\":[[7,\"layouts/splash\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Layouts::Splash>
+              template block text
+            </Layouts::Splash>
+          
+      */
+      {
+        id: "x+GDumdl",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"layouts/splash\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
         meta: {}
       }));
       assert.equal(this.element.textContent.trim(), 'template block text');
@@ -73,42 +289,6 @@ define("overlay/tests/integration/components/melee-controls/component-test", ["q
   });
 });
 define("overlay/tests/integration/components/melee-layout-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
-  "use strict";
-
-  (0, _qunit.module)('Integration | Component | melee-layout', function (hooks) {
-    (0, _emberQunit.setupRenderingTest)(hooks);
-    (0, _qunit.test)('it renders', async function (assert) {
-      // Set any properties with this.set('myProperty', 'value');
-      // Handle any actions with this.set('myAction', function(val) { ... });
-      await (0, _testHelpers.render)(Ember.HTMLBars.template(
-      /*
-        <MeleeLayout />
-      */
-      {
-        id: "CWWLyyJI",
-        block: "{\"symbols\":[],\"statements\":[[7,\"melee-layout\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
-        meta: {}
-      }));
-      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
-
-      await (0, _testHelpers.render)(Ember.HTMLBars.template(
-      /*
-        
-            <MeleeLayout>
-              template block text
-            </MeleeLayout>
-          
-      */
-      {
-        id: "zx9tV5vj",
-        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"melee-layout\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
-        meta: {}
-      }));
-      assert.equal(this.element.textContent.trim(), 'template block text');
-    });
-  });
-});
-define("overlay/tests/integration/components/melee-layout/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
   (0, _qunit.module)('Integration | Component | melee-layout', function (hooks) {
@@ -332,32 +512,6 @@ define("overlay/tests/unit/instance-initializers/spotify-test", ["overlay/instan
     });
   });
 });
-define("overlay/tests/unit/instance-initializers/twitch-chat-test", ["overlay/instance-initializers/twitch-chat", "qunit"], function (_twitchChat, _qunit) {
-  "use strict";
-
-  (0, _qunit.module)('Unit | Instance Initializer | twitch-chat', function (hooks) {
-    hooks.beforeEach(function () {
-      this.TestApplication = Ember.Application.extend();
-      this.TestApplication.instanceInitializer({
-        name: 'initializer under test',
-        initialize: _twitchChat.initialize
-      });
-      this.application = this.TestApplication.create({
-        autoboot: false
-      });
-      this.instance = this.application.buildInstance();
-    });
-    hooks.afterEach(function () {
-      Ember.run(this.instance, 'destroy');
-      Ember.run(this.application, 'destroy');
-    }); // Replace this with your real tests.
-
-    (0, _qunit.test)('it works', async function (assert) {
-      await this.instance.boot();
-      assert.ok(true);
-    });
-  });
-});
 define("overlay/tests/unit/models/sound-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
@@ -400,6 +554,17 @@ define("overlay/tests/unit/routes/layouts/melee-test", ["qunit", "ember-qunit"],
     (0, _emberQunit.setupTest)(hooks);
     (0, _qunit.test)('it exists', function (assert) {
       let route = this.owner.lookup('route:layouts/melee');
+      assert.ok(route);
+    });
+  });
+});
+define("overlay/tests/unit/routes/layouts/splash-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Route | layouts/splash', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:layouts/splash');
       assert.ok(route);
     });
   });

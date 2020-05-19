@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('control-panel');
   this.route('layouts', function() {
     this.route('melee');
+    this.route('splash');
   });
 
   this.route('plugins', function() {

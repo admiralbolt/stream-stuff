@@ -1,0 +1,21 @@
+<div {{did-insert this.makeItRain}} class="layout">
+
+  <canvas local-class="lightning" id="lightning"></canvas>
+  <div local-class="darken"></div>
+
+  <div local-class="info">
+    <div local-class="spacer"></div>
+    <div local-class="title">
+      {{title}}
+    </div>
+    <div local-class="timer">
+      {{#if showTimer}}
+        {{readableTimer}}
+      {{/if}}
+    </div>
+    <div local-class="stream-preview">
+      {{{preview}}}
+    </div>
+  </div>
+
+</div>

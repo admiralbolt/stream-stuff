@@ -1,0 +1,52 @@
+.lightning {
+  background-color: #002966;
+  height: 1080px;
+  position: absolute;
+  width: 1920px;
+  z-index: 1;
+}
+
+.darken {
+  background-color: #000000;
+  height: 1080px;
+  opacity: 0.4;
+  position: absolute;
+  width: 1920px;
+  z-index: 10;
+}
+
+.info {
+  align-items: center;
+  color: #efefef;
+  display: flex;
+  flex-direction: column;
+  height: 1080px;
+  position: absolute;
+  width: 1920px;
+  z-index: 20;
+
+  .spacer {
+    height: 200px;
+  }
+
+
+  .title {
+    font-size: 4rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px #eee, 0 0 40px #eee, 0 0 100px #00DEFF, 0 0 150px #00DEFF;
+  }
+
+  .timer {
+    font-size: 3rem;
+    font-weight: bold;
+    height: 3rem;
+    margin-top: 3rem;
+    text-shadow: 0 0 50px #ddd, 0 0 100px #ccc;
+  }
+
+  .stream-preview {
+    font-size: 2rem;
+    margin-top: 10rem;
+    max-width: 50%;
+  }
+}

@@ -1,0 +1,15 @@
+<div local-class="sound-board">
+  <div local-class="create-new">
+    {{#if isCreatingNew}}
+      <Controls::SoundBoard::BoardItem @isNew="true" @createCallback={{callback}} @cancelCallback={{callback}} />
+    {{else}}
+      <BsButton @type="primary" @onClick={{action "createNew"}}>Create New Sound</BsButton>
+    {{/if}}
+  </div>
+
+  <div local-class="actual-sounds">
+    {{#each sounds as |sound|}}
+      <Controls::SoundBoard::BoardItem @sound={{sound}} />
+    {{/each}}
+  </div>
+</div>

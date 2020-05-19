@@ -1,18 +1,56 @@
-:global(body) {
-  background-color: #222222;
+@import "ember-bootstrap/bootstrap";
+
+:global(.tab-content) {
+  padding-left: 1rem;
+  padding-top: 1rem;
+}
+
+:global(.active) {
+  :global(.nav-link) {
+    border-color: #e9ecef #e9ecef #dee2e6;
+    background-color: #dfdfdf;
+  }
+}
+
+:global(.form-group) {
+    font-size: 1.4rem;
+
+  label {
+    color: #efefef;
+  }
+
+  input {
+    font-size: 1.4rem;
+  }
+
+  textarea {
+    font-size: 1.4rem;
+    min-height: 300px;
+  }
+
 }
 
 :global(.btn) {
-  background-color: #fafafa;
-  border: 0;
-  border-radius: .25rem;
-  cursor: pointer;
-  font-weight: bold;
-  padding: .5rem;
+  font-size: 1.4rem;
 }
 
-:global(.input) {
-  padding: .3rem;
-  border-radius: .25rem;
-  border: 0;
+:global(body) {
+  background-color: #222222;
+  margin: 0;
+  padding: 0;
+}
+
+:global(html) {
+  margin: 0;
+  padding: 0;
+}
+
+:global(.layout) {
+  height: 1080px;
+  width: 1920px;
+}
+
+:global(.basic) {
+  color: #efefef;
+  font-size: 1.4rem;
 }

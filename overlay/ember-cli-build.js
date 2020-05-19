@@ -4,6 +4,7 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
+    // Add options here
     autoImport: {
       webpack: {
         node: {
@@ -11,8 +12,12 @@ module.exports = function(defaults) {
           child_process: 'empty'
         }
       }
+    },
+
+    'ember-bootstrap': {
+      'bootstrapVersion': 4,
+      'importBootstrapCSS': false
     }
-    // Add options here
   });
 
   // Use `app.import` to add additional libraries to the generated

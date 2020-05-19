@@ -1,0 +1,16 @@
+<div local-class="spotify-controls">
+  {{#if isPolling}}
+    <p class="basic">Spotify is Polling</p>
+  {{/if}}
+  <BsButton @type="primary" @onClick={{action "authorizeSpotify"}}>Authorize Spotify</BsButton>
+  <BsButton @type="primary" @onClick={{action "getTokens"}}>Get Tokens</BsButton>
+  <BsButton @type="primary" @onClick={{action "refresh"}}>Refresh</BsButton>
+
+  <BsButton @type="primary" @onClick={{action "togglePolling"}}>
+    {{#if isPolling}}
+      Stop Polling
+    {{else}}
+      Start Polling
+    {{/if}}
+  </BsButton>
+</div>

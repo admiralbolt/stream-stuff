@@ -1,31 +1,48 @@
 <div local-class="control-panel">
-
-  <MeleeControls />
-
-  <br><br>
-
-  <div local-class="twitch-chat-controls">
-    {{#if botIsAlive}}
-      <button class="btn" {{action "stopBot"}}>Stop Bot</button>
-    {{else}}
-      <button class="btn" {{action "startBot"}}>Start Bot</button>
-    {{/if}}
-  </div>
-
-  <br><br>
-
-  <div local-class="spotify-controls">
-    <button class="btn" {{action "authorizeSpotify"}}>Authorize Spotify</button>
-    <button class="btn" {{action "getTokens"}}>Get Tokens</button>
-    <button class="btn" {{action "refresh"}}>Refresh</button>
-    {{#if isPolling}}
-      <button class="btn" {{action "stopPolling"}}>Stop Polling</button>
-    {{else}}
-      <button class="btn" {{action "startPolling"}}>Start Polling</button>
-    {{/if}}
-  </div>
-
-  <br>
-
-  <SoundBoard />
+  <BsTab @activeId={{activeId}} @customTabs={{true}} as |tab|>
+    <BsNav @type="tabs" as |nav|>
+      <nav.item @active={{bs-eq activeId "admiral-lightning-bot"}}>
+        <a href="#admiral-lightning-bot" class="nav-link" role="tab" onclick={{action setTab "admiral-lightning-bot"}}>
+          Admiral Lightning Bot
+        </a>
+      </nav.item>
+      <nav.item @active={{bs-eq activeId "melee"}}>
+        <a href="#melee" class="nav-link" role="tab" onclick={{action setTab "melee"}}>
+          Melee
+        </a>
+      </nav.item>
+      <nav.item @active={{bs-eq activeId "sound-board"}}>
+        <a href="#sound-board" class="nav-link" role="tab" onclick={{action setTab "sound-board"}}>
+          Sound Board
+        </a>
+      </nav.item>
+      <nav.item @active={{bs-eq activeId "splash"}}>
+        <a href="#splash" class="nav-link" role="tab" onclick={{action setTab "splash"}}>
+          Splash
+        </a>
+      </nav.item>
+      <nav.item @active={{bs-eq activeId "spotify"}}>
+        <a href="#spotify" class="nav-link" role="tab" onclick={{action setTab "spotify"}}>
+          Spotify
+        </a>
+      </nav.item>
+    </BsNav>
+    <div class="tab-content">
+      <tab.pane @id="admiral-lightning-bot" @title="Admiral Lightning Bot">
+        <Controls::TwitchChatBot />
+      </tab.pane>
+      <tab.pane @id="melee" @title="Melee">
+        <Controls::Melee />
+      </tab.pane>
+      <tab.pane @id="sound-board" @title="Sound Board">
+        <Controls::SoundBoard />
+      </tab.pane>
+      <tab.pane @id="splash" @title="Splash">
+        <Controls::Splash />
+      </tab.pane>
+      <tab.pane @id="spotify" @title="Spotify">
+        <Controls::Spotify />
+      </tab.pane>
+    </div>
+  </BsTab>
 </div>
