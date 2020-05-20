@@ -36,6 +36,42 @@ define("overlay/tests/integration/components/control-panel/component-test", ["qu
     });
   });
 });
+define("overlay/tests/integration/components/controls/brain/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | controls/brain', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Controls::Brain />
+      */
+      {
+        id: "2KLj645j",
+        block: "{\"symbols\":[],\"statements\":[[7,\"controls/brain\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Controls::Brain>
+              template block text
+            </Controls::Brain>
+          
+      */
+      {
+        id: "a2nGLBcQ",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"controls/brain\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
 define("overlay/tests/integration/components/controls/melee/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
@@ -324,6 +360,42 @@ define("overlay/tests/integration/components/melee-layout-test", ["qunit", "embe
     });
   });
 });
+define("overlay/tests/integration/components/plugins/brain/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
+  "use strict";
+
+  (0, _qunit.module)('Integration | Component | plugins/brain', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        <Plugins::Brain />
+      */
+      {
+        id: "AKgElk+G",
+        block: "{\"symbols\":[],\"statements\":[[7,\"plugins/brain\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), ''); // Template block usage:
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template(
+      /*
+        
+            <Plugins::Brain>
+              template block text
+            </Plugins::Brain>
+          
+      */
+      {
+        id: "WKRYykiR",
+        block: "{\"symbols\":[],\"statements\":[[1,1,0,0,\"\\n      \"],[7,\"plugins/brain\",[],[[],[]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        template block text\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"hasEval\":false,\"upvars\":[]}",
+        meta: {}
+      }));
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
 define("overlay/tests/integration/components/plugins/spotify/component-test", ["qunit", "ember-qunit", "@ember/test-helpers"], function (_qunit, _emberQunit, _testHelpers) {
   "use strict";
 
@@ -486,6 +558,32 @@ define("overlay/tests/unit/adapters/application-test", ["qunit", "ember-qunit"],
     });
   });
 });
+define("overlay/tests/unit/instance-initializers/brain-test", ["overlay/instance-initializers/brain", "qunit"], function (_brain, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Instance Initializer | brain', function (hooks) {
+    hooks.beforeEach(function () {
+      this.TestApplication = Ember.Application.extend();
+      this.TestApplication.instanceInitializer({
+        name: 'initializer under test',
+        initialize: _brain.initialize
+      });
+      this.application = this.TestApplication.create({
+        autoboot: false
+      });
+      this.instance = this.application.buildInstance();
+    });
+    hooks.afterEach(function () {
+      Ember.run(this.instance, 'destroy');
+      Ember.run(this.application, 'destroy');
+    }); // Replace this with your real tests.
+
+    (0, _qunit.test)('it works', async function (assert) {
+      await this.instance.boot();
+      assert.ok(true);
+    });
+  });
+});
 define("overlay/tests/unit/instance-initializers/spotify-test", ["overlay/instance-initializers/spotify", "qunit"], function (_spotify, _qunit) {
   "use strict";
 
@@ -569,6 +667,17 @@ define("overlay/tests/unit/routes/layouts/splash-test", ["qunit", "ember-qunit"]
     });
   });
 });
+define("overlay/tests/unit/routes/plugins/brain-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Route | plugins/brain', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:plugins/brain');
+      assert.ok(route);
+    });
+  });
+});
 define("overlay/tests/unit/routes/plugins/spotify-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
   "use strict";
 
@@ -596,6 +705,18 @@ define("overlay/tests/unit/serializers/sound-test", ["qunit", "ember-qunit"], fu
       let record = store.createRecord('sound', {});
       let serializedRecord = record.serialize();
       assert.ok(serializedRecord);
+    });
+  });
+});
+define("overlay/tests/unit/services/brain-test", ["qunit", "ember-qunit"], function (_qunit, _emberQunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Service | brain', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks); // Replace this with your real tests.
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let service = this.owner.lookup('service:brain');
+      assert.ok(service);
     });
   });
 });
@@ -630,6 +751,28 @@ define("overlay/tests/unit/utils/command-base-test", ["overlay/utils/command-bas
     // Replace this with your real tests.
     (0, _qunit.test)('it works', function (assert) {
       let result = (0, _commandBase.default)();
+      assert.ok(result);
+    });
+  });
+});
+define("overlay/tests/unit/utils/commands/big-brain-test", ["overlay/utils/commands/big-brain", "qunit"], function (_bigBrain, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Utility | commands/big-brain', function () {
+    // Replace this with your real tests.
+    (0, _qunit.test)('it works', function (assert) {
+      let result = (0, _bigBrain.default)();
+      assert.ok(result);
+    });
+  });
+});
+define("overlay/tests/unit/utils/commands/small-brain-test", ["overlay/utils/commands/small-brain", "qunit"], function (_smallBrain, _qunit) {
+  "use strict";
+
+  (0, _qunit.module)('Unit | Utility | commands/small-brain', function () {
+    // Replace this with your real tests.
+    (0, _qunit.test)('it works', function (assert) {
+      let result = (0, _smallBrain.default)();
       assert.ok(result);
     });
   });

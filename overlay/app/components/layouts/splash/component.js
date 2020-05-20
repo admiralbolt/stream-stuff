@@ -16,16 +16,12 @@ export default class SplashComponent extends SocketClientComponent {
 
   constructor() {
     super(...arguments, 7002);
-    this.title = localStorage.getItem('splashTitle') || '';
-    this.preview = localStorage.getItem('splashPreview') || '';
-    this.timer = localStorage.getItem('splashTimer') || 0;
-    this.showTimer = localStorage.getItem('splashShowTimer') == "true";
   }
 
   @tracked title;
   @tracked preview;
   @tracked timer;
-  @tracked showTimer;
+  @tracked showTimer = false;
 
   get readableTimer() {
     let minutes = Math.floor(this.timer / 60);
@@ -42,8 +38,8 @@ export default class SplashComponent extends SocketClientComponent {
 
     if (data.info.title) this.title = data.info.title;
     if (data.info.preview) this.preview = data.info.preview;
-    if (data.info.timer) this.timer = data.info.timer;
-    if (data.info.showTimer) this.showTimer = data.info.showTimer;
+    if (data.info.hasOwnProperty('timer')) this.timer = data.info.timer;
+    if (data.info.hasOwnProperty('showTimer')) this.showTimer = data.info.showTimer;
   }
 
 

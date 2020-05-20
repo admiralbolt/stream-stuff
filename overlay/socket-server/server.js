@@ -1,11 +1,12 @@
 var WebSocket = require('ws');
 
 // Define all sockets below, don't forget the port number!
+var brain = new WebSocket.Server({port: 7003});
 var melee = new WebSocket.Server({port: 7000});
 var splash = new WebSocket.Server({port: 7002});
 var spotify = new WebSocket.Server({port: 7001});
 
-var servers = [melee, splash, spotify];
+var servers = [brain, melee, splash, spotify];
 
 servers.forEach(server => {
   server.on('connection', function connection(ws) {

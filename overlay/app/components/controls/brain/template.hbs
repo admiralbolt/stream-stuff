@@ -1,0 +1,9 @@
+<p class="basic">Current Brain Size: {{brain.brainSize}}</p>
+<p class="basic">Showing Brain: {{brain.showBrain}}</p>
+
+<BsForm @model={{this}} as |form|>
+  <form.element @controlType="number" @label="Brain Size" @property="newBrainSize" />
+  <form.element @controlType="checkbox" @label="Show Brain" @property="newShowBrain" />
+
+  <BsButton @type="primary" @onClick={{action "updateBrain"}}>Update Brain</BsButton>
+</BsForm>

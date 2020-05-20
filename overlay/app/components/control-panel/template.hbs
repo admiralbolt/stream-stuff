@@ -6,6 +6,11 @@
           Admiral Lightning Bot
         </a>
       </nav.item>
+      <nav.item @active={{bs-eq activeId "brain"}}>
+        <a href="#brain" class="nav-link" role="tab" onclick={{action setTab "brain"}}>
+          Brain
+        </a>
+      </nav.item>
       <nav.item @active={{bs-eq activeId "melee"}}>
         <a href="#melee" class="nav-link" role="tab" onclick={{action setTab "melee"}}>
           Melee
@@ -30,6 +35,9 @@
     <div class="tab-content">
       <tab.pane @id="admiral-lightning-bot" @title="Admiral Lightning Bot">
         <Controls::TwitchChatBot />
+      </tab.pane>
+      <tab.pane @id="brain" @title="Brain">
+        <Controls::Brain />
       </tab.pane>
       <tab.pane @id="melee" @title="Melee">
         <Controls::Melee />

@@ -1,9 +1,8 @@
-import Service from '@ember/service';
+import Service, { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import tmi from 'tmi';
-import config from '../config/environment';
-import { Command } from 'commander';
-import getCommand from 'overlay/utils/get-command';
+import config from 'overlay/config/environment';
+import getCommand from 'overlay/utils/commands/get-command';
 import { isNone } from '@ember/utils';
 
 const OPTS = {
@@ -21,18 +20,15 @@ let GENERIC_RESPONSES = {
 };
 
 export default class TwitchChatService extends Service {
+  @service brain;
+
   @tracked client = null;
   @tracked botIsAlive = null;
-
-  testCommand = null;
 
   init() {
     super.init(...arguments);
     this.botIsAlive = localStorage.getItem('botIsAlive');
     if (this.botIsAlive) this.start();
-
-    this.testCommand = new Command();
-    this.testCommand.requiredOption('--sauce', 'Sauce');
   }
 
   messageHandler(target, context, msg, self) {

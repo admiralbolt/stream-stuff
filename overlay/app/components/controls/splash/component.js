@@ -5,6 +5,7 @@ import { action } from '@ember/object';
 import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 
+
 export default class SplashComponent extends Component {
   @service websockets;
   socket = null;
@@ -30,6 +31,7 @@ export default class SplashComponent extends Component {
     if (this.timerRunning) {
       this.startTimer();
     }
+    this.updateInfo();
   }
 
   @action
@@ -84,13 +86,8 @@ export default class SplashComponent extends Component {
       }, true);
       yield timeout(1000);
     }
-    this.showTimer = false;
-    this.socket.send({
-      info: {
-        showTimer: false,
-        timer: 0
-      }
-    }, true);
+    this.timerRunning = false;
+    this.stopTimer();
   }
 
 }

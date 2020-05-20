@@ -916,10 +916,101 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "0cqdSM7S",
-    "block": "{\"symbols\":[\"tab\",\"nav\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[7,\"bs-tab\",[],[[\"@activeId\",\"@customTabs\"],[[27,[26,1,\"AppendSingleId\"],[]],true]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n    \"],[7,\"bs-nav\",[],[[\"@type\"],[\"tabs\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,160,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"admiral-lightning-bot\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#admiral-lightning-bot\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,282,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"admiral-lightning-bot\"],null],null],[10],[1,1,0,0,\"\\n          Admiral Lightning Bot\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,416,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"melee\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#melee\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,506,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"melee\"],null],null],[10],[1,1,0,0,\"\\n          Melee\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,608,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"sound-board\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#sound-board\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,710,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"sound-board\"],null],null],[10],[1,1,0,0,\"\\n          Sound Board\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,824,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"splash\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#splash\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,916,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"splash\"],null],null],[10],[1,1,0,0,\"\\n          Splash\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,1020,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"spotify\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#spotify\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,1114,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"spotify\"],null],null],[10],[1,1,0,0,\"\\n          Spotify\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"parameters\":[2]}]]],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[12,\"class\",\"tab-content\",null],[10],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"admiral-lightning-bot\",\"Admiral Lightning Bot\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/twitch-chat-bot\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"melee\",\"Melee\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/melee\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"sound-board\",\"Sound Board\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"splash\",\"Splash\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/splash\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"spotify\",\"Spotify\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/spotify\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n  \"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"activeId\",\"bs-eq\",\"setTab\",\"action\"]}",
+    "id": "sg1EWLtF",
+    "block": "{\"symbols\":[\"tab\",\"nav\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"control-panel\"],[[\"from\"],[\"overlay/components/control-panel/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[7,\"bs-tab\",[],[[\"@activeId\",\"@customTabs\"],[[27,[26,1,\"AppendSingleId\"],[]],true]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n    \"],[7,\"bs-nav\",[],[[\"@type\"],[\"tabs\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,160,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"admiral-lightning-bot\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#admiral-lightning-bot\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,282,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"admiral-lightning-bot\"],null],null],[10],[1,1,0,0,\"\\n          Admiral Lightning Bot\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,416,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"brain\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#brain\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,506,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"brain\"],null],null],[10],[1,1,0,0,\"\\n          Brain\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,608,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"melee\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#melee\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,698,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"melee\"],null],null],[10],[1,1,0,0,\"\\n          Melee\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,800,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"sound-board\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#sound-board\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,902,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"sound-board\"],null],null],[10],[1,1,0,0,\"\\n          Sound Board\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,1016,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"splash\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#splash\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,1108,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"splash\"],null],null],[10],[1,1,0,0,\"\\n          Splash\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,2],[\"item\"]],[],[[\"@active\"],[[31,1212,5,[27,[26,2,\"CallHead\"],[]],[[27,[26,1,\"Expression\"],[]],\"spotify\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[9,\"a\",true],[12,\"href\",\"#spotify\",null],[12,\"class\",\"nav-link\",null],[12,\"role\",\"tab\",null],[13,\"onclick\",[31,1306,6,[27,[26,4,\"CallHead\"],[]],[[27,[24,0],[]],[27,[26,3,\"Expression\"],[]],\"spotify\"],null],null],[10],[1,1,0,0,\"\\n          Spotify\\n        \"],[11],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"]],\"parameters\":[2]}]]],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[12,\"class\",\"tab-content\",null],[10],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"admiral-lightning-bot\",\"Admiral Lightning Bot\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/twitch-chat-bot\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"brain\",\"Brain\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/brain\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"melee\",\"Melee\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/melee\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"sound-board\",\"Sound Board\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/sound-board\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"splash\",\"Splash\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/splash\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n      \"],[7,[27,[24,1],[\"pane\"]],[],[[\"@id\",\"@title\"],[\"spotify\",\"Spotify\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n        \"],[7,\"controls/spotify\",[],[[],[]],null],[1,1,0,0,\"\\n      \"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n  \"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"activeId\",\"bs-eq\",\"setTab\",\"action\"]}",
     "meta": {
       "moduleName": "overlay/components/control-panel/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
+;define("overlay/components/controls/brain/component", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _dec, _dec2, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let BrainComponent = (_dec = Ember.computed.alias('brain.brainSize'), _dec2 = Ember.computed.alias('brain.showBrain'), (_class = (_temp = class BrainComponent extends _component.default {
+    constructor(...args) {
+      super(...args);
+
+      _initializerDefineProperty(this, "brain", _descriptor, this);
+
+      _initializerDefineProperty(this, "brainSize", _descriptor2, this);
+
+      _initializerDefineProperty(this, "showBrain", _descriptor3, this);
+
+      _initializerDefineProperty(this, "newBrainSize", _descriptor4, this);
+
+      _initializerDefineProperty(this, "newShowBrain", _descriptor5, this);
+    }
+
+    updateBrain() {
+      let updateData = {};
+      if (!Ember.isNone(this.newBrainSize)) updateData.size = this.newBrainSize;
+      updateData.show = this.newShowBrain == null ? false : this.newShowBrain;
+      this.brain.updateBrain(updateData);
+      this.newBrainSize = null;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "brain", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "brainSize", [_dec], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "showBrain", [_dec2], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "newBrainSize", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "newShowBrain", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return null;
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "updateBrain", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updateBrain"), _class.prototype)), _class));
+  _exports.default = BrainComponent;
+});
+;define("overlay/components/controls/brain/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "hfeJlxH0",
+    "block": "{\"symbols\":[\"form\"],\"statements\":[[9,\"p\",true],[12,\"class\",\"basic\",null],[10],[1,1,0,0,\"Current Brain Size: \"],[1,0,0,0,[27,[26,0,\"Expression\"],[\"brainSize\"]]],[11],[1,1,0,0,\"\\n\"],[9,\"p\",true],[12,\"class\",\"basic\",null],[10],[1,1,0,0,\"Showing Brain: \"],[1,0,0,0,[27,[26,0,\"Expression\"],[\"showBrain\"]]],[11],[1,1,0,0,\"\\n\\n\"],[7,\"bs-form\",[],[[\"@model\"],[[27,[24,0],[]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n  \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"number\",\"Brain Size\",\"newBrainSize\"]],null],[1,1,0,0,\"\\n  \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"checkbox\",\"Show Brain\",\"newShowBrain\"]],null],[1,1,0,0,\"\\n\\n  \"],[7,\"bs-button\",[],[[\"@type\",\"@onClick\"],[\"primary\",[31,374,6,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[]],\"updateBrain\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Update Brain\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"brain\",\"action\"]}",
+    "meta": {
+      "moduleName": "overlay/components/controls/brain/template.hbs"
     }
   });
 
@@ -1008,8 +1099,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "2Y9478wf",
-    "block": "{\"symbols\":[\"form\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/controls/melee/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[7,\"bs-form\",[],[[\"@model\"],[[27,[24,0],[]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player1\",\"player1\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player2\",\"player2\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player3\",\"player3\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player4\",\"player4\"]],null],[1,1,0,0,\"\\n    \"],[7,\"bs-button\",[],[[\"@type\",\"@onClick\"],[\"primary\",[31,432,6,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[]],\"updatePlayerNames\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Update Player Names\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n  \"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"action\"]}",
+    "id": "c7noclhf",
+    "block": "{\"symbols\":[\"form\"],\"statements\":[[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,0,\"CallHead\"],[]],[\"melee-controls\"],[[\"from\"],[\"overlay/components/controls/melee/styles\"]]]]],null],[10],[1,1,0,0,\"\\n  \"],[7,\"bs-form\",[],[[\"@model\"],[[27,[24,0],[]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player1\",\"player1\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player2\",\"player2\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player3\",\"player3\"]],null],[1,1,0,0,\"\\n    \"],[7,[27,[24,1],[\"element\"]],[],[[\"@controlType\",\"@label\",\"@property\"],[\"text\",\"Player4\",\"player4\"]],null],[1,1,0,0,\"\\n    \"],[7,\"bs-button\",[],[[\"@type\",\"@onClick\"],[\"primary\",[31,431,6,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[]],\"updatePlayerNames\"],null]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Update Player Names\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n  \"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"local-class\",\"action\"]}",
     "meta": {
       "moduleName": "overlay/components/controls/melee/template.hbs"
     }
@@ -1363,6 +1454,8 @@
       if (this.timerRunning) {
         this.startTimer();
       }
+
+      this.updateInfo();
     }
 
     updateInfo() {
@@ -1413,13 +1506,8 @@
         yield (0, _emberConcurrency.timeout)(1000);
       }
 
-      this.showTimer = false;
-      this.socket.send({
-        info: {
-          showTimer: false,
-          timer: 0
-        }
-      }, true);
+      this.timerRunning = false;
+      this.stopTimer();
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "websockets", [Ember.inject.service], {
@@ -1912,11 +2000,6 @@
       _defineProperty(this, "totalBoltDuration", (this.boltFlashDuration + this.boltFadeDuration) * 1000);
 
       _defineProperty(this, "bolts", []);
-
-      this.title = localStorage.getItem('splashTitle') || '';
-      this.preview = localStorage.getItem('splashPreview') || '';
-      this.timer = localStorage.getItem('splashTimer') || 0;
-      this.showTimer = localStorage.getItem('splashShowTimer') == "true";
     }
 
     get readableTimer() {
@@ -1931,8 +2014,8 @@
       if (!data.info) return;
       if (data.info.title) this.title = data.info.title;
       if (data.info.preview) this.preview = data.info.preview;
-      if (data.info.timer) this.timer = data.info.timer;
-      if (data.info.showTimer) this.showTimer = data.info.showTimer;
+      if (data.info.hasOwnProperty('timer')) this.timer = data.info.timer;
+      if (data.info.hasOwnProperty('showTimer')) this.showTimer = data.info.showTimer;
     } // ALL the lightning bolt logic below.
 
 
@@ -2059,7 +2142,9 @@
     configurable: true,
     enumerable: true,
     writable: true,
-    initializer: null
+    initializer: function () {
+      return false;
+    }
   }), _applyDecoratedDescriptor(_class.prototype, "makeItRain", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "makeItRain"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "drawBolt", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "drawBolt"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "storm", [_emberConcurrencyDecorators.task], Object.getOwnPropertyDescriptor(_class.prototype, "storm"), _class.prototype)), _class);
   _exports.default = SplashComponent;
 });
@@ -2094,6 +2179,74 @@
     "block": "{\"symbols\":[],\"statements\":[[9,\"div\",false],[23,\"class\",\"layout\",null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"makeItRain\"]]],null],[10],[1,1,0,0,\"\\n\\n  \"],[9,\"canvas\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"lightning\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[12,\"id\",\"lightning\",null],[10],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"darken\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"info\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"spacer\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"title\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[1,1,0,0,\"\\n      \"],[1,0,0,0,[27,[26,3,\"AppendSingleId\"],[]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"timer\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,5,\"BlockHead\"],[]],[[27,[26,4,\"Expression\"],[]]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"        \"],[1,0,0,0,[27,[26,0,\"AppendSingleId\"],[]]],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"    \"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[13,\"class\",[32,[[31,0,0,[27,[26,2,\"CallHead\"],[]],[\"stream-preview\"],[[\"from\"],[\"overlay/components/layouts/splash/styles\"]]]]],null],[10],[1,1,0,0,\"\\n      \"],[1,1,0,0,[27,[26,6,\"AppendSingleId\"],[]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"readableTimer\",\"did-insert\",\"local-class\",\"title\",\"showTimer\",\"if\",\"preview\"]}",
     "meta": {
       "moduleName": "overlay/components/layouts/splash/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
+;define("overlay/components/plugins/brain/component", ["exports", "overlay/components/socket-client/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let SpotifyComponent = (_class = (_temp = class SpotifyComponent extends _component.default {
+    constructor() {
+      super(...arguments, 7003);
+
+      _initializerDefineProperty(this, "brainSize", _descriptor, this);
+
+      _initializerDefineProperty(this, "showBrain", _descriptor2, this);
+    }
+
+    messageHandler(event) {
+      let data = JSON.parse(event.data);
+      if (data.brainSize) this.brainSize = data.brainSize;
+      if (data.hasOwnProperty('showBrain')) this.showBrain = data.showBrain;
+    }
+
+    get adjustedWidth() {
+      return this.brainSize;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "brainSize", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "showBrain", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  })), _class);
+  _exports.default = SpotifyComponent;
+});
+;define("overlay/components/plugins/brain/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "451nppjM",
+    "block": "{\"symbols\":[],\"statements\":[[5,[27,[26,2,\"BlockHead\"],[]],[[27,[26,1,\"Expression\"],[]]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"  \"],[9,\"img\",true],[13,\"style\",[32,[\"width: \",[27,[26,0,\"AppendSingleId\"],[]],\"px;\"]],null],[12,\"src\",\"/assets/images/brain.png\",null],[10],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]]],\"hasEval\":false,\"upvars\":[\"adjustedWidth\",\"showBrain\",\"if\"]}",
+    "meta": {
+      "moduleName": "overlay/components/plugins/brain/template.hbs"
     }
   });
 
@@ -2993,6 +3146,24 @@
     }
   });
 });
+;define("overlay/instance-initializers/brain", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.initialize = initialize;
+  _exports.default = void 0;
+
+  function initialize(appInstance) {
+    let brain = appInstance.lookup('service:brain');
+  }
+
+  var _default = {
+    initialize
+  };
+  _exports.default = _default;
+});
 ;define("overlay/instance-initializers/ember-data", ["exports", "ember-data/initialize-store-service"], function (_exports, _initializeStoreService) {
   "use strict";
 
@@ -3159,6 +3330,7 @@
     });
     this.route('plugins', function () {
       this.route('spotify');
+      this.route('brain');
     });
   });
 });
@@ -3209,6 +3381,18 @@
   class LayoutsSplashRoute extends Ember.Route {}
 
   _exports.default = LayoutsSplashRoute;
+});
+;define("overlay/routes/plugins/brain", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  class PluginsBrainRoute extends Ember.Route {}
+
+  _exports.default = PluginsBrainRoute;
 });
 ;define("overlay/routes/plugins/spotify", ["exports"], function (_exports) {
   "use strict";
@@ -3292,6 +3476,93 @@
   }
 
   _exports.default = SoundSerializer;
+});
+;define("overlay/services/brain", ["exports", "ember-concurrency-decorators"], function (_exports, _emberConcurrencyDecorators) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _dec, _class, _descriptor, _descriptor2, _descriptor3, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let BrainService = (_dec = (0, _emberConcurrencyDecorators.task)({
+    enqueue: true
+  }), (_class = (_temp = class BrainService extends Ember.Service {
+    constructor() {
+      super(...arguments);
+
+      _initializerDefineProperty(this, "websockets", _descriptor, this);
+
+      _defineProperty(this, "socket", null);
+
+      _initializerDefineProperty(this, "brainSize", _descriptor2, this);
+
+      _initializerDefineProperty(this, "showBrain", _descriptor3, this);
+
+      this.socket = this.websockets.socketFor('ws://localhost:7003/');
+      this.socket.on('open', this.openHandler, this);
+      this.brainSize = parseInt(localStorage.getItem('brainSize') || 0);
+      this.showBrain = localStorage.getItem('showBrain') == 'true';
+    }
+
+    openHandler() {
+      this.socket.send({
+        brainSize: this.brainSize,
+        showBrain: this.showBrain
+      }, true);
+    }
+
+    updateBrain(info) {
+      let sendData = {};
+
+      if (info.size) {
+        this.brainSize = info.size;
+        localStorage.setItem('brainSize', this.brainSize);
+        sendData.brainSize = this.brainSize;
+      }
+
+      if (info.hasOwnProperty('show')) {
+        this.showBrain = info.show;
+        localStorage.setItem('showBrain', this.showBrain);
+        sendData.showBrain = this.showBrain;
+      }
+
+      if (sendData) this.socket.send(sendData, true);
+    }
+
+    *atomicAdjustSize(increment) {
+      this.updateBrain({
+        size: increment ? this.brainSize + 1 : this.brainSize - 1
+      });
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "websockets", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "brainSize", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "showBrain", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _applyDecoratedDescriptor(_class.prototype, "atomicAdjustSize", [_dec], Object.getOwnPropertyDescriptor(_class.prototype, "atomicAdjustSize"), _class.prototype)), _class));
+  _exports.default = BrainService;
 });
 ;define("overlay/services/file-queue", ["exports", "ember-file-upload/services/file-queue"], function (_exports, _fileQueue) {
   "use strict";
@@ -3485,7 +3756,7 @@
     }
   });
 });
-;define("overlay/services/twitch-chat", ["exports", "tmi", "overlay/config/environment", "commander", "overlay/utils/get-command"], function (_exports, _tmi, _environment, _commander, _getCommand) {
+;define("overlay/services/twitch-chat", ["exports", "tmi", "overlay/config/environment", "overlay/utils/commands/get-command"], function (_exports, _tmi, _environment, _getCommand) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -3493,7 +3764,7 @@
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _temp;
+  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -3517,19 +3788,17 @@
     constructor(...args) {
       super(...args);
 
-      _initializerDefineProperty(this, "client", _descriptor, this);
+      _initializerDefineProperty(this, "brain", _descriptor, this);
 
-      _initializerDefineProperty(this, "botIsAlive", _descriptor2, this);
+      _initializerDefineProperty(this, "client", _descriptor2, this);
 
-      _defineProperty(this, "testCommand", null);
+      _initializerDefineProperty(this, "botIsAlive", _descriptor3, this);
     }
 
     init() {
       super.init(...arguments);
       this.botIsAlive = localStorage.getItem('botIsAlive');
       if (this.botIsAlive) this.start();
-      this.testCommand = new _commander.Command();
-      this.testCommand.requiredOption('--sauce', 'Sauce');
     }
 
     messageHandler(target, context, msg, self) {
@@ -3577,14 +3846,19 @@
       localStorage.removeItem('botIsAlive');
     }
 
-  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "client", [Ember._tracked], {
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "brain", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "client", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,
     initializer: function () {
       return null;
     }
-  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "botIsAlive", [Ember._tracked], {
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "botIsAlive", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,
@@ -3743,6 +4017,24 @@
 
   _exports.default = _default;
 });
+;define("overlay/templates/plugins/brain", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "6VRpZxng",
+    "block": "{\"symbols\":[],\"statements\":[[7,\"plugins/brain\",[],[[],[]],null],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    "meta": {
+      "moduleName": "overlay/templates/plugins/brain.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
 ;define("overlay/templates/plugins/spotify", ["exports"], function (_exports) {
   "use strict";
 
@@ -3813,7 +4105,37 @@
     }
   });
 });
-;define("overlay/utils/command-base", ["exports", "commander"], function (_exports, _commander) {
+;define("overlay/utils/commands/big-brain", ["exports", "commander", "overlay/utils/commands/command-base"], function (_exports, _commander, _commandBase) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  class BigBrain extends _commandBase.default {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "name", '!bigbrain');
+
+      _defineProperty(this, "description", 'This streamer is 3 smart 5 you, increase the size of the brain.');
+    }
+
+    parseAndExecute(emberContext, target, twitchContext, command, args) {
+      super.parseAndExecute(emberContext, target, twitchContext, command, args);
+      emberContext.brain.atomicAdjustSize.perform(
+      /*increment=*/
+      true);
+    }
+
+  }
+
+  _exports.default = BigBrain;
+});
+;define("overlay/utils/commands/command-base", ["exports", "commander"], function (_exports, _commander) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -3850,24 +4172,56 @@
 
   _exports.default = CommandBase;
 });
-;define("overlay/utils/get-command", ["exports", "overlay/utils/test-command"], function (_exports, _testCommand) {
+;define("overlay/utils/commands/get-command", ["exports", "overlay/utils/commands/big-brain", "overlay/utils/commands/small-brain", "overlay/utils/commands/test-command"], function (_exports, _bigBrain, _smallBrain, _testCommand) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
   _exports.default = getCommand;
-  let COMMANDS = [new _testCommand.default()];
-  let COMMAND_MAP = {};
-  COMMANDS.reduce(function (result, item, index, array) {
-    result[item.name] = item;
-  }, COMMAND_MAP);
+  let COMMANDS = [new _bigBrain.default(), new _smallBrain.default(), new _testCommand.default()];
 
   function getCommand(name) {
+    let COMMAND_MAP = {};
+
+    for (let command of COMMANDS) {
+      COMMAND_MAP[command.name] = command;
+    }
+
     return COMMAND_MAP[name] || undefined;
   }
 });
-;define("overlay/utils/test-command", ["exports", "commander", "overlay/utils/command-base"], function (_exports, _commander, _commandBase) {
+;define("overlay/utils/commands/small-brain", ["exports", "commander", "overlay/utils/commands/command-base"], function (_exports, _commander, _commandBase) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  class SmallBrain extends _commandBase.default {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "name", '!smallbrain');
+
+      _defineProperty(this, "description", 'This streamer is the big dumb, reduce the size of the brain.');
+    }
+
+    parseAndExecute(emberContext, target, twitchContext, command, args) {
+      super.parseAndExecute(emberContext, target, twitchContext, command, args);
+      emberContext.brain.atomicAdjustSize.perform(
+      /*increment=*/
+      false);
+    }
+
+  }
+
+  _exports.default = SmallBrain;
+});
+;define("overlay/utils/commands/test-command", ["exports", "commander", "overlay/utils/commands/command-base"], function (_exports, _commander, _commandBase) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -3922,7 +4276,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+88cd83d2"});
+            require("overlay/app")["default"].create({"name":"overlay","version":"0.0.0+7e594b3d"});
           }
         
 //# sourceMappingURL=overlay.map
