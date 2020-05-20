@@ -24,6 +24,7 @@ def do_stuff(props, prop):
 
   # 2. Add the freeze frame as a new full sized source
   current_scene_source = obs.obs_frontend_get_current_scene()
+  obs.obs_frontend_set_current_preview_scene(current_scene_source)
   current_scene = obs.obs_scene_from_source(current_scene_source)
   freeze_frame = obs.obs_source_create("image_source", "FreezeFrame", None, None)
 
@@ -69,7 +70,7 @@ def do_stuff(props, prop):
   desktop_audio = obs.obs_get_output_source(1)
   obs.obs_source_set_muted(desktop_audio, True)
 
-  mic_audio = obs.obs_get_output_source(3)
+  mic_audio = obs.obs_get_output_source(4)
   obs.obs_source_set_muted(mic_audio, True)
 
   #6. Artificial delay, then cleanup.
