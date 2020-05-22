@@ -1,0 +1,13 @@
+<div local-class="script-item">
+  <div local-class="script-name">{{script.name}}</div>
+  <div local-class="actions">
+    <a local-class="action" {{action "trigger"}}>
+      <FaIcon @icon="play" />
+    </a>
+    {{#unless auto_stop}}
+      <a local-class="action" {{action "trigger" true}}>
+        <FaIcon @icon="stop" />
+      </a>
+    {{/unless}}
+  </div>
+</div>

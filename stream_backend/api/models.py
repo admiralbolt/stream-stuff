@@ -7,4 +7,12 @@ class Sound(models.Model):
   def __str__(self):
     return self.name
 
-ADMIN_MODELS = [Sound]
+class Script(models.Model):
+  name = models.CharField(max_length=128, unique=True)
+  script_name = models.CharField(max_length=128, unique=True)
+  auto_stop = models.BooleanField(default=True)
+
+  def __str__(self):
+    return self.name
+
+ADMIN_MODELS = [Script, Sound]

@@ -16,6 +16,11 @@
           Melee
         </a>
       </nav.item>
+      <nav.item @active={{bs-eq activeId "obs-scripts"}}>
+        <a href="#obs-scripts" class="nav-link" role="tab" onclick={{action setTab "obs-scripts"}}>
+          OBS Scripts
+        </a>
+      </nav.item>
       <nav.item @active={{bs-eq activeId "sound-board"}}>
         <a href="#sound-board" class="nav-link" role="tab" onclick={{action setTab "sound-board"}}>
           Sound Board
@@ -41,6 +46,9 @@
       </tab.pane>
       <tab.pane @id="melee" @title="Melee">
         <Controls::Melee />
+      </tab.pane>
+      <tab.pane @id="obs-scripts" @title="OBS Scripts">
+        <Controls::ObsScripts />
       </tab.pane>
       <tab.pane @id="sound-board" @title="Sound Board">
         <Controls::SoundBoard />
