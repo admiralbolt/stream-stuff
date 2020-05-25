@@ -53,6 +53,11 @@ export default class BoardItemComponent extends Component {
   }
 
   @action
+  stop() {
+    fetch(`${ENV.host}/play_sound/?sound_id=${this.sound.id}&stop=true`);
+  }
+
+  @action
   save() {
     if (!this.sound_name || (this.isNew && isNone(this.sound_file))) return;
 

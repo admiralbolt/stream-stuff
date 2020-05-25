@@ -1,4 +1,4 @@
-from api.sound_utils import SoundPlayer
+from api.utils.sound_player import SoundPlayer
 from django.apps import AppConfig
 from api.obs.obs_client import OBSClient
 from importlib import import_module
@@ -39,20 +39,6 @@ class ApiConfig(AppConfig):
 
       from api import models
 
-      self.scripts = {}
-
-      # Setup obs websocket
-      self.client = OBSClient(obswebsocket.obsws("localhost", 4444))
-      print("SCRIPT KEYBINDINGS")
-      print("==================")
-      for i, script in enumerate(models.Script.objects.order_by("id")):
-        ScriptClass = import_script(f"api.obs.{script.script_name}")
-        self.scripts[script.script_name] = ScriptClass(self.client)
-        print(f"ctrl+alt+s+{i}: {script.script_name}")
-        keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
-        keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
-
-
       # Setup sound
       self.mic_sound_player = SoundPlayer(input_name=CABLE_0)
       self.headphone_sound_player = SoundPlayer(input_name=CABLE_A)
@@ -61,7 +47,21 @@ class ApiConfig(AppConfig):
       print("======================")
       for i, sound in enumerate(sounds):
         print(f"{get_keybind(i)}, {sound.name}")
-        keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound.id,))
+        keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound,))
+        keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound,))
+
+
+      self.scripts = {}
+      # Setup obs websocket
+      self.client = OBSClient(obswebsocket.obsws("localhost", 4444))
+      print("SCRIPT KEYBINDINGS")
+      print("==================")
+      for i, script in enumerate(models.Script.objects.order_by("id")):
+        ScriptClass = import_script(f"api.obs.{script.script_name}")
+        self.scripts[script.script_name] = ScriptClass(self.client, self.mic_sound_player, self.headphone_sound_player)
+        print(f"ctrl+alt+s+{i}: {script.script_name}")
+        keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
+        keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
 
 
     def run_script(self, script_name, stop=False):
@@ -71,18 +71,10 @@ class ApiConfig(AppConfig):
         self.scripts[script_name].start()
 
 
-    def threaded_play_sound(self, sound_player, sound):
-      sound_player.play_sound(sound)
+    def play_sound(self, sound):
+      self.mic_sound_player.play_sound(sound)
+      self.headphone_sound_player.play_sound(sound)
 
-    def play_sound(self, sound_id):
-      from api import models
-      sound = models.Sound.objects.get(id=sound_id)
-      if not sound: return
-
-      t = threading.Thread(target=self.threaded_play_sound, args=[self.mic_sound_player, sound])
-      t.setDaemon(True)
-      t.start()
-
-      t2 = threading.Thread(target=self.threaded_play_sound, args=[self.headphone_sound_player, sound])
-      t2.setDaemon(True)
-      t2.start()
+    def stop_sound(self, sound):
+      self.mic_sound_player.stop_sound(sound)
+      self.headphone_sound_player.stop_sound(sound)

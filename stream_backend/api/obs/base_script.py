@@ -1,4 +1,10 @@
-from api.obs.stoppable_thread import StoppableThread
+from api.utils.stoppable_thread import StoppableThread
+
+CONSTANTS = {
+  "CAMERA_SOURCE": "Shitty Webcam",
+  "MIC_SOURCE": "Mic/Aux",
+  "DESKTOP_AUDIO_SOURCE": "Mic/Aux 2"
+}
 
 
 class BaseScript:
@@ -9,8 +15,14 @@ class BaseScript:
   # An OBSClient
   client = None
 
-  def __init__(self, client):
+  # Sound players for mic / headphone sounds
+  mic_player = None
+  headphone_player = None
+
+  def __init__(self, client, mic_sound_player, headphone_sound_player):
     self.client = client
+    self.mic_sound_player = mic_sound_player
+    self.headphone_sound_player = headphone_sound_player
     pass
 
   def call(self, request):
@@ -20,13 +32,14 @@ class BaseScript:
     if self.thread is not None:
       return
 
-    self.thread = StoppableThread(target=self.execute, args=(self,))
+    self.thread = StoppableThread(target=self.execute, args=())
     self.thread.setDaemon(True)
     self.thread.start()
 
 
   def stop(self):
     if self.thread is None:
+      self.cleanup()
       return
 
     self.thread.stop()

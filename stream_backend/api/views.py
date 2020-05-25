@@ -26,10 +26,6 @@ class SoundViewSet(viewsets.ModelViewSet):
   serializer_class = serializers.SoundSerializer
 
 
-def threaded_play_sound(sound_player, sound):
-  sound_player.play_sound(sound)
-
-
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def play_sound(request):
@@ -40,14 +36,12 @@ def play_sound(request):
     return JsonResponse({"status": ":("})
 
   app_config = apps.get_app_config("api")
-  t = threading.Thread(target=threaded_play_sound, args=[app_config.mic_sound_player, sound])
-  t.setDaemon(True)
-  t.start()
-
-  t2 = threading.Thread(target=threaded_play_sound, args=[app_config.headphone_sound_player, sound])
-  t2.setDaemon(True)
-  t2.start()
-
+  if request.GET.get("stop"):
+    app_config.mic_sound_player.stop_sound(sound)
+    app_config.headphone_sound_player.stop_sound(sound)
+  else:
+    app_config.mic_sound_player.play_sound(sound)
+    app_config.headphone_sound_player.play_sound(sound)
   return JsonResponse({"status": "cool"})
 
 @api_view(["POST"])
