@@ -1,4 +1,3 @@
-import { Command } from 'commander';
 import CommandBase from 'overlay/utils/commands/command-base';
 
 
