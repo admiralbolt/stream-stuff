@@ -3,11 +3,21 @@
     <form.element @controlType="text" @label="Title" @property="title" />
     <form.element @controlType="textarea" @label="Stream Preview" @property="preview" />
     <form.element @controlType="number" @label="Timer" @property="timer" />
+    <div class="form-group">
+      <label>Transition To Scene</label>
+      <Utils::Select @choices={{obs.scenes}} @value={{transitionToScene}} @setCallback={{action "setTransitionScene"}} />
+    </div>
+
     <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
     {{#if timerRunning}}
       <BsButton @type="primary" @onClick={{action "stopTimer"}}>Stop Timer</BsButton>
     {{else}}
       <BsButton @type="primary" @onClick={{action "startTimer"}}>Start Timer</BsButton>
     {{/if}}
+
+    <form.element @controlType="number" @label="End Stream Timer" @property="endTimer" />
+    <BsButton @type="primary" @onClick={{action "startEndTimer"}}>End Stream</BsButton>
+
+
   </BsForm>
 </div>

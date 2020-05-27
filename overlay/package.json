@@ -75,6 +75,7 @@
   "dependencies": {
     "argparse": "^1.0.10",
     "commander": "^5.1.0",
+    "obs-websocket-js": "^4.0.1",
     "tmi.js": "^1.5.0",
     "ws": "^7.2.5",
     "yargs": "^15.3.1"

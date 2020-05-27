@@ -8,12 +8,19 @@ import { task } from 'ember-concurrency-decorators';
 
 export default class SplashComponent extends Component {
   @service websockets;
+  @service obs;
   socket = null;
 
   @tracked title;
   @tracked preview;
+  // Timer for the preview
   @tracked timer;
   @tracked timerRunning;
+  // Secret timer for shutting down the stream.
+  @tracked endTimer;
+  @tracked endTimerRunning;
+
+  @tracked transitionToScene;
 
   constructor() {
     super(...arguments);
@@ -25,6 +32,12 @@ export default class SplashComponent extends Component {
     this.timer = localStorage.getItem('splashTimer') || 0;
     let timerRunning = localStorage.getItem('splashTimerRunning');
     this.timerRunning = timerRunning != null ? (timerRunning == 'true') : false;
+
+    this.endTimer = localStorage.getItem('endTimer') || 0;
+    let endTimerRunning = localStorage.getItem('endTimerRunning');
+    this.endTimerRunning = endTimerRunning != null ? (endTimerRunning == 'true') : false;
+    if (this.endTimerRunning) this.startEndTimer();
+    this.transitionToScene = localStorage.getItem('transitionToScene');
   }
 
   openHandler() {
@@ -51,6 +64,10 @@ export default class SplashComponent extends Component {
 
   @action
   startTimer() {
+    this.obs.send('SetMute', {
+      'source': this.obs.MIC_SOURCE,
+      'mute': true
+    });
     this.runTimer.perform();
     this.socket.send({
       info: {
@@ -88,6 +105,55 @@ export default class SplashComponent extends Component {
     }
     this.timerRunning = false;
     this.stopTimer();
+
+    // We only call this if the timer naturally runs out, transition to the
+    // target scene.
+    this.obs.send('SetCurrentScene', {
+      'scene-name': this.transitionToScene
+    });
+    this.obs.send('SetMute', {
+      'source': this.obs.MIC_SOURCE,
+      'mute': false
+    });
+  }
+
+  @action
+  startEndTimer() {
+    this.runEndTimer.perform();
+    this.endTimerRunning = true;
+    localStorage.setItem('endTimerRunning', true);
+    this.obs.send('SetCurrentScene', {
+      'scene-name': 'Splash'
+    });
+    this.obs.send('SetMute', {
+      'source': this.obs.MIC_SOURCE,
+      'mute': true
+    });
+  }
+
+  @action
+  stopEndTimer() {
+    this.runEndTimer.cancelAll();
+    this.endTimerRunning = false;
+    localStorage.setItem('endTimerRunning', false);
+  }
+
+  @task
+  *runEndTimer() {
+    while (this.endTimer > 0) {
+      localStorage.setItem('endTimer', --this.endTimer);
+      yield timeout(1000);
+    }
+
+    this.endTimerRunning = false;
+    localStorage.setItem('endTimerRunning', false);
+    this.obs.send('StopStreaming', {});
+  }
+
+  @action
+  setTransitionScene(scene) {
+    this.transitionToScene = scene;
+    localStorage.setItem('transitionToScene', scene);
   }
 
 }
