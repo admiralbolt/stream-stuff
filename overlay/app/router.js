@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('layouts', function() {
     this.route('melee');
     this.route('splash');
+    this.route('canvas');
   });
 
   this.route('plugins', function() {

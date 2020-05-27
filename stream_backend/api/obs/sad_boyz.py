@@ -21,6 +21,7 @@ class SadBoyzScript(BaseScript):
     #2. Save initial props, set the preview scene as the current.
     current_scene_info = self.call(GetCurrentScene())
     current_scene_name = current_scene_info.getName()
+    self.call(SetCurrentScene(current_scene_name))
 
     self.initial_props = self.call(GetSceneItemProperties(CONSTANTS["CAMERA_SOURCE"], scene_name=current_scene_name))
 
@@ -37,7 +38,7 @@ class SadBoyzScript(BaseScript):
 
     #3. Mute desktop audio and play the sound of silence.
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
-    self.mic_sound_player.play_sound(SOUND_MODEL)
+    self.stream_sound_player.play_sound(SOUND_MODEL)
     self.headphone_sound_player.play_sound(SOUND_MODEL)
 
 
@@ -71,6 +72,7 @@ class SadBoyzScript(BaseScript):
       time.sleep(0.1)
 
     self.cleanup()
+    return
 
   def cleanup(self):
     # Reset scale / crop if they exist.
@@ -87,10 +89,10 @@ class SadBoyzScript(BaseScript):
 
     # Unmute desktop audio, kill sound of silence.
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], False))
-    self.mic_sound_player.stop_sound(SOUND_MODEL)
+    self.stream_sound_player.stop_sound(SOUND_MODEL)
     self.headphone_sound_player.stop_sound(SOUND_MODEL)
 
 
     self.call(SetSourceFilterSettings("Shitty Webcam", "Gray", {"clut_amount": 0.0}))
     self.thread = None
-    pass
+    return

@@ -42,6 +42,7 @@ class ApiConfig(AppConfig):
       # Setup sound
       self.mic_sound_player = SoundPlayer(input_name=CABLE_0)
       self.headphone_sound_player = SoundPlayer(input_name=CABLE_A)
+      self.stream_sound_player = SoundPlayer(input_name=CABLE_B)
       sounds = models.Sound.objects.order_by("id")
       print("SOUNDBOARD KEYBINDINGS")
       print("======================")
@@ -58,7 +59,7 @@ class ApiConfig(AppConfig):
       print("==================")
       for i, script in enumerate(models.Script.objects.order_by("id")):
         ScriptClass = import_script(f"api.obs.{script.script_name}")
-        self.scripts[script.script_name] = ScriptClass(self.client, self.mic_sound_player, self.headphone_sound_player)
+        self.scripts[script.script_name] = ScriptClass(self.client, self.mic_sound_player, self.headphone_sound_player, self.stream_sound_player)
         print(f"ctrl+alt+s+{i}: {script.script_name}")
         keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
         keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
