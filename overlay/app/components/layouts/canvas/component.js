@@ -1,6 +1,12 @@
 import SocketClientComponent from 'overlay/components/socket-client/component';
 import { tracked } from '@glimmer/tracking';
 import { isEmpty, isNone } from '@ember/utils';
+import { timeout } from 'ember-concurrency';
+import { task } from 'ember-concurrency-decorators';
+import { htmlSafe } from '@ember/template';
+
+let HEARTBEAT = 25;
+
 
 /**
 The Canvas is used as a way to draw ANY html over the current scene. It should
@@ -12,7 +18,20 @@ Messages sent to the canvas have the following options:
 
   CREATE OPTIONS
   ==============
-  * html: (Required) A string containing the html to display.
+  * html: (Required)
+      A string containing the html to display.
+  * timer: (Optional, default=null)
+      Milliseconds until the element should be deleted. If no timer is specified,
+      the element will persist until a delete call is made.
+  * position: (Optional, default={x: 0, y:0})
+      The starting position of the element.
+  * randomPosition: (Optional, default=false)
+      Create the element at a random position on the screen.
+  * velocity: (Optional, default={x: 0, y: 0})
+      The direction in which to move the element as time goes on.
+  * randomVelocity: (Optional, default=false)
+      Give the element a random velocity upon creation.
+
 
   DELETE OPTIONS
   ==============
@@ -30,13 +49,106 @@ Messages sent to the canvas have the following options:
 }
 
 */
+
+
+class ElementData {
+  @tracked timer;
+  @tracked velocityX;
+  @tracked velocityY;
+  @tracked positionX;
+  @tracked positionY;
+  @tracked html;
+
+  maxTimer;
+
+  get cssString() {
+    return htmlSafe(`position: absolute; top: ${this.positionY}px; left: ${this.positionX}px; opacity: ${this.timer / this.maxTimer};`);
+  }
+
+  parsePosition(startingPosition, randomPosition = false) {
+    if (randomPosition) {
+      this.positionX = Math.random() * 1920;
+      this.positionY = Math.random() * 1080;
+      return;
+    }
+
+    this.positionX = startingPosition.x || 0;
+    this.positionY = startingPosition.y || 0;
+  }
+
+  parseVelocity(startingVelocity, randomVelocity = false) {
+    if (randomVelocity) {
+      this.velocityX = (Math.random() * 6) - 3;
+      this.velocityY = (Math.random() * 6) - 3;
+      return;
+    }
+
+    this.velocityX = startingVelocity.x || 0;
+    this.velocityY = startingVelocity.y || 0;
+  }
+
+  constructor(timer, html, velocity, randomVelocity, position, randomPosition) {
+    this.timer = timer;
+    this.maxTimer = timer;
+    this.html = html;
+
+    this.parseVelocity(velocity, randomVelocity);
+    this.parsePosition(position, randomPosition);
+  }
+}
+
+
 export default class CanvasComponent extends SocketClientComponent {
-  // A tracked dictionary mapping item ids -> html.
+  // A tracked dictionary mapping item ids to their properties. Each item
+  // has a few tracked properties:
+  //  timer -> The number of milliseconds left to stay on the canvas.
+  //  velocity -> The direction in which to move the item.
+  //  html -> The actual html itself.
   @tracked items;
 
   constructor() {
     super(...arguments, 7004);
     this.items = {};
+    this.heartbeat.perform();
+  }
+
+
+
+  @task
+  *heartbeat() {
+    while (true) {
+      let items = this.items;
+      let deleteKeys = [];
+      for (let key in this.items) {
+        if (!this.items.hasOwnProperty(key)) continue;
+
+        let props = this.items[key];
+
+        // Tick down the timers and remove elements as necessary.
+        if (!isNone(props.timer)) {
+          props.timer -= HEARTBEAT;
+          if (props.timer < 0) {
+            deleteKeys.push(key);
+            continue;
+          }
+        }
+
+        // Apply velocity to any items that have it.
+        if (props.velocityX == 0 && props.velocityY == 0) continue;
+
+        props.positionX += props.velocityX;
+        props.positionY += props.velocityY;
+      }
+
+      deleteKeys.forEach(deleteKey => {
+        if (!items.hasOwnProperty(deleteKey)) return;
+
+        delete items[deleteKey];
+      });
+
+      this.items = items;
+      yield timeout(HEARTBEAT);
+    }
   }
 
   messageHandler(event) {
@@ -49,7 +161,14 @@ export default class CanvasComponent extends SocketClientComponent {
         if (isNone(data.html) || isEmpty(data.html)) return;
 
         let items = this.items;
-        items[data.id] = data.html;
+        items[data.id] = new ElementData(
+          data.timer,
+          data.html,
+          data.velocity,
+          data.randomVelocity,
+          data.position,
+          data.randomPosition
+        );
         this.items = items;
 
         break;

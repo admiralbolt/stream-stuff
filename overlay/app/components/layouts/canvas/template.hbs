@@ -1,5 +1,8 @@
 <div class="layout">
-  {{#each-in this.items as |key value|}}
-    {{{value}}}
+  <!-- <img src="/assets/images/twitch_emotes/:).png" /> -->
+  {{#each-in this.items as |key props|}}
+    <div style="{{props.cssString}}">
+      {{{props.html}}}
+    </div>
   {{/each-in}}
 </div>

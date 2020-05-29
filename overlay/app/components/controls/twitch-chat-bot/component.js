@@ -7,6 +7,7 @@ export default class TwitchChatBotComponent extends Component {
   @service twitchChat;
 
   @alias('twitchChat.botIsAlive') botIsAlive;
+  @alias('twitchChat.emotesEnabled') emotesEnabled;
 
   @action
   toggleBot() {
@@ -15,5 +16,10 @@ export default class TwitchChatBotComponent extends Component {
     } else {
       this.twitchChat.start();
     }
+  }
+
+  @action
+  toggleEmotes() {
+    this.twitchChat.toggleEmotes();
   }
 }

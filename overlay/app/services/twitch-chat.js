@@ -4,6 +4,7 @@ import tmi from 'tmi';
 import config from 'overlay/config/environment';
 import getCommand from 'overlay/utils/commands/get-command';
 import { isNone } from '@ember/utils';
+import twitchEmotes from 'overlay/utils/twitch-emotes';
 
 const OPTS = {
   identity: {
@@ -21,14 +22,22 @@ let GENERIC_RESPONSES = {
 
 export default class TwitchChatService extends Service {
   @service brain;
+  @service websockets;
 
   @tracked client = null;
   @tracked botIsAlive = null;
+  @tracked emotesEnabled = false;
+
+  canvasSocket = null;
 
   init() {
     super.init(...arguments);
     this.botIsAlive = localStorage.getItem('botIsAlive');
     if (this.botIsAlive) this.start();
+
+    this.emotesEnabled = localStorage.getItem('emotesEnabled') == 'true';
+
+    this.canvasSocket = this.websockets.socketFor('ws://localhost:7004/');
   }
 
   messageHandler(target, context, msg, self) {
@@ -50,6 +59,23 @@ export default class TwitchChatService extends Service {
 
     if (msg.toLowerCase() in GENERIC_RESPONSES) {
       this.client.say(target, GENERIC_RESPONSES[msg.toLowerCase()]);
+    }
+
+    // Emote handling. Only use the first emote.
+    if (this.emotesEnabled) {
+      for (let emote of msg.split(/\s+/)) {
+        if (twitchEmotes.has(emote)) {
+          this.canvasSocket.send({
+            id: `${context['display-name']}_${emote}_${Math.random()}`,
+            type: 'create',
+            html: `<img src="/assets/images/twitch_emotes/${emote}.png" />`,
+            randomVelocity: true,
+            randomPosition: true,
+            timer: 3000 + Math.floor(Math.random() * 1000)
+          }, true);
+          console.log(`Trying to display emote: ${emote}`);
+        }
+      }
     }
   }
 
@@ -74,5 +100,10 @@ export default class TwitchChatService extends Service {
     this.client.disconnect();
     this.botIsAlive = false;
     localStorage.removeItem('botIsAlive');
+  }
+
+  toggleEmotes() {
+    this.emotesEnabled = !this.emotesEnabled;
+    localStorage.setItem('emotesEnabled', this.emotesEnabled);
   }
 }
