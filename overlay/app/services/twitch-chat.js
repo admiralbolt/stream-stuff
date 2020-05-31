@@ -4,7 +4,6 @@ import tmi from 'tmi';
 import config from 'overlay/config/environment';
 import getCommand from 'overlay/utils/commands/get-command';
 import { isNone } from '@ember/utils';
-import twitchEmotes from 'overlay/utils/twitch-emotes';
 
 const OPTS = {
   identity: {
@@ -63,17 +62,20 @@ export default class TwitchChatService extends Service {
 
     // Emote handling. Only use the first emote.
     if (this.emotesEnabled) {
-      for (let emote of msg.split(/\s+/)) {
-        if (twitchEmotes.has(emote)) {
-          this.canvasSocket.send({
-            id: `${context['display-name']}_${emote}_${Math.random()}`,
-            type: 'create',
-            html: `<img src="/assets/images/twitch_emotes/${emote}.png" />`,
-            randomVelocity: true,
-            randomPosition: true,
-            timer: 3000 + Math.floor(Math.random() * 1000)
-          }, true);
-          console.log(`Trying to display emote: ${emote}`);
+      if (!isNone(context.emotes)) {
+        for (let emoteId in context.emotes) {
+          if (context.emotes.hasOwnProperty(emoteId)) {
+            for (let i = 0; i < context.emotes[emoteId].length; ++i) {
+              this.canvasSocket.send({
+                id: `${context['display-name']}_${emoteId}_${Math.random()}`,
+                type: 'create',
+                html: `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${emoteId}/1.0" />`,
+                randomVelocity: true,
+                randomPosition: true,
+                timer: 3000 + Math.floor(Math.random() * 1000)
+              }, true);
+            }
+          }
         }
       }
     }

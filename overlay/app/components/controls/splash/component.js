@@ -29,14 +29,11 @@ export default class SplashComponent extends Component {
 
     this.title = localStorage.getItem('splashTitle') || '';
     this.preview = localStorage.getItem('splashPreview') || '';
-    this.timer = localStorage.getItem('splashTimer') || 0;
+    this.timer = parseInt(localStorage.getItem('splashTimer')) || 0;
     let timerRunning = localStorage.getItem('splashTimerRunning');
     this.timerRunning = timerRunning != null ? (timerRunning == 'true') : false;
 
-    this.endTimer = localStorage.getItem('endTimer') || 0;
-    let endTimerRunning = localStorage.getItem('endTimerRunning');
-    this.endTimerRunning = endTimerRunning != null ? (endTimerRunning == 'true') : false;
-    if (this.endTimerRunning) this.startEndTimer();
+    this.endTimer = parseInt(localStorage.getItem('endTimer')) || 0;
     this.transitionToScene = localStorage.getItem('transitionToScene');
   }
 
@@ -119,6 +116,7 @@ export default class SplashComponent extends Component {
 
   @action
   startEndTimer() {
+    this.updateInfo();
     this.runEndTimer.perform();
     this.endTimerRunning = true;
     localStorage.setItem('endTimerRunning', true);

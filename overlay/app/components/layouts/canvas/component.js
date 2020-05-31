@@ -164,9 +164,9 @@ export default class CanvasComponent extends SocketClientComponent {
         items[data.id] = new ElementData(
           data.timer,
           data.html,
-          data.velocity,
+          data.velocity || {},
           data.randomVelocity,
-          data.position,
+          data.position || {},
           data.randomPosition
         );
         this.items = items;

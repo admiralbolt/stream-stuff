@@ -3,10 +3,12 @@ import { tracked } from '@glimmer/tracking';
 
 export default class SpotifyComponent extends SocketClientComponent {
   @tracked brainSize;
-  @tracked showBrain;
+  @tracked showBrain = true;
 
   constructor() {
     super(...arguments, 7003);
+    console.log(this.showBrain);
+    console.log(this.brainSize);
   }
 
   messageHandler(event) {

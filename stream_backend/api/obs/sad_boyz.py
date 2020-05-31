@@ -36,6 +36,16 @@ class SadBoyzScript(BaseScript):
     initial_scaled_width = base_width * scale["x"]
     initial_scaled_height = base_height * scale["y"]
 
+    # Set bounds to be the current size of the image.
+    self.call(SetSceneItemProperties(
+      CONSTANTS["CAMERA_SOURCE"],
+      bounds={
+        "type": "OBS_BOUNDS_STRETCH",
+        "x": initial_scaled_width,
+        "y": initial_scaled_height
+      }
+    ))
+
     #3. Mute desktop audio and play the sound of silence.
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
     self.stream_sound_player.play_sound(SOUND_MODEL)
@@ -80,7 +90,12 @@ class SadBoyzScript(BaseScript):
       self.call(SetSceneItemProperties(
         CONSTANTS["CAMERA_SOURCE"],
         scale=self.initial_props.getScale(),
-        crop=self.initial_props.getCrop()
+        crop=self.initial_props.getCrop(),
+        bounds={
+          "type": "OBS_BOUNDS_NONE",
+          "x": 0,
+          "y": 0
+        }
       ))
       self.call(TransitionToProgram({
         "name": "Cut",

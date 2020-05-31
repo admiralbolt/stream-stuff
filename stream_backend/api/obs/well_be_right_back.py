@@ -41,6 +41,9 @@ async def send(socket, data):
 
 class WellBeRightBackScript(BaseScript):
 
+  loop = None
+  socket = None
+
   def execute(self):
     latest_recording = image_helpers.get_latest_recording()
     self.call(StartRecording())
@@ -72,29 +75,24 @@ class WellBeRightBackScript(BaseScript):
     img_data = base64.b64encode(buffer).decode()
     cv2.imwrite("C:\\Users\\avikn\\Videos\\blurred.png", blurred_frame)
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    self.loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(self.loop)
     future = asyncio.Future()
-    loop.run_until_complete(connect(future))
+    self.loop.run_until_complete(connect(future))
 
-    socket = future.result()
+    self.socket = future.result()
 
-    loop.run_until_complete(send(socket, {
+    self.loop.run_until_complete(send(self.socket, {
       "type": "create",
       "id": "freeze-frame",
       "html": f"<img id='freeze-frame' src='data:image/png;base64,{img_data}' />",
     }))
 
-    loop.run_until_complete(send(socket, {
+    self.loop.run_until_complete(send(self.socket, {
       "type": "create",
       "id": "text",
       "html": f"<h1 id='text' style='{TEXT_CSS}'>We'll Be Right Back</h1>"
     }))
-
-    loop.run_until_complete(close(socket))
-
-    loop.stop()
-    loop.close()
 
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], True))
@@ -109,25 +107,24 @@ class WellBeRightBackScript(BaseScript):
     return
 
   def cleanup(self):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    future = asyncio.Future()
-    loop.run_until_complete(connect(future))
-    socket = future.result()
+    if self.loop is not None:
+      if self.socket is not None:
+        self.loop.run_until_complete(send(self.socket, {
+          "type": "delete",
+          "id": "freeze-frame"
+        }))
 
-    loop.run_until_complete(send(socket, {
-      "type": "delete",
-      "id": "freeze-frame"
-    }))
+        self.loop.run_until_complete(send(self.socket, {
+          "type": "delete",
+          "id": "text"
+        }))
 
-    loop.run_until_complete(send(socket, {
-      "type": "delete",
-      "id": "text"
-    }))
+        self.loop.run_until_complete(close(self.socket))
+      self.loop.stop()
+      self.loop.close()
 
-    loop.run_until_complete(close(socket))
-    loop.stop()
-    loop.close()
+    self.loop = None
+    self.socket = None
 
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], False))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], False))

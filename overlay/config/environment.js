@@ -5,6 +5,7 @@ module.exports = function(environment) {
   let ENV = {
     spotifySecret: secrets.SPOTIFY_SECRET,
     twitchOauthToken: secrets.TWITCH_OAUTH_TOKEN,
+    twitchClientId: secrets.TWITCH_CLIENT_ID,
     host: 'http://localhost:8000',
     modulePrefix: 'overlay',
     environment,
