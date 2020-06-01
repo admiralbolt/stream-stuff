@@ -26,7 +26,6 @@ Legitimately Good Ideas
     problems with the brain plugin on initial load)
 * Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
-* Rewrite audio using pydub / support other file types.
 
 PURE GOLD
 ==========

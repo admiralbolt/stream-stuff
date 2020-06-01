@@ -1,4 +1,5 @@
 from api.utils.sound_manager import SoundManager
+from api.utils.voice_manager import VoiceManager
 from django.apps import AppConfig
 from api.obs.obs_client import OBSClient
 from importlib import import_module
@@ -57,6 +58,10 @@ class ApiConfig(AppConfig):
         print(f"ctrl+alt+s+{i}: {script.script_name}")
         keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
         keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
+
+      # VOICE MANAGER
+      self.voice_manager = VoiceManager(self.sound_manager)
+      self.voice_manager.start_listening()
 
 
     def run_script(self, script_name, stop=False):
