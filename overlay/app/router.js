@@ -12,10 +12,12 @@ Router.map(function() {
     this.route('melee');
     this.route('splash');
     this.route('canvas');
+    this.route('party-game');
   });
 
   this.route('plugins', function() {
     this.route('spotify');
     this.route('brain');
+    this.route('players');
   });
 });

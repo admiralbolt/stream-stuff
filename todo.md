@@ -11,10 +11,6 @@ Dev Tasks
 ==========
 * (Melee Layout) support names with spaces in them / longer names.
 
-New Layouts
-===========
-* Mario Party
-
 Memes
 ======
 * SHAME CUBE (canvas opengl?)
@@ -28,6 +24,8 @@ Legitimately Good Ideas
   clients actually get sent some kind of default instead of relying on the
   control panel to send data after a client has connected. (Currently causing
     problems with the brain plugin on initial load)
+* Storm Clouds for the splash screen.
+* Players Plugin: Show player names, icons, maybe port? Support N players maybe?
 
 PURE GOLD
 ==========
@@ -44,6 +42,7 @@ Chat Integrations
 
 Sound Board
 ============
+* Shitty Laugh Track
 
 Twitch Stuff
 =============

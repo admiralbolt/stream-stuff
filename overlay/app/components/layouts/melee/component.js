@@ -20,7 +20,7 @@ export default class MeleeLayoutComponent extends SocketClientComponent {
   }
 
   messageHandler(event) {
-    this.playerNames = JSON.parse(event.data);
+    // this.playerNames = JSON.parse(event.data);
   }
 
 }
