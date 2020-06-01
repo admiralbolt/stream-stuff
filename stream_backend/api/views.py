@@ -37,11 +37,9 @@ def play_sound(request):
 
   app_config = apps.get_app_config("api")
   if request.GET.get("stop"):
-    app_config.mic_sound_player.stop_sound(sound)
-    app_config.headphone_sound_player.stop_sound(sound)
+    app_config.sound_manager.stop_sound(sound.name, mic=True, headphone=True)
   else:
-    app_config.mic_sound_player.play_sound(sound)
-    app_config.headphone_sound_player.play_sound(sound)
+    app_config.sound_manager.play_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
   return JsonResponse({"status": "cool"})
 
 @api_view(["POST"])

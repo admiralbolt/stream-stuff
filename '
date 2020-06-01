@@ -1,0 +1,44 @@
+import pyaudio
+import time
+from pydub import AudioSegment
+from pydub.playback import play
+
+
+def get_device_by_name(p, name):
+  for i in range(p.get_device_count()):
+    if p.get_device_info_by_index(i)["name"] == name:
+      print(p.get_device_info_by_index(i))
+      return i
+  return None
+
+p = pyaudio.PyAudio()
+segment = AudioSegment.from_file("warmup.wav")
+segment_iterator = 0
+play(segment)
+
+def callback(in_data, frame_count, time_info, status):
+  print(segment_iterator)
+  data = segment[segment_iterator * segment.sample_width:(segment_iterator + frame_count) * segment.sample_width]
+  segment_iterator += frame_count
+
+  return data, pyaudio.paContinue
+
+stream = p.open(
+  format = p.get_format_from_width(segment.sample_width),
+  channels=segment.channels,
+  rate=segment.frame_rate,
+  output=True,
+  stream_callback=callback
+)
+
+print("STarting the stream")
+
+stream.start_stream()
+
+while stream.is_active():
+  time.sleep(0.1)
+
+stream.stop_stream()
+stream.close()
+segment.close()
+p.terminate()

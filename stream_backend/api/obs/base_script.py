@@ -19,11 +19,9 @@ class BaseScript:
   mic_player = None
   headphone_player = None
 
-  def __init__(self, client, mic_sound_player, headphone_sound_player, stream_sound_player):
+  def __init__(self, client, sound_manager):
     self.client = client
-    self.mic_sound_player = mic_sound_player
-    self.headphone_sound_player = headphone_sound_player
-    self.stream_sound_player = stream_sound_player
+    self.sound_manager = sound_manager
     pass
 
   def call(self, request):

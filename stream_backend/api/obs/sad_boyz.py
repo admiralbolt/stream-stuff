@@ -48,9 +48,12 @@ class SadBoyzScript(BaseScript):
 
     #3. Mute desktop audio and play the sound of silence.
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
-    self.stream_sound_player.play_sound(SOUND_MODEL)
-    self.headphone_sound_player.play_sound(SOUND_MODEL)
-
+    self.sound_manager.play_sound(
+      SOUND_MODEL.sound_file.path,
+      sound_name=SOUND_MODEL.name,
+      stream=True,
+      headphone=True
+    )
 
     # 4. Slowly zoom in on the camera :)
     while not self.thread.stopped():
@@ -104,9 +107,11 @@ class SadBoyzScript(BaseScript):
 
     # Unmute desktop audio, kill sound of silence.
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], False))
-    self.stream_sound_player.stop_sound(SOUND_MODEL)
-    self.headphone_sound_player.stop_sound(SOUND_MODEL)
-
+    self.sound_manager.stop_sound(
+      SOUND_MODEL.name,
+      stream=True,
+      headphone=True
+    )
 
     self.call(SetSourceFilterSettings("Shitty Webcam", "Gray", {"clut_amount": 0.0}))
     self.thread = None

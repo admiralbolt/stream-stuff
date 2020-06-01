@@ -5,7 +5,7 @@ Stream Hacking X: OBS Websocket
 Stream Hacking XI: OBS Websocket Memes
 Stream Hacking XII: Memes & Splash Screen Upgrades
 Stream Hacking XIII: Stream Control & Chat Integrations
-Stream Hacking XIV:
+Stream Hacking XIV: Voice Commands
 
 Dev Tasks
 ==========
@@ -26,6 +26,7 @@ Legitimately Good Ideas
     problems with the brain plugin on initial load)
 * Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
+* Rewrite audio using pydub / support other file types.
 
 PURE GOLD
 ==========
@@ -42,7 +43,6 @@ Chat Integrations
 
 Sound Board
 ============
-* Shitty Laugh Track
 
 Twitch Stuff
 =============

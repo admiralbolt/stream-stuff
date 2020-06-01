@@ -1,4 +1,4 @@
-from api.utils.sound_player import SoundPlayer
+from api.utils.sound_manager import SoundManager
 from django.apps import AppConfig
 from api.obs.obs_client import OBSClient
 from importlib import import_module
@@ -7,10 +7,6 @@ import keyboard
 import obswebsocket
 import os
 import threading
-
-CABLE_0 = "CABLE Input (VB-Audio Virtual C"
-CABLE_A = "CABLE-A Input (VB-Audio Cable A"
-CABLE_B = "CABLE-B Input (VB-Audio Cable B"
 
 def get_keybind(index):
   modifier = ""
@@ -40,9 +36,7 @@ class ApiConfig(AppConfig):
       from api import models
 
       # Setup sound
-      self.mic_sound_player = SoundPlayer(input_name=CABLE_0)
-      self.headphone_sound_player = SoundPlayer(input_name=CABLE_A)
-      self.stream_sound_player = SoundPlayer(input_name=CABLE_B)
+      self.sound_manager = SoundManager()
       sounds = models.Sound.objects.order_by("id")
       print("SOUNDBOARD KEYBINDINGS")
       print("======================")
@@ -59,7 +53,7 @@ class ApiConfig(AppConfig):
       print("==================")
       for i, script in enumerate(models.Script.objects.order_by("id")):
         ScriptClass = import_script(f"api.obs.{script.script_name}")
-        self.scripts[script.script_name] = ScriptClass(self.client, self.mic_sound_player, self.headphone_sound_player, self.stream_sound_player)
+        self.scripts[script.script_name] = ScriptClass(self.client, self.sound_manager)
         print(f"ctrl+alt+s+{i}: {script.script_name}")
         keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
         keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
@@ -73,9 +67,7 @@ class ApiConfig(AppConfig):
 
 
     def play_sound(self, sound):
-      self.mic_sound_player.play_sound(sound)
-      self.headphone_sound_player.play_sound(sound)
+      self.sound_manager.play_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
 
     def stop_sound(self, sound):
-      self.mic_sound_player.stop_sound(sound)
-      self.headphone_sound_player.stop_sound(sound)
+      self.sound_manager.stop_sound(sound.name, mic=True, headphone=True)

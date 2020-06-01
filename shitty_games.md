@@ -19,3 +19,4 @@ TODO
 * Treasure Planet
 * Spy Fox
 * SNES toy story
+* GEX enter the gecko

@@ -97,9 +97,13 @@ class WellBeRightBackScript(BaseScript):
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], True))
 
-    self.mic_sound_player.play_sound(SOUND_MODEL)
-    self.headphone_sound_player.play_sound(SOUND_MODEL)
-    self.stream_sound_player.play_sound(SOUND_MODEL)
+    self.sound_manager.play_sound(
+      SOUND_MODEL.sound_file.path,
+      sound_name=SOUND_MODEL.name,
+      mic=True,
+      stream=True,
+      headphone=True
+    )
 
     time.sleep(3)
 
@@ -129,8 +133,12 @@ class WellBeRightBackScript(BaseScript):
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], False))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], False))
 
-    self.mic_sound_player.stop_sound(SOUND_MODEL)
-    self.headphone_sound_player.stop_sound(SOUND_MODEL)
-    self.stream_sound_player.stop_sound(SOUND_MODEL)
+    self.sound_manager.stop_sound(
+      SOUND_MODEL.name,
+      mic=True,
+      stream=True,
+      headphone=True
+    )
+
     self.thread = None
     return
