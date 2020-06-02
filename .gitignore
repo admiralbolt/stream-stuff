@@ -26,3 +26,5 @@ __pycache__
 /overlay/.node_modules.ember-try/
 /overlay/bower.json.ember-try
 /overlay/package.json.ember-try
+
+/stream_backend/tmp/

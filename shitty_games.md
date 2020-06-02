@@ -6,7 +6,9 @@ Barbie Horse Adventure: Wild Horse Rescue
 - The load screens are absolutely brutal, loading the main hub takes ~20 seconds
   and even just leaving to change your costume (load screen for that btw)
   requires reloading the hub.
-+ You can pet the horses.
+- Story is non existent, animation quality is terrible, voice acting is bad.
++ The only redeeming quality, is that you can say you beat
+  Barbie Horse Adventure: Wild Horse Rescue.
 
 2/10
 

@@ -1,4 +1,7 @@
+from datetime import datetime
+import hashlib
 import os
+from pprint import pprint
 import threading
 import time
 
@@ -31,6 +34,7 @@ class VoiceManager:
     self.p = pyaudio.PyAudio()
     self.r = sr.Recognizer()
     self.all_sounds = [sound.name for sound in Sound.objects.all()]
+    self.tts_dir = os.path.join(os.getcwd(), "tmp")
 
     # Load our mic input
     for i in range(self.p.get_device_count()):
@@ -38,36 +42,54 @@ class VoiceManager:
         self.source = sr.Microphone(device_index=i)
         self.source.__enter__()
         self.r.adjust_for_ambient_noise(self.source, duration=3)
+        print(f"minimum energy threshold: {self.r.energy_threshold}")
+        self.r.energy_threshold += 100
         break
 
+  def time(self, title):
+    print(title)
+    print(datetime.utcnow() - self.current_time)
+    self.current_time = datetime.utcnow()
+    return
+
   def tts(self, text):
-    data = gTTS(text)
-    sound_file = os.path.join(os.getcwd(), "tts.mp3")
-    data.save(sound_file)
-    self.sound_manager.play_sound(sound_file, mic=True, headphone=True)
-    time.sleep(1)
+    file_path = os.path.join(
+      self.tts_dir,
+      f"tts_{hashlib.md5(text.encode('utf-8')).hexdigest()}.mp3"
+    )
+    if not os.path.isfile(file_path):
+      text_data = gTTS(text)
+      text_data.save(file_path)
+
+    self.sound_manager.play_sound(file_path, mic=True, headphone=True)
+    time.sleep(0.5)
     return
 
   def test_for_activation(self, audio):
-    text = self.r.recognize_sphinx(audio)
-
-    # Match the text to our activation phrase.
-    # print(fuzz.partial_ratio(text, ACTIVATION_PHRASE))
-    if fuzz.partial_ratio(text, ACTIVATION_PHRASE) < 80:
-      return
-
-    self.stop_listening()
-
-    self.tts("How can I help?")
     try:
-      audio = self.r.listen(self.source, timeout=5, phrase_time_limit=5)
+      # This is slow and needs to go faster.
+      text = self.r.recognize_sphinx(audio)
+      self.time("Time until audio translates")
+
+      # Match the text to our activation phrase.
+      print(f"text: [{text}], ratio: {fuzz.partial_ratio(text, ACTIVATION_PHRASE)}")
+      if fuzz.partial_ratio(text, ACTIVATION_PHRASE) < 80:
+        return
+
+      self.tts("How can I help?")
+      self.time("Time until tts finishes")
+      audio = self.r.listen(self.source, timeout=5, phrase_time_limit=3)
       text = self.r.recognize_sphinx(audio)
 
+      print("COMMAND TEXT")
+      print(text)
+
       words = text.split()
-      if words[0].startswith("play"):
+      # I feel like my diction isn't that bad but I very consistently get clay.
+      if words[0].startswith("play") or words[0].startswith("clay"):
         scored_sounds = sorted(
           self.all_sounds,
-          key=lambda sound: fuzz.partial_ratio("".join(words[1:]), sound),
+          key=lambda sound: fuzz.ratio("".join(words[1:]), sound.lower()),
           reverse=True
         )
         from api.models import Sound
@@ -83,26 +105,17 @@ class VoiceManager:
       else:
         self.tts("I'm not sure how to help with that.")
     except Exception as e:
-      print(e)
-    finally:
-      self.start_listening()
+      pass
 
 
 
   def listen_for_activation(self):
     while not self.activation_listener_thread.stopped():
       try:
-        audio = self.r.listen(self.source, timeout=1, phrase_time_limit=5)
-
-        t = threading.Thread(
-          target=self.test_for_activation,
-          args=(audio,)
-        )
-        t.setDaemon(True)
-        t.start()
-        self.tester_threads.append(t)
-
-
+        self.current_time = datetime.utcnow()
+        audio = self.r.listen(self.source, timeout=5, phrase_time_limit=3)
+        self.time("Time until listen finishes")
+        self.test_for_activation(audio)
       except Exception as e:
         pass
 
