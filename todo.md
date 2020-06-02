@@ -6,10 +6,10 @@ Stream Hacking XI: OBS Websocket Memes
 Stream Hacking XII: Memes & Splash Screen Upgrades
 Stream Hacking XIII: Stream Control & Chat Integrations
 Stream Hacking XIV: Voice Commands
+Stream Hacking XV: "Clip That"
 
 Dev Tasks
 ==========
-* (Melee Layout) support names with spaces in them / longer names.
 
 Memes
 ======
@@ -26,11 +26,13 @@ Legitimately Good Ideas
     problems with the brain plugin on initial load)
 * Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
+* Follower overlay thingy.
 
 PURE GOLD
 ==========
 * Control the stream with my eyebrows.
 * Voice Commands to control the stream Ex: Saying "clip that" clips that.
+  -> Create database model for twitch clips and save.
 
 Garbage?
 ========
@@ -39,6 +41,7 @@ Garbage?
 Chat Integrations
 =================
 * A full text based adventure in the chat.
+* Get BTTV emotes onto the overlay canvas
 
 Sound Board
 ============

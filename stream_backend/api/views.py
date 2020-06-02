@@ -13,6 +13,12 @@ from api import models, serializers
 import threading
 
 
+class KeyValueSet(viewsets.ModelViewSet):
+  """Key Value Shit"""
+  resource_name = "keyvalues"
+  queryset = models.KeyValue.objects.order_by("key")
+  serializer_class = serializers.KeyValueSerializer
+
 class ScriptViewSet(viewsets.ModelViewSet):
   """Scripts for controlling OBS"""
   resource_name = "scripts"
@@ -24,6 +30,12 @@ class SoundViewSet(viewsets.ModelViewSet):
   resource_name = "sounds"
   queryset = models.Sound.objects.order_by("name")
   serializer_class = serializers.SoundSerializer
+
+class TwitchClipViewSet(viewsets.ModelViewSet):
+  """Somebody clip that."""
+  resource_name = "twitchclips"
+  queryset = models.TwitchClip.objects.all()
+  serializer_class = serializers.TwitchClipSerializer
 
 
 @api_view(["GET"])

@@ -63,6 +63,7 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
+  "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
   "DEFAULT_PERMISSION_CLASSES": [
     "rest_framework.permissions.AllowAny"
   ],
@@ -82,6 +83,9 @@ REST_FRAMEWORK = {
   "DEFAULT_AUTHENTICATION_CLASSES": (
     "rest_framework.authentication.TokenAuthentication",
     "rest_framework.authentication.SessionAuthentication",
+  ),
+  "DEFAULT_FILTER_BACKENDS": (
+    "rest_framework.filters.OrderingFilter",
   ),
 }
 
@@ -149,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Chicago"
 
 USE_I18N = True
 

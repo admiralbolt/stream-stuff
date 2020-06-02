@@ -28,3 +28,4 @@ __pycache__
 /overlay/package.json.ember-try
 
 /stream_backend/tmp/
+/stream_backend/api/utils/_secrets.py

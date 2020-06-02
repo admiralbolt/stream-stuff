@@ -15,4 +15,9 @@
   </BsButton>
 
   <Utils::ToggleButton @positiveText="Emotes Enabled" @negativeText="Emotes Disabled" @value={{emotesEnabled}} @callback={{action "toggleEmotes"}} />
+
+  <br><br><br>
+
+  <BsButton @type="primary" @onClick={{action "authorizeTwitch"}}>Authorize Twitch</BsButton>
+  <BsButton @type="primary" @onClick={{action "getTokens"}}>Get Tokens</BsButton>
 </div>

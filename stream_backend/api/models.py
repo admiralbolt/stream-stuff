@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 
 class Sound(models.Model):
@@ -15,4 +17,27 @@ class Script(models.Model):
   def __str__(self):
     return self.name
 
-ADMIN_MODELS = [Script, Sound]
+class TwitchClip(models.Model):
+  name = models.CharField(max_length=128, unique=True)
+  edit_url = models.CharField(max_length=128, unique=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f"{self.name} - ({self.created_at})"
+
+class KeyValue(models.Model):
+  key = models.CharField(max_length=128, primary_key=True)
+  # Serialized json
+  value = models.TextField(blank=True)
+
+  class Meta:
+    indexes = [
+      models.Index(fields=['key'])
+    ]
+
+  def __str__(self):
+    return self.key
+
+
+
+ADMIN_MODELS = [KeyValue, Script, Sound, TwitchClip]

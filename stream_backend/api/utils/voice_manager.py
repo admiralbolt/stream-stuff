@@ -36,6 +36,9 @@ class VoiceManager:
     self.all_sounds = [sound.name for sound in Sound.objects.all()]
     self.tts_dir = os.path.join(os.getcwd(), "tmp")
 
+    from api.utils.twitch_client import TwitchClient
+    self.twitch_client = TwitchClient()
+
     # Load our mic input
     for i in range(self.p.get_device_count()):
       if self.p.get_device_info_by_index(i)["name"] == VOICEMOD_MIC:
@@ -43,7 +46,7 @@ class VoiceManager:
         self.source.__enter__()
         self.r.adjust_for_ambient_noise(self.source, duration=3)
         print(f"minimum energy threshold: {self.r.energy_threshold}")
-        self.r.energy_threshold += 100
+        self.r.energy_threshold = 10000
         break
 
   def time(self, title):
@@ -69,15 +72,13 @@ class VoiceManager:
     try:
       # This is slow and needs to go faster.
       text = self.r.recognize_sphinx(audio)
-      self.time("Time until audio translates")
 
       # Match the text to our activation phrase.
-      print(f"text: [{text}], ratio: {fuzz.partial_ratio(text, ACTIVATION_PHRASE)}")
-      if fuzz.partial_ratio(text, ACTIVATION_PHRASE) < 80:
+      print(f"text: [{text}], ratio: {fuzz.ratio(text, ACTIVATION_PHRASE)}")
+      if fuzz.ratio(text, ACTIVATION_PHRASE) < 70:
         return
 
       self.tts("How can I help?")
-      self.time("Time until tts finishes")
       audio = self.r.listen(self.source, timeout=5, phrase_time_limit=3)
       text = self.r.recognize_sphinx(audio)
 
@@ -102,6 +103,11 @@ class VoiceManager:
           headphone=True
         )
 
+      # Fuzz match spoken text for 'clip that'
+      elif fuzz.ratio(text, "clip that") >= 70:
+        self.tts("Okay. Clipping that shit.")
+        self.twitch_client.clip_that()
+
       else:
         self.tts("I'm not sure how to help with that.")
     except Exception as e:
@@ -113,8 +119,7 @@ class VoiceManager:
     while not self.activation_listener_thread.stopped():
       try:
         self.current_time = datetime.utcnow()
-        audio = self.r.listen(self.source, timeout=5, phrase_time_limit=3)
-        self.time("Time until listen finishes")
+        audio = self.r.listen(self.source, timeout=10, phrase_time_limit=4)
         self.test_for_activation(audio)
       except Exception as e:
         pass

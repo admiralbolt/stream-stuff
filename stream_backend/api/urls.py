@@ -8,8 +8,10 @@ from api import views
 
 
 router = routers.DefaultRouter(trailing_slash=False)
+router.register(r"keyvalues", views.KeyValueSet)
 router.register(r"scripts", views.ScriptViewSet)
 router.register(r"sounds", views.SoundViewSet)
+router.register(r"twitch_clips", views.TwitchClipViewSet)
 
 urlpatterns = [
   path("sounds/upload/", views.upload_sound),

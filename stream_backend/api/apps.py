@@ -1,13 +1,15 @@
-from api.utils.sound_manager import SoundManager
-from api.utils.voice_manager import VoiceManager
-from django.apps import AppConfig
-from api.obs.obs_client import OBSClient
 from importlib import import_module
-
-import keyboard
-import obswebsocket
 import os
 import threading
+
+from django.apps import AppConfig
+import keyboard
+import obswebsocket
+
+from api.obs.obs_client import OBSClient
+from api.utils.sound_manager import SoundManager
+from api.utils.voice_manager import VoiceManager
+from api.utils.twitch_client import TwitchClient
 
 def get_keybind(index):
   modifier = ""

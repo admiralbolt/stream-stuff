@@ -4,10 +4,17 @@ import { action } from '@ember/object';
 import { alias } from '@ember/object/computed';
 
 export default class TwitchChatBotComponent extends Component {
+  @service twitchApi;
   @service twitchChat;
 
   @alias('twitchChat.botIsAlive') botIsAlive;
   @alias('twitchChat.emotesEnabled') emotesEnabled;
+
+  constructor() {
+    super(...arguments);
+    // Initialize service so it starts... We do this by accessing any property.
+    this.twitchApi.oauth_token;
+  }
 
   @action
   toggleBot() {
@@ -21,5 +28,15 @@ export default class TwitchChatBotComponent extends Component {
   @action
   toggleEmotes() {
     this.twitchChat.toggleEmotes();
+  }
+
+  @action
+  authorizeTwitch() {
+    this.twitchApi.authorize();
+  }
+
+  @action
+  getTokens() {
+    this.twitchApi.getTokens();
   }
 }

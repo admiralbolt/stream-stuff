@@ -16,12 +16,6 @@ class SoundPlayer():
   stream = None
   current_frame = 0
 
-  # Track data for actively playing sounds indexed by name. Sounds have:
-  #  - thread: The thread variable that's handling the playing
-  #  - segment: The actual created audio segment.
-  #  - stream: The opened stream for writing audio.
-  data = {}
-
   def __init__(self, audio_device_name):
     self.p = pyaudio.PyAudio()
     self.output_device_index = self._get_audio_device(audio_device_name)
@@ -69,7 +63,7 @@ class SoundPlayer():
       target=self.play_sound_threaded,
       args=(sound_name,)
     )
-    self.threads[sound_name].setDaemon(True)
+    # self.threads[sound_name].setDaemon(True)
     self.threads[sound_name].start()
 
   def play_sound_threaded(self, sound_name):
