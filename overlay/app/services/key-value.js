@@ -21,11 +21,11 @@ export default class KeyValueService extends Service {
   async createOrUpdate(key, value) {
     let record = await this.getRecord(key);
     if (!isNone(record)) {
-      record.value = value;
+      record.value = JSON.stringify(value);
     } else {
       record = this.store.createRecord('keyvalue', {
         key: key,
-        value: value
+        value: JSON.stringify(value)
       });
     }
 
@@ -34,6 +34,6 @@ export default class KeyValueService extends Service {
 
   async getValue(key) {
     let record = await this.getRecord(key);
-    return !isNone(record) ? record.value : null;
+    return !isNone(record) ? JSON.parse(record.value) : null;
   }
 }

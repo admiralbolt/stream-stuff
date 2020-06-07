@@ -4,6 +4,7 @@ import { task } from 'ember-concurrency-decorators';
 
 export default class BrainService extends Service {
   @service websockets;
+  @service keyValue;
   socket = null;
 
   @tracked brainSize;
@@ -11,30 +12,34 @@ export default class BrainService extends Service {
 
   constructor() {
     super(...arguments);
-    this.socket = this.websockets.socketFor('ws://localhost:7003/');
-    this.socket.on('open', this.openHandler, this);
-    this.brainSize = parseInt(localStorage.getItem('brainSize') || 0);
-    this.showBrain = localStorage.getItem('showBrain') == 'true';
+    this.initialize();
   }
 
-  openHandler() {
+  async initialize() {
+    this.brainSize = await this.keyValue.getValue('brain_plugin_size');
+    this.showBrain = await this.keyValue.getValue('brain_plugin_show');
+    this.socket = this.websockets.socketFor('ws://localhost:7003/');
+    this.socket.on('open', this.openHandler, this);
+  }
+
+  async openHandler() {
     this.socket.send({
       brainSize: this.brainSize,
       showBrain: this.showBrain
     }, true);
   }
 
-  updateBrain(info) {
+  async updateBrain(info) {
     let sendData = {};
     if (info.size) {
       this.brainSize = info.size;
-      localStorage.setItem('brainSize', this.brainSize);
+      this.keyValue.createOrUpdate('brain_plugin_size', this.brainSize);
       sendData.brainSize = this.brainSize;
     }
 
     if (info.hasOwnProperty('show')) {
       this.showBrain = info.show;
-      localStorage.setItem('showBrain', this.showBrain);
+      this.keyValue.createOrUpdate('brain_plugin_show', this.showBrain);
       sendData.showBrain = this.showBrain;
     }
 

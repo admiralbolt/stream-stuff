@@ -37,6 +37,8 @@ class TwitchClient:
       }
     )
 
+    print(res)
+
     data = res.json()["data"][0]
     print(data)
 

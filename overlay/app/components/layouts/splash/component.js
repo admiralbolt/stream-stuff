@@ -1,4 +1,5 @@
 import SocketClientComponent from 'overlay/components/socket-client/component';
+import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { timeout } from 'ember-concurrency';
@@ -7,21 +8,32 @@ import { task } from 'ember-concurrency-decorators';
 let MIN_ANGLE = (-Math.PI / 2.0) - Math.PI / 8.0;
 let MAX_ANGLE = (-Math.PI / 2.0) + Math.PI / 8.0;
 
+let TITLE = 'splash_screen_title';
+let PREVIEW = 'splash_screen_preview';
+let TIMER = 'splash_screen_timer';
+
 // Credit where it's due:
 // https://codepen.io/jlong64/pen/jwJpc
 // Thanks Jarod Long!
 
 export default class SplashComponent extends SocketClientComponent {
-
-
-  constructor() {
-    super(...arguments, 7002);
-  }
+  @service keyValue;
 
   @tracked title;
   @tracked preview;
   @tracked timer;
   @tracked showTimer = false;
+
+  constructor() {
+    super(...arguments, 7002);
+    this.initialize();
+  }
+
+  async initialize() {
+    this.title = await this.keyValue.getValue(TITLE);
+    this.preview = await this.keyValue.getValue(PREVIEW);
+    this.timer = await this.keyValue.getValue(TIMER);
+  }
 
   get readableTimer() {
     let minutes = Math.floor(this.timer / 60);
@@ -41,7 +53,6 @@ export default class SplashComponent extends SocketClientComponent {
     if (data.info.hasOwnProperty('timer')) this.timer = data.info.timer;
     if (data.info.hasOwnProperty('showTimer')) this.showTimer = data.info.showTimer;
   }
-
 
   // ALL the lightning bolt logic below.
 

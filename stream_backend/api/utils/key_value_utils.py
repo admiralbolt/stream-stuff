@@ -1,3 +1,5 @@
+import json
+
 from api.models import KeyValue
 
 def get_value(key):
@@ -7,6 +9,6 @@ def get_value(key):
   """
   try:
     kv = KeyValue.objects.get(key=key)
-    return kv.value
+    return json.loads(kv.value)
   except:
     return None

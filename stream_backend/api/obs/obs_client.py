@@ -1,4 +1,8 @@
-import obswebsocket, obswebsocket.requests
+import threading
+import time
+
+import obswebsocket
+from obswebsocket.requests import *
 
 class OBSClient:
   """A high level wrapper around an obs websocket client.
@@ -10,14 +14,28 @@ class OBSClient:
   # An obs-websocket-py client.
   socket_client = None
 
+  # A thread that handles connecting. Retries every 10 seconds until
+  # the socket becomes available.
+  thread = None
 
-  def __init__(self, socket_client):
-    self.socket_client = socket_client
-    self.socket_client.connect()
+  def __init__(self):
+    self.socket_client = obswebsocket.obsws("localhost", 4444)
+    self.thread = threading.Thread(target=self._connect)
+    self.thread.setDaemon(True)
+    self.thread.start()
 
   def __delete__(self):
     self.socket_client.disconnect()
 
+  def _connect(self):
+    while self.socket_client.ws is None or not self.socket_client.ws.connected:
+      try:
+        self.socket_client.connect()
+      except Exception as e:
+        print(e)
+        print("Couldn't connect, retrying")
+        time.sleep(10)
+    print("Connected successfully!")
 
   def call(self, request):
     return self.socket_client.call(request)
@@ -32,7 +50,7 @@ class OBSClient:
       'typeId': 'wasapi_input_capture'
     }
     """
-    sources = self.call(obswebsocket.requests.GetSourcesList())
+    sources = self.call(GetSourcesList())
     for source in sources.getSources():
       if source["name"] == name:
         return source
@@ -52,9 +70,16 @@ class OBSClient:
       'type': 'clut_filter'
     }
     """
-    filters = self.call(obswebsocket.requests.GetSourceFilters(source["name"]))
+    filters = self.call(GetSourceFilters(source["name"]))
     for filter in filters.getFilters():
       print(filter)
       if filter["name"] == name:
         return filter
     return None
+
+  def transition(self):
+    """Clicks the transition button."""
+    return self.call(TransitionToProgram({
+      "name": "Cut",
+      "duration": 0
+    }))

@@ -51,7 +51,7 @@ class ApiConfig(AppConfig):
 
       self.scripts = {}
       # Setup obs websocket
-      self.client = OBSClient(obswebsocket.obsws("localhost", 4444))
+      self.client = OBSClient()
       print("SCRIPT KEYBINDINGS")
       print("==================")
       for i, script in enumerate(models.Script.objects.order_by("id")):

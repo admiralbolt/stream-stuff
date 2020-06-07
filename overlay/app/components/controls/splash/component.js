@@ -5,10 +5,19 @@ import { action } from '@ember/object';
 import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 
+let TITLE = 'splash_screen_title';
+let PREVIEW = 'splash_screen_preview';
+let TIMER = 'splash_screen_timer';
+let TIMER_RUNNING = 'splash_screen_timer_running';
+
+let END_TIMER = 'splash_screen_end_timer';
+let TRANSITION_TO_SCENE = 'splash_screen_transition_to_scene';
 
 export default class SplashComponent extends Component {
-  @service websockets;
+  @service keyValue;
   @service obs;
+  @service websockets;
+
   socket = null;
 
   @tracked title;
@@ -24,17 +33,19 @@ export default class SplashComponent extends Component {
 
   constructor() {
     super(...arguments);
+    this.initialize();
+  }
+
+  async initialize() {
+    this.title = await this.keyValue.getValue(TITLE);
+    this.preview = await this.keyValue.getValue(PREVIEW);
+    this.timer = await this.keyValue.getValue(TIMER);
+    this.timerRunning = await this.keyValue.getValue(TIMER_RUNNING);
+    this.endTimer = await this.keyValue.getValue(END_TIMER);
+    this.transitionToScene = await this.keyValue.getValue(TRANSITION_TO_SCENE);
+
     this.socket = this.websockets.socketFor('ws://localhost:7002/');
     this.socket.on('open', this.openHandler, this);
-
-    this.title = localStorage.getItem('splashTitle') || '';
-    this.preview = localStorage.getItem('splashPreview') || '';
-    this.timer = parseInt(localStorage.getItem('splashTimer')) || 0;
-    let timerRunning = localStorage.getItem('splashTimerRunning');
-    this.timerRunning = timerRunning != null ? (timerRunning == 'true') : false;
-
-    this.endTimer = parseInt(localStorage.getItem('endTimer')) || 0;
-    this.transitionToScene = localStorage.getItem('transitionToScene');
   }
 
   openHandler() {
@@ -54,9 +65,9 @@ export default class SplashComponent extends Component {
       }
     }, true);
 
-    localStorage.setItem('splashTitle', this.title);
-    localStorage.setItem('splashPreview', this.preview);
-    localStorage.setItem('splashTimer', this.timer);
+    this.keyValue.createOrUpdate(TITLE, this.title);
+    this.keyValue.createOrUpdate(PREVIEW, this.preview);
+    this.keyValue.createOrUpdate(TIMER, this.timer);
   }
 
   @action
@@ -71,8 +82,7 @@ export default class SplashComponent extends Component {
         showTimer: true
       }
     }, true);
-    localStorage.setItem('splashTimerRunning', true);
-    localStorage.setItem('splashShowTimer', true);
+    this.keyValue.createOrUpdate(TIMER_RUNNING, true);
     this.timerRunning = true;
   }
 
@@ -84,15 +94,14 @@ export default class SplashComponent extends Component {
         showTimer: false
       }
     }, true);
-    localStorage.setItem('splashTimerRunning', false);
-    localStorage.setItem('splashShowTimer', false);
+    this.keyValue.createOrUpdate(TIMER_RUNNING, false);
     this.timerRunning = false;
   }
 
   @task
   *runTimer() {
     while (this.timer > 0) {
-      localStorage.setItem('splashTimer', --this.timer);
+      this.keyValue.createOrUpdate(TIMER, --this.timer);
       this.socket.send({
         info: {
           timer: this.timer
@@ -119,7 +128,6 @@ export default class SplashComponent extends Component {
     this.updateInfo();
     this.runEndTimer.perform();
     this.endTimerRunning = true;
-    localStorage.setItem('endTimerRunning', true);
     this.obs.send('SetCurrentScene', {
       'scene-name': 'Splash'
     });
@@ -133,25 +141,23 @@ export default class SplashComponent extends Component {
   stopEndTimer() {
     this.runEndTimer.cancelAll();
     this.endTimerRunning = false;
-    localStorage.setItem('endTimerRunning', false);
   }
 
   @task
   *runEndTimer() {
     while (this.endTimer > 0) {
-      localStorage.setItem('endTimer', --this.endTimer);
+      this.keyValue.createOrUpdate(END_TIMER, --this.endTimer);
       yield timeout(1000);
     }
 
     this.endTimerRunning = false;
-    localStorage.setItem('endTimerRunning', false);
     this.obs.send('StopStreaming', {});
   }
 
   @action
   setTransitionScene(scene) {
     this.transitionToScene = scene;
-    localStorage.setItem('transitionToScene', scene);
+    this.keyValue.createOrUpdate(TRANSITION_TO_SCENE, scene);
   }
 
 }

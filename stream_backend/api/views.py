@@ -12,8 +12,14 @@ from api import models, serializers
 
 import threading
 
+class CustomEmoteViewSet(viewsets.ModelViewSet):
+  """Custom Emotes"""
+  resource_name = "customemotes"
+  queryset = models.CustomEmote.objects.order_by("name")
+  serializer_class = serializers.CustomEmoteSerializer
 
-class KeyValueSet(viewsets.ModelViewSet):
+
+class KeyValueViewSet(viewsets.ModelViewSet):
   """Key Value Shit"""
   resource_name = "keyvalues"
   queryset = models.KeyValue.objects.order_by("key")

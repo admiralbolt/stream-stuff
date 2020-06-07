@@ -18,6 +18,12 @@ class JsonSerializer(serializers.Field):
     return json.dumps(data)
 
 
+class CustomEmoteSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = models.CustomEmote
+    fields = "__all__"
+
 class KeyValueSerializer(serializers.ModelSerializer):
   """Serialize a key value pair."""
 

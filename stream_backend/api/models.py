@@ -2,6 +2,14 @@ import json
 
 from django.db import models
 
+
+class CustomEmote(models.Model):
+  name = models.CharField(max_length=128, primary_key=True)
+  url = models.CharField(max_length=128)
+
+  def __str__(self):
+    return self.name
+
 class Sound(models.Model):
   name = models.CharField(max_length=128, unique=True)
   sound_file = models.FileField(upload_to="sounds/", blank=True)
@@ -40,4 +48,4 @@ class KeyValue(models.Model):
 
 
 
-ADMIN_MODELS = [KeyValue, Script, Sound, TwitchClip]
+ADMIN_MODELS = [CustomEmote, KeyValue, Script, Sound, TwitchClip]

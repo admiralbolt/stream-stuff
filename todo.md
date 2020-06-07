@@ -7,6 +7,7 @@ Stream Hacking XII: Memes & Splash Screen Upgrades
 Stream Hacking XIII: Stream Control & Chat Integrations
 Stream Hacking XIV: Voice Commands
 Stream Hacking XV: "Clip That"
+Stream Hacking XVI: "Clip That" pt. 2
 
 Dev Tasks
 ==========
@@ -18,12 +19,7 @@ Memes
 
 Legitimately Good Ideas
 ========================
-* Timestamper
 * Control stream information / start-streaming from control-panel
-* Should probably re-write the socket server / data storage so that connecting
-  clients actually get sent some kind of default instead of relying on the
-  control panel to send data after a client has connected. (Currently causing
-    problems with the brain plugin on initial load)
 * Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
 * Follower overlay thingy.
@@ -31,8 +27,6 @@ Legitimately Good Ideas
 PURE GOLD
 ==========
 * Control the stream with my eyebrows.
-* Voice Commands to control the stream Ex: Saying "clip that" clips that.
-  -> Create database model for twitch clips and save.
 
 Garbage?
 ========
@@ -41,10 +35,10 @@ Garbage?
 Chat Integrations
 =================
 * A full text based adventure in the chat.
-* Get BTTV emotes onto the overlay canvas
 
 Sound Board
 ============
+* Dunkey Sounds?
 
 Twitch Stuff
 =============

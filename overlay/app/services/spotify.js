@@ -15,7 +15,11 @@ let TOKEN_URL = `${ACCOUNT_URL}/api/token`;
 
 let API_URL = 'https://api.spotify.com/v1';
 
+let ACCESS_TOKEN = 'spotify_plugin_access_token';
+let REFRESH_TOKEN = 'spotify_plugin_refresh_token';
+
 export default class SpotifyService extends Service {
+  @service keyValue;
   @service queryParams;
 
   @alias('queryParams.current.code') code;
@@ -29,8 +33,12 @@ export default class SpotifyService extends Service {
 
   init() {
     super.init(...arguments);
-    this.accessToken = localStorage.getItem('spotifyAccessToken');
-    this.refreshToken = localStorage.getItem('spotifyRefreshToken');
+    this.initialize();
+  }
+
+  async initialize() {
+    this.accessToken = await this.keyValue.getValue(ACCESS_TOKEN);
+    this.refreshToken = await this.keyValue.getValue(REFRESH_TOKEN);
   }
 
   authorize() {
@@ -65,11 +73,11 @@ export default class SpotifyService extends Service {
 
     let responseData = await response.json();
 
-    localStorage.setItem('spotifyAccessToken', responseData.access_token);
+    this.keyValue.createOrUpdate(ACCESS_TOKEN, responseData.access_token);
     this.accessToken = responseData.access_token;
 
     if (responseData.refresh_token) {
-      localStorage.setItem('spotifyRefreshToken', responseData.refresh_token);
+      this.keyValue.createOrUpdate(REFRESH_TOKEN, responseData.refresh_token);
       this.refreshToken = responseData.refresh_token;
     }
   }

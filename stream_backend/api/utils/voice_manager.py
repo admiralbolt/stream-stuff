@@ -12,9 +12,11 @@ from fuzzywuzzy import fuzz
 import pyaudio
 
 from api.utils.stoppable_thread import StoppableThread
+from api.utils.sphinx_keywords import KEYWORDS
 
 VOICEMOD_MIC = "Microphone (Voicemod Virtual Au"
-ACTIVATION_PHRASE = "okay admiral lightning bot"
+# ACTIVATION_PHRASE = "okay admiral lightning bot"
+ACTIVATION_PHRASE = "bought lightning admiral okay"
 
 
 class VoiceManager:
@@ -24,9 +26,6 @@ class VoiceManager:
 
   # Thread that *only* listens for activation phrase
   activation_listener_thread = None
-
-  # List of threads processing audio to text
-  tester_threads = []
 
   def __init__(self, sound_manager):
     from api.models import Sound
@@ -71,19 +70,18 @@ class VoiceManager:
   def test_for_activation(self, audio):
     try:
       # This is slow and needs to go faster.
-      text = self.r.recognize_sphinx(audio)
+      text = self.r.recognize_sphinx(audio, keyword_entries=KEYWORDS)
 
       # Match the text to our activation phrase.
       print(f"text: [{text}], ratio: {fuzz.ratio(text, ACTIVATION_PHRASE)}")
-      if fuzz.ratio(text, ACTIVATION_PHRASE) < 70:
+      if fuzz.ratio(text, ACTIVATION_PHRASE) < 75:
         return
 
       self.tts("How can I help?")
       audio = self.r.listen(self.source, timeout=5, phrase_time_limit=3)
       text = self.r.recognize_sphinx(audio)
 
-      print("COMMAND TEXT")
-      print(text)
+      print(f"PARSED COMMAND: [{text}]")
 
       words = text.split()
       # I feel like my diction isn't that bad but I very consistently get clay.
@@ -103,6 +101,9 @@ class VoiceManager:
           headphone=True
         )
 
+      # Oh man I'm a genius
+      elif words[0].startswith("say"):
+        self.tts("".join(words[1:]))
       # Fuzz match spoken text for 'clip that'
       elif fuzz.ratio(text, "clip that") >= 70:
         self.tts("Okay. Clipping that shit.")
@@ -112,7 +113,6 @@ class VoiceManager:
         self.tts("I'm not sure how to help with that.")
     except Exception as e:
       pass
-
 
 
   def listen_for_activation(self):
@@ -129,6 +129,7 @@ class VoiceManager:
     self.activation_listener_thread = StoppableThread(target=self.listen_for_activation)
     self.activation_listener_thread.setDaemon(True)
     self.activation_listener_thread.start()
+
 
   def stop_listening(self):
     self.activation_listener_thread.stop()

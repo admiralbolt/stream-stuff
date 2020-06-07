@@ -19,8 +19,13 @@ let GENERIC_RESPONSES = {
   'fuck you': 'no u'
 };
 
+let IS_BOT_ALIVE = 'twitch_chat_bot_is_alive';
+let EMOTES_ENABLED = 'twitch_chat_bot_emotes_enabled';
+
 export default class TwitchChatService extends Service {
   @service brain;
+  @service keyValue;
+  @service store;
   @service websockets;
 
   @tracked client = null;
@@ -28,15 +33,40 @@ export default class TwitchChatService extends Service {
   @tracked emotesEnabled = false;
 
   canvasSocket = null;
+  customEmotes = null;
 
   init() {
     super.init(...arguments);
-    this.botIsAlive = localStorage.getItem('botIsAlive');
+    this.initialize();
+  }
+
+  async initialize() {
+    this.botIsAlive = await this.keyValue.getValue(IS_BOT_ALIVE);
     if (this.botIsAlive) this.start();
 
-    this.emotesEnabled = localStorage.getItem('emotesEnabled') == 'true';
+    this.emotesEnabled = await this.keyValue.getValue(EMOTES_ENABLED);
+
+    this.customEmotes = {};
+    // this.store.findAll('customemote', function(emotes) {
+    //   console.log(
+    // }.bind(this));
+    let emotes = await this.store.findAll('customemote');
+    emotes.forEach(emote => {
+      this.customEmotes[emote.name] = emote.url;
+    });
 
     this.canvasSocket = this.websockets.socketFor('ws://localhost:7004/');
+  }
+
+  _sendImage(username, emote, url) {
+    this.canvasSocket.send({
+      id: `${username}_${emote}_${Math.random()}`,
+      type: 'create',
+      html: `<img src="${url}" />`,
+      randomVelocity: true,
+      randomPosition: true,
+      timer: 3000 + Math.floor(Math.random() * 1000)
+    }, true);
   }
 
   messageHandler(target, context, msg, self) {
@@ -60,24 +90,25 @@ export default class TwitchChatService extends Service {
       this.client.say(target, GENERIC_RESPONSES[msg.toLowerCase()]);
     }
 
-    // Emote handling. Only use the first emote.
+    // Emote handling.
     if (this.emotesEnabled) {
+      // Load twitch tv emotes.
       if (!isNone(context.emotes)) {
         for (let emoteId in context.emotes) {
           if (context.emotes.hasOwnProperty(emoteId)) {
             for (let i = 0; i < context.emotes[emoteId].length; ++i) {
-              this.canvasSocket.send({
-                id: `${context['display-name']}_${emoteId}_${Math.random()}`,
-                type: 'create',
-                html: `<img src="https://static-cdn.jtvnw.net/emoticons/v1/${emoteId}/1.0" />`,
-                randomVelocity: true,
-                randomPosition: true,
-                timer: 3000 + Math.floor(Math.random() * 1000)
-              }, true);
+              this._sendImage(context['display-name'], emoteId, `https://static-cdn.jtvnw.net/emoticons/v1/${emoteId}/1.0`);
             }
           }
         }
       }
+
+      // Load custom emotes
+      [inputCommand, ...args].forEach(word => {
+        if (word in this.customEmotes) {
+          this._sendImage(context['display-name'], word, this.customEmotes[word]);
+        }
+      });
     }
   }
 
@@ -94,18 +125,18 @@ export default class TwitchChatService extends Service {
     this.client.on('connected', this.connectionHandler);
     this.client.connect();
     this.botIsAlive = true;
-    localStorage.setItem('botIsAlive', true);
+    this.keyValue.createOrUpdate(IS_BOT_ALIVE, true);
   }
 
   stop() {
     console.log('Preventing skynet');
     this.client.disconnect();
     this.botIsAlive = false;
-    localStorage.removeItem('botIsAlive');
+    this.keyValue.createOrUpdate(IS_BOT_ALIVE, false);
   }
 
   toggleEmotes() {
     this.emotesEnabled = !this.emotesEnabled;
-    localStorage.setItem('emotesEnabled', this.emotesEnabled);
+    this.keyValue.createOrUpdate(EMOTES_ENABLED, this.emotesEnabled);
   }
 }

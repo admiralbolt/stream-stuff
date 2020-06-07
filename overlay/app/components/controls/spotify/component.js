@@ -5,18 +5,26 @@ import { action } from '@ember/object';
 import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 
+let IS_POLLING = 'spotify_plugin_polling';
 
 export default class SpotifyComponent extends Component {
+  @service keyValue;
   @service websockets;
   @service spotify;
+
   socket = null;
   @tracked isPolling = false;
 
   constructor() {
     super(...arguments);
-    this.socket = this.websockets.socketFor('ws://localhost:7001/');
-    this.isPolling = localStorage.getItem('spotifyPolling') == 'true';
+    this.initialize();
+  }
+
+  async initialize() {
+    this.isPolling = await this.keyValue.getValue(IS_POLLING);
     if (this.isPolling) this.pollingTask.perform();
+
+    this.socket = this.websockets.socketFor('ws://localhost:7001/');
   }
 
   @action
@@ -65,11 +73,11 @@ export default class SpotifyComponent extends Component {
   togglePolling() {
     if (this.isPolling) {
       this.pollingTask.cancelAll();
-      localStorage.removeItem('spotifyPolling');
+      this.keyValue.createOrUpdate(IS_POLLING, false);
       this.isPolling = false;
     } else {
       this.pollingTask.perform();
-      localStorage.setItem('spotifyPolling', true);
+      this.keyValue.createOrUpdate(IS_POLLING, true);
       this.isPolling = true;
     }
   }

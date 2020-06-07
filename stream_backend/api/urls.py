@@ -8,7 +8,8 @@ from api import views
 
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r"keyvalues", views.KeyValueSet)
+router.register(r"customemotes", views.CustomEmoteViewSet)
+router.register(r"keyvalues", views.KeyValueViewSet)
 router.register(r"scripts", views.ScriptViewSet)
 router.register(r"sounds", views.SoundViewSet)
 router.register(r"twitch_clips", views.TwitchClipViewSet)
