@@ -1,4 +1,6 @@
+import collections
 import os
+import random
 import time
 
 import pyaudio
@@ -9,7 +11,20 @@ from api.utils.stoppable_thread import StoppableThread
 
 class SoundPlayer():
 
-  threads = {}
+  """
+  Manages threads / streams, keyed by sound_name
+
+  {
+    "gotem": {
+      "thread": Some thread object,
+      "segment": Some segment object,
+      "stream": Some stream object,
+      "callback": Some callback function,
+      "current_frame": 0
+    }
+  }
+  """
+  data = None
 
   # Loaded audio segment
   segment = None
@@ -18,6 +33,7 @@ class SoundPlayer():
 
   def __init__(self, audio_device_name):
     self.p = pyaudio.PyAudio()
+    self.data = collections.defaultdict(dict)
     self.output_device_index = self._get_audio_device(audio_device_name)
 
   def __del__(self):
@@ -32,51 +48,59 @@ class SoundPlayer():
         return i
     return None
 
-  def callback(self, in_data, frame_count, time_info, status):
-    start_frame = self.current_frame * self.segment.frame_width
-    end_frame = (self.current_frame + frame_count) * self.segment.frame_width
-    data = self.segment._data[start_frame:end_frame]
-    self.current_frame += frame_count
+  def generate_callback(self, sound_name):
+    def callback(in_data, frame_count, time_info, status):
+      start_frame = self.data[sound_name]["current_frame"] * self.data[sound_name]["segment"].frame_width
+      end_frame = (self.data[sound_name]["current_frame"] + frame_count) * self.data[sound_name]["segment"].frame_width
+      data = self.data[sound_name]["segment"]._data[start_frame:end_frame]
+      self.data[sound_name]["current_frame"] += frame_count
+      return data, pyaudio.paContinue
 
-    return data, pyaudio.paContinue
+    return callback
 
-  def play_sound(self, sound_path, sound_name=None):
+  def play_sound(self, sound_path, sound_name=None, play_multiple=False):
     """Play a sound to a target location:
 
     sound_path: The path to the sound file.
     sound_name: An optional sound_name, if not specified use the sound_path basename.
+    play_multiple: An option to allow playing multiple of the same sound, defaults to False.
     """
     sound_name = sound_name or os.path.basename(sound_path)
-    self.segment = AudioSegment.from_file(sound_path)
-    self.current_frame = 0
-    self.stream = self.p.open(
-      format=self.p.get_format_from_width(self.segment.sample_width),
-      channels=self.segment.channels,
-      rate=self.segment.frame_rate,
+    if play_multiple:
+      sound_name = f"{sound_name}_{random.random()}"
+    elif sound_name in self.data:
+      return
+
+    self.data[sound_name]["segment"] = AudioSegment.from_file(sound_path)
+    self.data[sound_name]["current_frame"] = 0
+    self.data[sound_name]["callback"] = self.generate_callback(sound_name)
+    self.data[sound_name]["stream"] = self.p.open(
+      format=self.p.get_format_from_width(self.data[sound_name]["segment"].sample_width),
+      channels=self.data[sound_name]["segment"].channels,
+      rate=self.data[sound_name]["segment"].frame_rate,
       output=True,
-      stream_callback=self.callback,
+      stream_callback=self.data[sound_name]["callback"],
       output_device_index=self.output_device_index,
       start=False
     )
 
-    self.threads[sound_name] = StoppableThread(
+    self.data[sound_name]["thread"] = StoppableThread(
       target=self.play_sound_threaded,
       args=(sound_name,)
     )
-    # self.threads[sound_name].setDaemon(True)
-    self.threads[sound_name].start()
+    self.data[sound_name]["thread"].start()
 
   def play_sound_threaded(self, sound_name):
-    self.stream.start_stream()
+    self.data[sound_name]["stream"].start_stream()
 
-    while self.stream.is_active() and not self.threads[sound_name].stopped():
+    while self.data[sound_name]["stream"].is_active() and not self.data[sound_name]["thread"].stopped():
       time.sleep(0.1)
 
-    self.stream.stop_stream()
-    self.stream = None
+    self.data[sound_name]["stream"].stop_stream()
+    del self.data[sound_name]
 
   def stop_sound(self, sound_name):
-    if sound_name not in self.threads or self.stream is None:
+    if sound_name not in self.data or self.data[sound_name]["stream"] is None:
       return
 
-    self.threads[sound_name].stop()
+    self.data[sound_name]["thread"].stop()

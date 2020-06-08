@@ -19,7 +19,6 @@ Dev Tasks
 Memes
 ======
 * SHAME CUBE (canvas opengl?)
-* Blue Screen of Death?
 
 Legitimately Good Ideas
 ========================

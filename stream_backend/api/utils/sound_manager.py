@@ -15,15 +15,15 @@ class SoundManager:
     self.headphone_player = SoundPlayer("CABLE-A Input (VB-Audio Cable A")
     self.stream_player = SoundPlayer("CABLE-B Input (VB-Audio Cable B")
 
-  def play_sound(self, sound_path, sound_name=None, mic=False, headphone=False, stream=False):
+  def play_sound(self, sound_path, sound_name=None, play_multiple=False, mic=False, headphone=False, stream=False):
     if mic:
-      self.mic_player.play_sound(sound_path, sound_name=sound_name)
+      self.mic_player.play_sound(sound_path, sound_name=sound_name, play_multiple=play_multiple)
 
     if headphone:
-      self.headphone_player.play_sound(sound_path, sound_name=sound_name)
+      self.headphone_player.play_sound(sound_path, sound_name=sound_name, play_multiple=play_multiple)
 
     if stream:
-      self.stream_player.play_sound(sound_path, sound_name=sound_name)
+      self.stream_player.play_sound(sound_path, sound_name=sound_name, play_multiple=play_multiple)
 
   def stop_sound(self, sound_name, mic=False, headphone=False, stream=False):
     if mic:

@@ -99,4 +99,7 @@ class ToBeContinuedScript(BaseScript):
       "id": "to_be_continued_arrow"
     }))
 
+    self.loop.stop()
+    self.loop.close()
+    self.thread = None
     return
