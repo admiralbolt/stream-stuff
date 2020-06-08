@@ -30,3 +30,4 @@ __pycache__
 /stream_backend/tmp/
 /stream_backend/api/utils/_secrets.py
 /stream_backend/db.sqlite3
+/stream_backend/uploads/
