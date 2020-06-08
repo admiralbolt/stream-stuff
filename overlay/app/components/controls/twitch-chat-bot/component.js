@@ -13,7 +13,7 @@ export default class TwitchChatBotComponent extends Component {
   constructor() {
     super(...arguments);
     // Initialize service so it starts... We do this by accessing any property.
-    this.twitchApi.oauth_token;
+    this.twitchApi.access_token;
   }
 
   @action

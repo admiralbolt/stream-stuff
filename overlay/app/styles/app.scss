@@ -1,5 +1,10 @@
 @import "ember-bootstrap/bootstrap";
 
+:global(.flex-row) {
+  display: flex;
+  flex-direction: row;
+}
+
 :global(.tab-content) {
   padding-left: 1rem;
   padding-top: 1rem;

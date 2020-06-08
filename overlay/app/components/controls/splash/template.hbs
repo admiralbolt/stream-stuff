@@ -1,23 +1,45 @@
 <div local-class="splash-controls">
-  <BsForm @formLayout="vertical" @model={{this}} as |form|>
-    <form.element @controlType="text" @label="Title" @property="title" />
-    <form.element @controlType="textarea" @label="Stream Preview" @property="preview" />
-    <form.element @controlType="number" @label="Timer" @property="timer" />
-    <div class="form-group">
-      <label>Transition To Scene</label>
-      <Utils::Select @choices={{obs.scenes}} @value={{transitionToScene}} @setCallback={{action "setTransitionScene"}} />
+  <div local-class="content">
+    <BsForm @formLayout="vertical" @model={{this}} as |form|>
+      <form.element @controlType="text" @label="Stream Title" @property="streamTitle" />
+      <form.element @controlType="text" @label="Stream Game" @property="streamGame" />
+
+      <div local-class="hr"></div>
+
+      <form.element @controlType="text" @label="Splash Title" @property="title" />
+      <form.element @controlType="textarea" @label="Stream Preview" @property="preview" />
+
+      <div local-class="hr"></div>
+
+      <form.element @controlType="number" @label="Timer" @property="timer" />
+      <div class="form-group">
+        <label>Transition To Scene</label>
+        <Utils::Select @choices={{obs.scenes}} @value={{transitionToScene}} @setCallback={{action "setTransitionScene"}} />
+      </div>
+
+      <form.element @controlType="number" @label="End Stream Timer" @property="endTimer" />
+
+    </BsForm>
+  </div>
+  <div local-class="actions">
+    <div class="flex-row">
+      <BsButton @type="primary" @onClick={{action "startStream"}}>Start Stream</BsButton>
+      <BsButton @type="primary" @onClick={{action "endStream"}}>End Stream</BsButton>
+      <BsButton @type="primary" @onClick={{action "updateStream"}}>Update Stream Info</BsButton>
     </div>
-
-    <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
-    {{#if timerRunning}}
-      <BsButton @type="primary" @onClick={{action "stopTimer"}}>Stop Timer</BsButton>
-    {{else}}
-      <BsButton @type="primary" @onClick={{action "startTimer"}}>Start Timer</BsButton>
-    {{/if}}
-
-    <form.element @controlType="number" @label="End Stream Timer" @property="endTimer" />
-    <BsButton @type="primary" @onClick={{action "startEndTimer"}}>End Stream</BsButton>
-
-
-  </BsForm>
+    <br>
+    <div class="flex-row">
+      <BsButton @type="primary" @onClick={{action "setDefaultPre"}}>Set Default Pre</BsButton>
+      <BsButton @type="primary" @onClick={{action "setDefaultPost"}}>Set Default Post</BsButton>
+    </div>
+    <br>
+    <div class="flex-row">
+      <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
+      {{#if timerRunning}}
+        <BsButton @type="primary" @onClick={{action "stopTimer"}}>Stop Timer</BsButton>
+      {{else}}
+        <BsButton @type="primary" @onClick={{action "startTimer"}}>Start Timer</BsButton>
+      {{/if}}
+    </div>
+  </div>
 </div>

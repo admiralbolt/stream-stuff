@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
+import { alias } from '@ember/object/computed';
 
 let TITLE = 'splash_screen_title';
 let PREVIEW = 'splash_screen_preview';
@@ -16,6 +17,7 @@ let TRANSITION_TO_SCENE = 'splash_screen_transition_to_scene';
 export default class SplashComponent extends Component {
   @service keyValue;
   @service obs;
+  @service twitchApi;
   @service websockets;
 
   socket = null;
@@ -30,6 +32,9 @@ export default class SplashComponent extends Component {
   @tracked endTimerRunning;
 
   @tracked transitionToScene;
+
+  @alias('twitchApi.streamTitle') streamTitle;
+  @alias('twitchApi.streamGame') streamGame;
 
   constructor() {
     super(...arguments);
@@ -72,10 +77,6 @@ export default class SplashComponent extends Component {
 
   @action
   startTimer() {
-    this.obs.send('SetMute', {
-      'source': this.obs.MIC_SOURCE,
-      'mute': true
-    });
     this.runTimer.perform();
     this.socket.send({
       info: {
@@ -124,7 +125,27 @@ export default class SplashComponent extends Component {
   }
 
   @action
-  startEndTimer() {
+  async updateStream() {
+    await this.twitchApi.updateStreamInfo(this.streamTitle, this.streamGame);
+  }
+
+  @action
+  async startStream() {
+    this.updateInfo();
+    await this.updateStream();
+    this.obs.send('SetCurrentScene', {
+      'scene-name': 'Splash'
+    });
+    this.obs.send('SetMute', {
+      'source': this.obs.MIC_SOURCE,
+      'mute': true
+    });
+    this.obs.send('StartStreaming', {});
+    this.startTimer();
+  }
+
+  @action
+  endStream() {
     this.updateInfo();
     this.runEndTimer.perform();
     this.endTimerRunning = true;
@@ -158,6 +179,24 @@ export default class SplashComponent extends Component {
   setTransitionScene(scene) {
     this.transitionToScene = scene;
     this.keyValue.createOrUpdate(TRANSITION_TO_SCENE, scene);
+  }
+
+  @action
+  setDefaultPre() {
+    this.title = 'Stream Starting Soon!';
+    // This looks weird but necessary for whitespace to render correctly.
+    this.preview = `<b>Today's Stream:</b><br />
+<ul>
+<li> </li>
+</ul>`;
+    this.timer = 180;
+  }
+
+  @action
+  setDefaultPost() {
+    this.title = 'Stream Has Ended!';
+    this.preview = 'Thanks for tuning in!';
+    this.endTimer = 120;
   }
 
 }

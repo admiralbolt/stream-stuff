@@ -1,4 +1,5 @@
 import Service from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 import config from '../config/environment';
@@ -7,9 +8,11 @@ import { task } from 'ember-concurrency-decorators';
 
 
 
-let SCOPES = ['clips:edit', 'chat:edit'];
+let SCOPES = ['clips:edit', 'chat:edit', 'channel_editor'];
 let scopeString = SCOPES.join(' ');
 let AUTH_URL = `https://id.twitch.tv/oauth2/authorize?client_id=${config.twitchClientId}&redirect_uri=http://localhost:4200/control-panel&response_type=code&scope=${encodeURIComponent(scopeString)}`;
+
+let CHANNEL_URL = `https://api.twitch.tv/kraken/channels/83968979`;
 
 export default class TwitchApiService extends Service {
   @service queryParams;
@@ -18,11 +21,11 @@ export default class TwitchApiService extends Service {
 
   @alias('queryParams.current.code') code;
 
-  // Don't think I'll actually use this on the frontend, but you never know.
-  oauth_token = null;
-
   access_token = null;
   refresh_token = null;
+
+  @tracked streamTitle;
+  @tracked streamGame;
 
   init() {
     super.init(...arguments);
@@ -37,6 +40,48 @@ export default class TwitchApiService extends Service {
     this.access_token = await this.keyValue.getValue('twitch_oauth_token');
     this.refresh_token = await this.keyValue.getValue('twitch_refresh_token');
     this.refresh.perform();
+    await this.loadStreamInfo();
+  }
+
+  async loadStreamInfo() {
+    let channel_req = await fetch(CHANNEL_URL, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/vnd.twitchtv.v5+json',
+        'Client-Id': config.twitchClientId,
+        'Authorization': `OAuth ${this.access_token}`
+      }
+    });
+
+    let channel_data = await channel_req.json();
+
+    this.streamTitle = channel_data.status;
+    this.streamGame = channel_data.game;
+    return channel_data;
+  }
+
+  async updateStreamInfo(title, game) {
+    this.streamTitle = title;
+    this.streamGame = game;
+    let params = {
+      channel: {
+        status: this.streamTitle,
+        game: this.streamGame
+      }
+    };
+
+    return await fetch(CHANNEL_URL, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/vnd.twitchtv.v5+json',
+        'Client-Id': config.twitchClientId,
+        'Authorization': `OAuth ${this.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    });
   }
 
   async getTokens(refresh = false) {
