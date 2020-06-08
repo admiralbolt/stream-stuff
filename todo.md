@@ -8,9 +8,11 @@ Stream Hacking XIII: Stream Control & Chat Integrations
 Stream Hacking XIV: Voice Commands
 Stream Hacking XV: "Clip That"
 Stream Hacking XVI: "Clip That" pt. 2
+Stream Hacking XVII: To Be Continued
 
 Dev Tasks
 ==========
+* Update the Readme you fucking degenerate.
 
 Memes
 ======
@@ -19,7 +21,6 @@ Memes
 
 Legitimately Good Ideas
 ========================
-* Control stream information / start-streaming from control-panel
 * Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
 * Follower overlay thingy.
