@@ -4,6 +4,8 @@ import time
 import obswebsocket
 from obswebsocket.requests import *
 
+from api.utils import image_helpers
+
 class OBSClient:
   """A high level wrapper around an obs websocket client.
 
@@ -83,3 +85,35 @@ class OBSClient:
       "name": "Cut",
       "duration": 0
     }))
+
+  def get_latest_frame(self):
+    """Gets the latest frame from obs.
+
+    This is done by starting & stopping the recording, then reading
+    the written file.
+
+    It's hacky, but the best way I've found of actually doing it.
+    """
+    latest_recording = image_helpers.get_latest_recording()
+    self.call(StartRecording())
+    result = self.call(StopRecording())
+    while not result.status:
+      result = self.call(StopRecording())
+
+    # Wait until latest recording file gets written.
+    for i in range(20):
+      if image_helpers.get_latest_recording() != latest_recording:
+        break
+
+      if i == 19:
+        print("Recording timeout, exiting.")
+        self.cleanup()
+        return
+
+      time.sleep(0.025)
+
+    latest_frame = image_helpers.get_latest_frame()
+    while latest_frame is None:
+      latest_frame = image_helpers.get_latest_frame()
+
+    return latest_frame

@@ -13,11 +13,13 @@ Stream Hacking XVII: To Be Continued
 Dev Tasks
 ==========
 * Update the Readme you fucking degenerate.
+* Update python to 3.8.3 so I can use walrus and asyncio
+* Sound manager is caching audio files, at least for keybindings.
 
 Memes
 ======
 * SHAME CUBE (canvas opengl?)
-* To Be Continued Jojo Meme
+* Blue Screen of Death?
 
 Legitimately Good Ideas
 ========================
@@ -32,10 +34,13 @@ PURE GOLD
 Garbage?
 ========
 * Write obs filters -> Will take a whole day of cpp to figure this shit out.
+* Rewrite the audio detection using ML to train it to my voice
+    (This seems useful: https://github.com/mozilla/DeepSpeech)
 
 Chat Integrations
 =================
 * A full text based adventure in the chat.
+* Let chat shift the stream elements around.
 
 Sound Board
 ============
@@ -43,4 +48,3 @@ Sound Board
 
 Twitch Stuff
 =============
-* Need to update info panels
