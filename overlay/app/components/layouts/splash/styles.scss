@@ -10,21 +10,21 @@
 
 @keyframes gradient {
 	0% {
-    background: #002977;
-	}
-	25% {
     background: #0039aa;
 	}
+	25% {
+    background: #002977
+	}
 	50% {
-    background: #101030;
+    background: #202040;
 	}
 
   75% {
-    background: #0039aa;
+    background: #002977
   }
 
   100% {
-    background: #002977;
+    background: #0039aa
   }
 
 }
