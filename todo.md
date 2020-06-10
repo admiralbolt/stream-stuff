@@ -9,12 +9,14 @@ Stream Hacking XIV: Voice Commands
 Stream Hacking XV: "Clip That"
 Stream Hacking XVI: "Clip That" pt. 2
 Stream Hacking XVII: To Be Continued
+Stream Hacking XVIII: "Cloud Computing"
 
 Dev Tasks
 ==========
 * Update the Readme you fucking degenerate.
 * Update python to 3.8.3 so I can use walrus and asyncio
 * Sound manager is caching audio files, at least for keybindings.
+* Weird timing stuff with the timer thinks it because of rpc.
 
 Memes
 ======
@@ -22,7 +24,6 @@ Memes
 
 Legitimately Good Ideas
 ========================
-* Storm Clouds for the splash screen.
 * Players Plugin: Show player names, icons, maybe port? Support N players maybe?
 * Follower overlay thingy.
 
@@ -44,6 +45,7 @@ Chat Integrations
 Sound Board
 ============
 * Dunkey Sounds?
+* Rap Horn
 
 Twitch Stuff
 =============

@@ -1,0 +1,29 @@
+.cloud-wrapper {
+  height: 275px;
+  width: 500px;
+  position: absolute;
+}
+
+.cloud {
+  width: 500px;
+  height: 275px;
+  border-radius: 50%;
+  position: absolute;
+  top: -250px;
+  left: -290px;
+}
+
+.cloud-back {
+  box-shadow: 300px 300px 30px -20px rgba(200, 200, 200);
+  filter: url(#filter-back);
+}
+
+.cloud-mid {
+  box-shadow: 300px 340px 70px -60px rgba(158, 168, 179, 0.5);
+  filter: url(#filter-mid);
+}
+
+.cloud-front {
+   box-shadow: 300px 370px 60px -100px rgba(0, 0, 0, 0.3);
+   filter: url(#filter-front);
+}

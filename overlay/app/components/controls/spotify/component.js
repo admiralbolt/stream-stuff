@@ -24,6 +24,7 @@ export default class SpotifyComponent extends Component {
     this.isPolling = await this.keyValue.getValue(IS_POLLING);
     if (this.isPolling) this.pollingTask.perform();
 
+    console.log('creating socket...');
     this.socket = this.websockets.socketFor('ws://localhost:7001/');
   }
 
@@ -45,11 +46,14 @@ export default class SpotifyComponent extends Component {
   async sendCurrentlyPlaying() {
     let data = await this.spotify.getCurrentlyPlaying();
 
-    let progress = data.progress_ms / data.item.duration_ms;
+    console.log(data);
+
     let artist = data.item.artists.map(artist => artist.name).join(', ');
     let album = data.item.album.name;
     let song = data.item.name;
     let albumImageUrl = data.item.album.images[1].url;
+
+    console.log('sending currently playing...');
 
     this.socket.send({
       albumImageUrl: albumImageUrl,
@@ -64,6 +68,7 @@ export default class SpotifyComponent extends Component {
   @task
   *pollingTask() {
     while(true) {
+      console.log('hello?');
       this.sendCurrentlyPlaying();
       yield timeout(1500);
     }

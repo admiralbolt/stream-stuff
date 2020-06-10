@@ -1,13 +1,50 @@
 <div {{did-insert this.makeItRain}} class="layout">
 
+  <div local-class="rain">
+    <div local-class="rain-back">
+      {{#each backRain as |pos|}}
+        <Layouts::Splash::RainDrop @left="{{pos}}" />
+      {{/each}}
+    </div>
+    <div local-class="rain-mid">
+      {{#each midRain as |pos|}}
+        <Layouts::Splash::RainDrop @left="{{pos}}" />
+      {{/each}}
+    </div>
+    <div local-class="rain-front">
+      {{#each frontRain as |pos|}}
+        <Layouts::Splash::RainDrop @left="{{pos}}" />
+      {{/each}}
+    </div>
+  </div>
   <canvas local-class="lightning" id="lightning"></canvas>
+  <div local-class="clouds">
+    {{!-- Second Row --}}
+    <Layouts::Splash::Cloud @seed="123" @top="-80" @left="-200" />
+    <Layouts::Splash::Cloud @seed="5672390" @top="-110" @left="175" />
+    <Layouts::Splash::Cloud @seed="777" @top="-110" @left="550" />
+    <Layouts::Splash::Cloud @seed="905408940" @top="-90" @left="925" />
+    <Layouts::Splash::Cloud @seed="1234354" @top="-90" @left="1300" />
+    <Layouts::Splash::Cloud @seed="578903" @top="-90" @left="1600" />
+
+    {{!-- Top Row --}}
+    <Layouts::Splash::Cloud @seed="0" @top="-180" @left="-75" />
+    <Layouts::Splash::Cloud @seed="42069" @top="-210" @left="325" />
+    <Layouts::Splash::Cloud @seed="1234" @top="-190" @left="700" />
+    <Layouts::Splash::Cloud @seed="5" @top="-180" @left="1100" />
+    <Layouts::Splash::Cloud @seed="80085" @top="-180" @left="1500" />
+  </div>
   <div local-class="darken"></div>
 
+
+
   <div local-class="info">
-    <div local-class="spacer"></div>
     <div local-class="title">
       {{title}}
     </div>
+  </div>
+  <div local-class="info">
+    <div local-class="spacer"></div>
     <div local-class="timer">
       {{#if showTimer}}
         {{readableTimer}}
@@ -17,5 +54,26 @@
       {{{preview}}}
     </div>
   </div>
-
 </div>
+
+
+{{!-- SVG filter for sub cloud component --}}
+<svg width="0" height="0">
+  <filter id="filter-back">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="8"
+seed="{{this.args.seed}}" />
+    <feDisplacementMap  in="SourceGraphic" scale="170" />
+  </filter>
+
+  <filter id="filter-mid">
+    <feTurbulence type="fractalNoise"  baseFrequency="0.012" numOctaves="4"
+seed="{{this.args.seed}}"/>
+    <feDisplacementMap  in="SourceGraphic" scale="150" />
+  </filter>
+
+  <filter id="filter-front">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4"
+seed="{{this.args.seed}}"/>
+    <feDisplacementMap  in="SourceGraphic" scale="100" />
+  </filter>
+</svg>

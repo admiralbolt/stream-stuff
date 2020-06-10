@@ -1,23 +1,73 @@
 .lightning {
-  background: linear-gradient(70deg, #002977, #0039aa, #101030);
-  background-size: 400%;
-  animation: gradient 40s linear infinite;
+  animation: gradient 50s linear infinite;
+  background-size: 600%;
   height: 1080px;
   position: absolute;
   width: 1920px;
+  overflow: none;
   z-index: 1;
 }
 
 @keyframes gradient {
 	0% {
-		background-position: 0% 50%;
+    background: #002977;
+	}
+	25% {
+    background: #0039aa;
 	}
 	50% {
-		background-position: 100% 50%;
+    background: #101030;
 	}
-	100% {
-		background-position: 0% 50%;
-	}
+
+  75% {
+    background: #0039aa;
+  }
+
+  100% {
+    background: #002977;
+  }
+
+}
+
+.clouds {
+  height: 300px;
+  position: absolute;
+  width: 1920px;
+  z-index: 7;
+}
+
+.rain {
+  height: 1080px;
+  width: 1920px;
+  position: absolute;
+  z-index: 5;
+
+  .rain-back {
+    z-index: 2;
+    opacity: 0.5;
+    top: -100px;
+    z-index: 3;
+    height: 1080px;
+    width: 1920px;
+    position: absolute;
+  }
+
+  .rain-mid {
+    z-index: 3;
+    top: -35px;
+    height: 1080px;
+    width: 1920px;
+    position: absolute;
+    opacity: 0.75;
+  }
+
+  .rain-front {
+    z-index: 4;
+    height: 1080px;
+    width: 1920px;
+    position: absolute;
+    top: 30px;
+  }
 }
 
 
@@ -41,11 +91,15 @@
   z-index: 20;
 
   .spacer {
-    height: 200px;
+    height: 550px;
   }
 
 
   .title {
+    height: 1080px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 4rem;
     font-weight: bold;
     text-shadow: 0 0 10px #eee, 0 0 40px #eee, 0 0 100px #00DEFF, 0 0 150px #00DEFF;

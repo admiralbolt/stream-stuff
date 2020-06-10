@@ -24,9 +24,29 @@ export default class SplashComponent extends SocketClientComponent {
   @tracked timer;
   @tracked showTimer = false;
 
+  @tracked frontRain = [];
+  @tracked midRain = [];
+  @tracked backRain = [];
+
   constructor() {
     super(...arguments, 7002);
     this.initialize();
+
+    this.frontRain = this.generateRainPosition();
+    this.midRain = this.generateRainPosition();
+    this.backRain = this.generateRainPosition();
+  }
+
+  generateRainPosition(min = 2, max = 5) {
+    let rain = [];
+    let increment = Math.random() * (max - min) + min;
+    let left = 0;
+    while (left < 100) {
+      left += increment;
+      rain.push(left);
+      increment = Math.random() * (max - min) + min;
+    }
+    return rain;
   }
 
   async initialize() {
@@ -89,6 +109,7 @@ export default class SplashComponent extends SocketClientComponent {
     this.storm.perform();
   }
 
+  //====== LIGHTNING CODE BELOW, BEWARE =======//
   launchBolt(x, y, length, direction) {
     this.shouldFlash = true;
     let boltCanvas = document.createElement('canvas');
@@ -120,7 +141,7 @@ export default class SplashComponent extends SocketClientComponent {
       if (x1 != Math.floor(x) || y1 != Math.floor(y)) {
         let alpha = Math.min(1.0, length / 800.0);
         boltContext.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        boltContext.fillRect(x1, y1, 1.0, 1.0);
+        boltContext.fillRect(x1, y1, 3.0, 1.0);
 
         direction = Math.max(minAngle, Math.min(maxAngle,
           direction + (-Math.PI / 16.0 + Math.random() * (Math.PI / 8.0))
@@ -156,10 +177,11 @@ export default class SplashComponent extends SocketClientComponent {
   @task
   *storm() {
     while(true) {
+      // Generates a lightning bolt if one isn't already being rendered.
       if (this.bolts.length == 0 && Math.random() < 0.05) {
         let x = Math.floor(-10 + Math.random() * (this.width + 20.0));
-        let y = Math.floor(Math.random() * (this.height / 3.0) + 5.0);
-        let length = Math.floor((this.height / 2.0) + Math.random() * 2 * (this.height / 3.0));
+        let y = Math.floor(Math.random() * 200 + 20.0);
+        let length = Math.floor((this.height / 2.0) + Math.random() * 2 * this.height / 3.0);
         this.launchBolt(x, y, length, Math.PI * 3.0 / 2.0);
       }
 

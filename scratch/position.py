@@ -8,6 +8,12 @@ sys.path.append(os.path.realpath(os.path.join(
   "stream_backend/api/obs"
 )))
 
+sys.path.append(os.path.realpath(os.path.join(
+  os.getcwd(),
+  "..",
+  "stream_backend"
+)))
+
 from obs_client import OBSClient
 from obswebsocket.requests import *
 
@@ -92,26 +98,30 @@ client.call(SetSceneItemProperties(
   }
 ))
 
-desktop = client.call(GetSceneItemProperties(
-  BREAD["desktop"],
-  scene_name=SCENE
-))
+for scene_name in ["DivinityGame"]:
+  print(scene_name)
+  desktop = client.call(GetSceneItemProperties(
+    scene_name,
+    scene_name=SCENE
+  ))
 
-x_scale = (1920 - 2 * BORDER) / desktop.getSourcewidth()
-y_scale = (1080 - 2 * BORDER) / desktop.getSourceheight()
+  print(desktop.getSourcewidth())
+  print(desktop.getSourceheight())
+  x_scale = (1920 - 2 * BORDER) / desktop.getSourcewidth()
+  y_scale = (1080 - 2 * BORDER) / desktop.getSourceheight()
 
-client.call(SetSceneItemProperties(
-  BREAD["desktop"],
-  scene_name=SCENE,
-  scale={
-    "x": x_scale,
-    "y": y_scale
-  },
-  position={
-    "x": BORDER,
-    "y": BORDER
-  }
-))
+  client.call(SetSceneItemProperties(
+    scene_name,
+    scene_name=SCENE,
+    scale={
+      "x": x_scale,
+      "y": y_scale
+    },
+    position={
+      "x": BORDER,
+      "y": BORDER
+    }
+  ))
 
 
 client.transition()
