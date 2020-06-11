@@ -1,26 +1,23 @@
 Titles
 ======
-Stream Hacking IX: Making Memes with OBS Scripts
-Stream Hacking X: OBS Websocket
-Stream Hacking XI: OBS Websocket Memes
-Stream Hacking XII: Memes & Splash Screen Upgrades
-Stream Hacking XIII: Stream Control & Chat Integrations
-Stream Hacking XIV: Voice Commands
-Stream Hacking XV: "Clip That"
-Stream Hacking XVI: "Clip That" pt. 2
-Stream Hacking XVII: To Be Continued
 Stream Hacking XVIII: "Cloud Computing"
+
+ACHTUAL PROJECTS
+================
+* STS Legacy Mod
+* Slippi Stats DB
+* Always project euler / hackerrank.
+* Find datasets for analysis.
 
 Dev Tasks
 ==========
 * Update the Readme you fucking degenerate.
 * Update python to 3.8.3 so I can use walrus and asyncio
-* Sound manager is caching audio files, at least for keybindings.
-* Weird timing stuff with the timer thinks it because of rpc.
 
 Memes
 ======
 * SHAME CUBE (canvas opengl?)
+* Confetti!?
 
 Legitimately Good Ideas
 ========================
@@ -41,6 +38,7 @@ Chat Integrations
 =================
 * A full text based adventure in the chat.
 * Let chat shift the stream elements around.
+* Each watcher gets an on screen avatar.
 
 Sound Board
 ============

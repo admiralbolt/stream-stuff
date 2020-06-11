@@ -27,6 +27,8 @@ __pycache__
 /overlay/bower.json.ember-try
 /overlay/package.json.ember-try
 
+secrets.py
+
 /stream_backend/tmp/
 /stream_backend/api/utils/_secrets.py
 /stream_backend/db.sqlite3

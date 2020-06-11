@@ -98,7 +98,7 @@ client.call(SetSceneItemProperties(
   }
 ))
 
-for scene_name in ["DivinityGame"]:
+for scene_name in ["Muh Desktop"]:
   print(scene_name)
   desktop = client.call(GetSceneItemProperties(
     scene_name,

@@ -1,6 +1,6 @@
 <select class="form-control" local-class="item-select" onchange={{action "setSelection" value="target.value"}}>
   {{#each args.choices as |choice|}}
-    {{#if (eq choice.value value)}}
+    {{#if (eq choice.value this.args.value)}}
       <option value={{choice.value}} selected>{{choice.display}}</option>
     {{else}}
       <option value={{choice.value}}>{{choice.display}}</option>

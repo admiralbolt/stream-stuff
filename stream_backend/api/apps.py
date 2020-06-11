@@ -45,8 +45,8 @@ class ApiConfig(AppConfig):
       print("======================")
       for i, sound in enumerate(sounds):
         print(f"{get_keybind(i)}, {sound.name}")
-        keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound,))
-        keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound,))
+        keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound.name,))
+        keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound.name,))
 
 
       self.scripts = {}
@@ -73,8 +73,11 @@ class ApiConfig(AppConfig):
         self.scripts[script_name].start()
 
 
-    def play_sound(self, sound):
+    def play_sound(self, sound_name):
+      from api import models
+
+      sound = models.Sound.objects.get(name=sound_name)
       self.sound_manager.play_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
 
-    def stop_sound(self, sound):
-      self.sound_manager.stop_sound(sound.name, mic=True, headphone=True)
+    def stop_sound(self, sound_name):
+      self.sound_manager.stop_sound(sound_name, mic=True, headphone=True)
