@@ -31,6 +31,8 @@ Messages sent to the canvas have the following options:
       The direction in which to move the element as time goes on.
   * randomVelocity: (Optional, default=false)
       Give the element a random velocity upon creation.
+  * timerOpacity: (Optional, default=true)
+      Give a timer element opacity based on it's time remaining.
 
 
   DELETE OPTIONS
@@ -53,16 +55,21 @@ Messages sent to the canvas have the following options:
 
 class ElementData {
   @tracked timer;
+  @tracked timerOpacity;
   @tracked velocityX;
   @tracked velocityY;
   @tracked positionX;
   @tracked positionY;
   @tracked html;
 
-  maxTimer;
+  @tracked maxTimer;
 
   get cssString() {
-    return htmlSafe(`position: absolute; top: ${this.positionY}px; left: ${this.positionX}px; opacity: ${this.timer / this.maxTimer};`);
+    let css = `position: absolute; top: ${this.positionY}px; left: ${this.positionX}px;`;
+    if (this.timerOpacity) {
+      css += ` opacity: ${this.timer / this.maxTimer};`
+    }
+    return htmlSafe(css);
   }
 
   parsePosition(startingPosition, randomPosition = false) {
@@ -87,8 +94,9 @@ class ElementData {
     this.velocityY = startingVelocity.y || 0;
   }
 
-  constructor(timer, html, velocity, randomVelocity, position, randomPosition) {
+  constructor(timer, html, velocity, randomVelocity, position, randomPosition, timerOpacity) {
     this.timer = timer;
+    this.timerOpacity = timerOpacity;
     this.maxTimer = timer;
     this.html = html;
 
@@ -152,6 +160,11 @@ export default class CanvasComponent extends SocketClientComponent {
   }
 
   messageHandler(event) {
+    this.messageHandlerTask.perform(event);
+  }
+
+  @task()
+  *messageHandlerTask(event) {
     let data = JSON.parse(event.data);
     if (isNone(data.id) || isEmpty(data.id) || isNone(data.type) || isEmpty(data.type)) return;
 
@@ -167,7 +180,8 @@ export default class CanvasComponent extends SocketClientComponent {
           data.velocity || {},
           data.randomVelocity,
           data.position || {},
-          data.randomPosition
+          data.randomPosition,
+          isNone(data.timerOpacity) ? true : data.timerOpacity
         );
         this.items = items;
 

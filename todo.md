@@ -1,6 +1,7 @@
 Titles
 ======
 Stream Hacking XVIII: "Cloud Computing"
+Stream Hacking XIX: Grunt Birthday Party
 
 ACHTUAL PROJECTS
 ================
@@ -13,11 +14,14 @@ Dev Tasks
 ==========
 * Update the Readme you fucking degenerate.
 * Update python to 3.8.3 so I can use walrus and asyncio
+* Probably should migrate hard core logic to backend tasks
+  -> Spotify currently playing polling
+  -> Maybe chat bot?
+* Pre stream timer is super slow... wtf.
 
 Memes
 ======
 * SHAME CUBE (canvas opengl?)
-* Confetti!?
 
 Legitimately Good Ideas
 ========================
