@@ -33,6 +33,8 @@ Messages sent to the canvas have the following options:
       Give the element a random velocity upon creation.
   * timerOpacity: (Optional, default=true)
       Give a timer element opacity based on it's time remaining.
+  * deleteOnTimeout: (Optional, default=true)
+      Delete an element after it's timer runs out.
 
 
   DELETE OPTIONS
@@ -56,6 +58,7 @@ Messages sent to the canvas have the following options:
 class ElementData {
   @tracked timer;
   @tracked timerOpacity;
+  @tracked deleteOnTimeout;
   @tracked velocityX;
   @tracked velocityY;
   @tracked positionX;
@@ -94,9 +97,10 @@ class ElementData {
     this.velocityY = startingVelocity.y || 0;
   }
 
-  constructor(timer, html, velocity, randomVelocity, position, randomPosition, timerOpacity) {
+  constructor(timer, html, velocity, randomVelocity, position, randomPosition, timerOpacity, deleteOnTimeout) {
     this.timer = timer;
     this.timerOpacity = timerOpacity;
+    this.deleteOnTimeout = deleteOnTimeout;
     this.maxTimer = timer;
     this.html = html;
 
@@ -127,10 +131,10 @@ export default class CanvasComponent extends SocketClientComponent {
     while (true) {
       let items = this.items;
       let deleteKeys = [];
-      for (let key in this.items) {
+      for (let key in items) {
         if (!this.items.hasOwnProperty(key)) continue;
 
-        let props = this.items[key];
+        let props = items[key];
 
         // Tick down the timers and remove elements as necessary.
         if (!isNone(props.timer)) {
@@ -151,7 +155,15 @@ export default class CanvasComponent extends SocketClientComponent {
       deleteKeys.forEach(deleteKey => {
         if (!items.hasOwnProperty(deleteKey)) return;
 
-        delete items[deleteKey];
+        let props = this.items[deleteKey];
+        if (props.deleteOnTimeout) {
+          delete items[deleteKey]
+        } else {
+          let props = items[deleteKey];
+          props.velocityX = 0;
+          props.velocityY = 0;
+          props.timer = null;
+        }
       });
 
       this.items = items;
@@ -181,7 +193,8 @@ export default class CanvasComponent extends SocketClientComponent {
           data.randomVelocity,
           data.position || {},
           data.randomPosition,
-          isNone(data.timerOpacity) ? true : data.timerOpacity
+          isNone(data.timerOpacity) ? true : data.timerOpacity,
+          isNone(data.deleteOnTimeout) ? true : data.deleteOnTimeout
         );
         this.items = items;
 
