@@ -1,0 +1,81 @@
+.poll-wrapper {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-color: 1px solid magenta;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+  width: 700px;
+
+  .poll-title {
+    align-items: center;
+    display: flex;
+    font-size: 34px;
+    font-weight: bold;
+    justify-content: center;
+  }
+
+  .question-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 80px;
+    padding-bottom: 25px;
+    padding-top: 5px;
+
+    .question-number-info {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 150px;
+
+      .question-number {
+        background-color: white;
+        border-radius: 20px;
+        color: rgb(30, 30, 30);
+        font-family: "Arial Black", Gadget, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        width: 30px;
+      }
+
+      .question-votes {
+        color: rgba(255, 255, 255, 0.7);
+
+        .vote-accent {
+          color: white;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .question-text-and-bar {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+
+    .question-text {
+      font-size: 20px;
+    }
+
+    .question-bar {
+      background-color: white;
+      height: 2px;
+      margin-top: 10px;
+      width: 55%;
+    }
+  }
+
+  .vote-percent {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100px;
+    font-size: 24px;
+  }
+}

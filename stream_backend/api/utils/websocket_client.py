@@ -15,7 +15,7 @@ class WebSocketClient:
 
     Defaults max_size to None so that I can send absurd amounts of data.
     """
-    self.socket = await websockets.connect("ws://localhost:7004")
+    self.socket = await websockets.connect(self.address)
     self.socket.max_size = None
 
   async def close(self):

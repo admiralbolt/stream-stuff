@@ -2,6 +2,8 @@ Titles
 ======
 Stream Hacking XVIII: "Cloud Computing"
 Stream Hacking XIX: Grunt Birthday Party
+Stream Hacking XX: Polling Chat
+Stream Hacking XXI: Polling II
 
 ACHTUAL PROJECTS
 ================
@@ -17,11 +19,9 @@ Dev Tasks
 * Probably should migrate hard core logic to backend tasks
   -> Spotify currently playing polling
   -> Maybe chat bot?
-* Pre stream timer is super slow... wtf.
 
 Memes
 ======
-* SHAME CUBE (canvas opengl?)
 
 Legitimately Good Ideas
 ========================
@@ -43,6 +43,7 @@ Chat Integrations
 * A full text based adventure in the chat.
 * Let chat shift the stream elements around.
 * Each watcher gets an on screen avatar.
+* Polling thingy.
 
 Sound Board
 ============
@@ -51,3 +52,5 @@ Sound Board
 
 Twitch Stuff
 =============
+* Make a youtuber
+* Make a tweeter

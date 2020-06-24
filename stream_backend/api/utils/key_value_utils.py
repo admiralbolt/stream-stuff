@@ -12,3 +12,16 @@ def get_value(key):
     return json.loads(kv.value)
   except:
     return None
+
+def set_value(key, value):
+  """Tries to set a value for the given key.
+
+  Updates it if it already exists, creates it if it doesn't.
+  """
+  try:
+    kv = KeyValue.objects.get(key=key)
+    kv.value = json.dumps(value)
+  except:
+    kv = KeyValue(key=key, value=value)
+  kv.save()
+  return

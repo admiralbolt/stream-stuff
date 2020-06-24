@@ -14,7 +14,13 @@
   :global(.nav-link) {
     border-color: #e9ecef #e9ecef #dee2e6;
     background-color: #dfdfdf;
+    color: rgb(33, 37, 41) !important;
   }
+}
+
+:global(.nav-link) {
+  color: white !important;
+  cursor: pointer;
 }
 
 :global(.form-group) {

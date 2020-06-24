@@ -25,6 +25,7 @@ let EMOTES_ENABLED = 'twitch_chat_bot_emotes_enabled';
 export default class TwitchChatService extends Service {
   @service brain;
   @service keyValue;
+  @service poll;
   @service store;
   @service websockets;
 
@@ -109,6 +110,14 @@ export default class TwitchChatService extends Service {
           this._sendImage(context['display-name'], word, this.customEmotes[word]);
         }
       });
+
+      if (this.poll.isRunning) {
+        // Check to see if the message is a single digit,
+        // indicates the user voted for the given choice.
+        if (msg.length == 1 && msg >= '1' && msg <= '9') {
+          this.poll.vote(context['display-name'], parseInt(msg));
+        }
+      }
     }
   }
 

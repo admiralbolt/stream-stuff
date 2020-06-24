@@ -101,14 +101,17 @@ export default class SplashComponent extends Component {
 
   @task
   *runTimer() {
+    let prev_date = new Date();
     while (this.timer > 0) {
+      prev_date = new Date();
       this.keyValue.createOrUpdate(TIMER, --this.timer);
       this.socket.send({
         info: {
           timer: this.timer
         }
       }, true);
-      yield timeout(1000);
+
+      yield timeout(1000 - (new Date() - prev_date));
     }
     this.timerRunning = false;
     this.stopTimer();

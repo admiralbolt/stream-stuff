@@ -2,11 +2,13 @@ from importlib import import_module
 import os
 import threading
 
+from asgiref.sync import sync_to_async
 from django.apps import AppConfig
 import keyboard
 import obswebsocket
 
 from api.obs.obs_client import OBSClient
+from api.utils.poll_manager import PollManager
 from api.utils.sound_manager import SoundManager
 from api.utils.voice_manager import VoiceManager
 from api.utils.twitch_client import TwitchClient
@@ -37,6 +39,7 @@ class ApiConfig(AppConfig):
         return
 
       from api import models
+      from api.utils.key_value_utils import get_value
 
       # Setup sound
       self.sound_manager = SoundManager()
@@ -65,6 +68,11 @@ class ApiConfig(AppConfig):
       self.voice_manager = VoiceManager(self.sound_manager)
       self.voice_manager.start_listening()
 
+      # POLLS
+      self.poll_manager = PollManager()
+      # if get_value("poll_is_running"):
+      #  poll = models.Poll.objects.get(id=get_value("poll_id"))
+      #  self.poll_manager.start_poll(poll, set_timer=False)
 
     def run_script(self, script_name, stop=False):
       if stop:

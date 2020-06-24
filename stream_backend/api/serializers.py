@@ -31,6 +31,15 @@ class KeyValueSerializer(serializers.ModelSerializer):
     model = models.KeyValue
     fields = "__all__"
 
+
+class PollSerializer(serializers.ModelSerializer):
+  """Serialize a poll model."""
+
+  class Meta:
+    model = models.Poll
+    fields = "__all__"
+
+
 class ScriptSerializer(serializers.ModelSerializer):
   """Serialize a script model."""
 
@@ -38,12 +47,14 @@ class ScriptSerializer(serializers.ModelSerializer):
     model = models.Script
     fields = "__all__"
 
+
 class SoundSerializer(serializers.ModelSerializer):
   """Serialize a sound model."""
 
   class Meta:
     model = models.Sound
     fields = "__all__"
+
 
 class TwitchClipSerializer(serializers.ModelSerializer):
   """Serialize dat boi."""

@@ -1,0 +1,26 @@
+.poll-controls {
+  display: flex;
+  flex-direction: row;
+
+  .poll-info {
+    width: 50%;
+    flex-basis: 50%;
+
+    form {
+      width: 90% !important;
+    }
+
+    .questions-label {
+      color: white;
+      font-size: 24px;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid white;
+    }
+  }
+
+  .poll-actions {
+    width: 50%;
+    flex-basis: 50%;
+  }
+}

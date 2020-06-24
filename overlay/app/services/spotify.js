@@ -48,7 +48,7 @@ export default class SpotifyService extends Service {
   async getTokens(useRefresh) {
     let data = {
       grant_type: useRefresh ? 'refresh_token' : 'authorization_code',
-      code: this.code,
+      code: this.code.split('#')[0],
       redirect_uri: REDIRECT_URL
     };
 

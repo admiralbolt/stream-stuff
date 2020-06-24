@@ -2,37 +2,42 @@
   <BsTab @activeId={{activeId}} @customTabs={{true}} as |tab|>
     <BsNav @type="tabs" as |nav|>
       <nav.item @active={{bs-eq activeId "admiral-lightning-bot"}}>
-        <a href="#admiral-lightning-bot" class="nav-link" role="tab" onclick={{action setTab "admiral-lightning-bot"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "admiral-lightning-bot"}}>
           Admiral Lightning Bot
         </a>
       </nav.item>
       <nav.item @active={{bs-eq activeId "brain"}}>
-        <a href="#brain" class="nav-link" role="tab" onclick={{action setTab "brain"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "brain"}}>
           Brain
         </a>
       </nav.item>
       <nav.item @active={{bs-eq activeId "obs-scripts"}}>
-        <a href="#obs-scripts" class="nav-link" role="tab" onclick={{action setTab "obs-scripts"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "obs-scripts"}}>
           OBS Scripts
         </a>
       </nav.item>
-      <nav.item @active={{bs-eq activeId "sound-board"}}>
-        <a href="#sound-board" class="nav-link" role="tab" onclick={{action setTab "sound-board"}}>
-          Sound Board
-        </a>
-      </nav.item>
       <nav.item @active={{bs-eq activeId "players"}}>
-        <a href="#players" class="nav-link" role="tab" onclick={{action setTab "players"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "players"}}>
           Players
         </a>
       </nav.item>
+      <nav.item @active={{bs-eq activeId "poll"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "poll"}}>
+          Poll
+        </a>
+      </nav.item>
+      <nav.item @active={{bs-eq activeId "sound-board"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "sound-board"}}>
+          Sound Board
+        </a>
+      </nav.item>
       <nav.item @active={{bs-eq activeId "splash"}}>
-        <a href="#splash" class="nav-link" role="tab" onclick={{action setTab "splash"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "splash"}}>
           Splash
         </a>
       </nav.item>
       <nav.item @active={{bs-eq activeId "spotify"}}>
-        <a href="#spotify" class="nav-link" role="tab" onclick={{action setTab "spotify"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "spotify"}}>
           Spotify
         </a>
       </nav.item>
@@ -49,6 +54,9 @@
       </tab.pane>
       <tab.pane @id="players" @title="Players">
         <Controls::Players />
+      </tab.pane>
+      <tab.pane @id="poll" @title="Poll">
+        <Controls::Poll />
       </tab.pane>
       <tab.pane @id="sound-board" @title="Sound Board">
         <Controls::SoundBoard />
