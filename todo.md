@@ -43,7 +43,6 @@ Chat Integrations
 * A full text based adventure in the chat.
 * Let chat shift the stream elements around.
 * Each watcher gets an on screen avatar.
-* Polling thingy.
 
 Sound Board
 ============

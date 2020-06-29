@@ -95,13 +95,14 @@ export default class PollComponent extends SocketClientComponent {
   }
 
   get showPoll() {
-    return htmlSafe(this.show ? 'display: flex;' : 'display: none;');
+    return htmlSafe(this.show ? 'opacity: 1;' : 'opacity: 0;');
   }
 
   messageHandler(event) {
     let data = JSON.parse(event.data);
     if (isNone(data.type) || isEmpty(data.type)) return;
 
+    // Setup the title and questions.
     if (data.type == 'setup') {
       if (isNone(data.title) || isEmpty(data.title) || isNone(data.timer) || data.questions.length == 0) return;
 
@@ -117,12 +118,12 @@ export default class PollComponent extends SocketClientComponent {
       return;
     }
 
+    // Update vote counts for all records.
     if (data.type == 'update') {
       if (isNone(data.votes) || isNone(data.timer)) return;
 
       this.timer = data.timer;
 
-      console.log(data.votes);
       if (Object.keys(data.votes).length === 0) return;
 
       let totalVotes = Object.values(data.votes).reduce((a, b) => a + b);
@@ -137,18 +138,21 @@ export default class PollComponent extends SocketClientComponent {
       return;
     }
 
+    // Finalize the results. Ignores all new votes after this point.
     if (data.type == 'finalize') {
-      let maxOrdinal = -1;
+      let maxOrdinals = [];
       let maxVotes = -1;
       this.questions.forEach((question) => {
         if (question.votes > maxVotes) {
           maxVotes = question.votes;
-          maxOrdinal = question.ordinal;
+          maxOrdinals = [question.ordinal];
+        } else if (question.votes == maxVotes) {
+          maxOrdinals.push(question.ordinal);
         }
       });
 
       this.questions.forEach((question) => {
-        if (question.ordinal == maxOrdinal) {
+        if (maxOrdinals.includes(question.ordinal)) {
           question.winner = true;
         }
         question.final = true;

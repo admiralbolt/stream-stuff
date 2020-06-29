@@ -48,7 +48,7 @@ class PollManager:
       "timer": self.current_timer
     }))
 
-    while not self.thread.stopped() and self.current_timer > 0:
+    while not self.thread.stopped() and self.current_timer >= 0:
       self.aggregate_and_send()
       self.current_timer -= 1
       set_value("poll_timer", self.current_timer)
@@ -57,6 +57,7 @@ class PollManager:
     set_value("poll_is_running", False)
     time.sleep(2)
 
+    self.current_timer = 0
     self.aggregate_and_send()
     self.loop.run_until_complete(self.websocket_client.send({
       "type": "finalize"

@@ -25,7 +25,12 @@
   {{/each}}
 
   <div local-class="poll-footer">
-
+    <div local-class="total-votes">
+      Total Votes: <span local-class="vote-accent">{{totalVotes}}</span>
+    </div>
+    <div local-class="timer">
+      Time Remaining: <span local-class="vote-accent">{{timer}}</span>
+    </div>
   </div>
 
 </div>

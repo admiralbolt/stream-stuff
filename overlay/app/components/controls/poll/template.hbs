@@ -12,7 +12,10 @@
           <Input @class="form-control" @type="text" @value={{get questions index}} />
         </div>
       {{/each}}
+      <br><br>
+      <BsButton @type="primary" @onClick={{action "save"}}>Save</BsButton>
     </BsForm>
+
   </div>
   <div local-class="poll-actions">
     <Utils::ToggleButton @positiveText="Stop Poll" @negativeText="Start Poll" @value={{poll.isRunning}} @callback={{action "togglePoll"}} />
