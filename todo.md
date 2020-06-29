@@ -1,16 +1,10 @@
 Titles
 ======
-Stream Hacking XVIII: "Cloud Computing"
-Stream Hacking XIX: Grunt Birthday Party
-Stream Hacking XX: Polling Chat
-Stream Hacking XXI: Polling II
+Stream Hacking XXII: Polling Finale
 
 ACHTUAL PROJECTS
 ================
 * STS Legacy Mod
-* Slippi Stats DB
-* Always project euler / hackerrank.
-* Find datasets for analysis.
 
 Dev Tasks
 ==========
@@ -30,7 +24,7 @@ Legitimately Good Ideas
 
 PURE GOLD
 ==========
-* Control the stream with my eyebrows.
+
 
 Garbage?
 ========
