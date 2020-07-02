@@ -24,6 +24,6 @@ class WebSocketClient:
   async def send(self, data):
     """Send data to the socket!
 
-    Data is json stringfied before sending.
+    Data is json stringified before sending.
     """
     await self.socket.send(json.dumps(data))

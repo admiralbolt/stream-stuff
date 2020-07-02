@@ -1,6 +1,5 @@
 import asyncio
 import random
-import time
 
 from api import models
 from api.obs.base_script import BaseScript, CONSTANTS
@@ -22,10 +21,11 @@ class BirthdayPartyScript(BaseScript):
   loop = None
 
   def execute(self):
-    self.loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(self.loop)
+    asyncio.run(self.async_execute())
+
+  async def async_execute(self):
     self.websocket_client = WebSocketClient(7004)
-    self.loop.run_until_complete(self.websocket_client.connect())
+    await self.websocket_client.connect()
 
     self.sound_manager.play_sound(
       GRUNT_BIRTHDAY_PARTY.sound_file.path,
@@ -39,11 +39,11 @@ class BirthdayPartyScript(BaseScript):
       x = (i * 343) % 1920
       y = random.randint(-50, 50)
       vx = random.random() + random.random()
-      vy = random.randint(7, 13) + random.random() + random.random()
+      vy = random.randint(5, 11) + random.random() + random.random()
       color = COLORS[i % 4]
       css = TEMPLATE_CSS % (random.randint(1, 360), color)
 
-      self.loop.run_until_complete(self.websocket_client.send({
+      await self.websocket_client.send({
         "type": "create",
         "id": f"confetti_{i}",
         "html": f"<div style='{css}'></div>",
@@ -59,24 +59,22 @@ class BirthdayPartyScript(BaseScript):
           "x": vx,
           "y": vy
         }
-      }))
+      })
 
-      time.sleep(0.015)
+      await asyncio.sleep(0.015)
 
 
-    time.sleep(3)
-    self.cleanup()
+    await asyncio.sleep(3)
+    await self.cleanup()
     return
 
-  def cleanup(self):
+  async def cleanup(self):
     self.sound_manager.stop_sound(
       GRUNT_BIRTHDAY_PARTY.name,
       headphone=True,
       stream=True
     )
 
-    time.sleep(1)
-    self.loop.stop()
-    self.loop.close()
+    await asyncio.sleep(1)
     self.thread = None
     return

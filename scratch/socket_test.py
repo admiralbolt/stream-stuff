@@ -2,6 +2,7 @@ import asyncio
 import sys
 import os
 import time
+import websockets
 
 sys.path.append(os.path.realpath(os.path.join(
   os.getcwd(),
@@ -17,13 +18,20 @@ sys.path.append(os.path.realpath(os.path.join(
 
 from websocket_client import WebSocketClient
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-websocket_client = WebSocketClient(7005)
-loop.run_until_complete(websocket_client.connect())
+websocket_client = WebSocketClient(7004)
+asyncio.run(websocket_client.connect(), debug=True)
 
-loop.run_until_complete(websocket_client.send({
-  "HELLO": "asdf"
-}))
+async def cool():
+  websocket_client = WebSocketClient(7004)
+  await websocket_client.connect()
 
-time.sleep(2)
+  print(websocket_client.socket.open)
+  await websocket_client.send("asdf")
+
+async def test():
+  uri = "ws://localhost:7004"
+  async with websockets.connect(uri) as websocket:
+    print(websocket.open)
+    await websocket.send("asdf")
+
+asyncio.run(cool())

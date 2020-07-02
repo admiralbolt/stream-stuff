@@ -8,8 +8,6 @@ ACHTUAL PROJECTS
 
 Dev Tasks
 ==========
-* Update the Readme you fucking degenerate.
-* Update python to 3.8.3 so I can use walrus and asyncio
 * Probably should migrate hard core logic to backend tasks
   -> Spotify currently playing polling
   -> Maybe chat bot?

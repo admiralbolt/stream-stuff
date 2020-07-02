@@ -74,7 +74,7 @@ class VoiceManager:
 
       # Match the text to our activation phrase.
       print(f"text: [{text}], ratio: {fuzz.ratio(text, ACTIVATION_PHRASE)}")
-      if fuzz.ratio(text, ACTIVATION_PHRASE) < 80:
+      if fuzz.ratio(text, ACTIVATION_PHRASE) < 76:
         return
 
       self.tts("How can I help?")

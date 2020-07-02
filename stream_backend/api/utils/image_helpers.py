@@ -1,7 +1,6 @@
 import cv2
 import os
 import glob
-import pymeanshift
 import numpy as np
 
 from datetime import datetime
@@ -30,16 +29,6 @@ def get_latest_frame(folder=DEFAULT_FOLDER):
   cap = cv2.VideoCapture(latest_recording)
   ret, frame = cap.read()
   return frame
-
-def meanshift_segmentation(img, spatial_radius=1, range_radius=1, min_density=1):
-  segmenter = pymeanshift.Segmenter(
-    spatial_radius=spatial_radius,
-    range_radius=range_radius,
-    min_density=min_density,
-    speedup_level=2
-  )
-  segmented_image, labels_image, number_regions = segmenter(img)
-  return segmented_image
 
 def blur(img, kernel_size=11, std_dev_x=0, std_dev_y=0):
   return cv2.GaussianBlur(img, (kernel_size, kernel_size), std_dev_x, std_dev_y)

@@ -1,6 +1,5 @@
 import asyncio
 import random
-import time
 
 from api.obs.base_script import BaseScript, CONSTANTS
 from api.utils.websocket_client import WebSocketClient
@@ -77,13 +76,14 @@ class ShameCubeScript(BaseScript):
   transition_scene = None
 
   def execute(self):
-    self.loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(self.loop)
+    asyncio.run(self.async_execute())
+
+  async def async_execute(self):
     self.websocket_client = WebSocketClient(7004)
-    self.loop.run_until_complete(self.websocket_client.connect())
+    await self.websocket_client.connect()
 
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": f"shame_cube_text",
       "html": f"<div style='{DIV_CSS}'><span style='{TEXT_CSS}'>SHAME CUBE</span></div>",
@@ -91,18 +91,18 @@ class ShameCubeScript(BaseScript):
         "x": 0,
         "y": 800
       }
-    }))
+    })
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": f"shame_cube_style",
       "html": STYLE
-    }))
+    })
 
     start = -600
     end = (1080 * (2/3)) - 600 / 2
     timer = 5000
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": f"shame_cube_cube",
       "html": SHAME_CUBE,
@@ -117,31 +117,29 @@ class ShameCubeScript(BaseScript):
       "timer": timer,
       "timerOpacity": False,
       "deleteOnTimeout": False
-    }))
+    })
 
     self.transition_scene = self.call(GetCurrentScene()).getName()
     self.call(SetCurrentScene("Shame Cube"))
 
-    time.sleep(3 + timer / 1000)
-    self.cleanup()
+    await asyncio.sleep(3 + timer / 1000)
+    await self.cleanup()
     return
 
-  def cleanup(self):
-    self.loop.run_until_complete(self.websocket_client.send({
+  async def cleanup(self):
+    await self.websocket_client.send({
       "type": "delete",
       "id": f"shame_cube_text"
-    }))
-    self.loop.run_until_complete(self.websocket_client.send({
+    })
+    await self.websocket_client.send({
       "type": "delete",
       "id": f"shame_cube_style"
-    }))
-    self.loop.run_until_complete(self.websocket_client.send({
+    })
+    await self.websocket_client.send({
       "type": "delete",
       "id": f"shame_cube_cube"
-    }))
+    })
     self.call(SetCurrentScene(self.transition_scene))
-    time.sleep(1)
-    self.loop.stop()
-    self.loop.close()
+    await asyncio.sleep(1)
     self.thread = None
     return

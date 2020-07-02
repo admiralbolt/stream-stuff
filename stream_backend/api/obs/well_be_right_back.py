@@ -34,6 +34,9 @@ class WellBeRightBackScript(BaseScript):
   websocket_client = None
 
   def execute(self):
+    asyncio.run(self.async_execute())
+
+  async def async_execute(self):
     latest_frame = self.client.get_latest_frame()
 
     sepia_frame = image_helpers.sepia_filter(latest_frame)
@@ -42,22 +45,20 @@ class WellBeRightBackScript(BaseScript):
     retval, buffer = cv2.imencode('.png', blurred_frame)
     img_data = base64.b64encode(buffer).decode()
 
-    self.loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(self.loop)
     self.websocket_client = WebSocketClient(7004)
-    self.loop.run_until_complete(self.websocket_client.connect())
+    await self.websocket_client.connect()
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": "freeze-frame",
       "html": f"<img id='freeze-frame' src='data:image/png;base64,{img_data}' />",
-    }))
+    })
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": "text",
       "html": f"<h1 id='text' style='{TEXT_CSS}'>We'll Be Right Back</h1>"
-    }))
+    })
 
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], True))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], True))
@@ -70,29 +71,24 @@ class WellBeRightBackScript(BaseScript):
       headphone=True
     )
 
-    time.sleep(3)
+    await asyncio.sleep(3)
 
-    self.cleanup()
+    await self.cleanup()
     return
 
-  def cleanup(self):
-    if self.loop is not None:
-      if self.websocket_client is not None:
-        self.loop.run_until_complete(self.websocket_client.send({
-          "type": "delete",
-          "id": "text"
-        }))
+  async def cleanup(self):
+    if self.websocket_client is not None:
+      await self.websocket_client.send({
+        "type": "delete",
+        "id": "text"
+      })
 
-        self.loop.run_until_complete(self.websocket_client.send({
-          "type": "delete",
-          "id": "freeze-frame"
-        }))
+      await self.websocket_client.send({
+        "type": "delete",
+        "id": "freeze-frame"
+      })
 
-        self.loop.run_until_complete(self.websocket_client.close())
-      self.loop.stop()
-      self.loop.close()
-
-    self.loop = None
+      await self.websocket_client.close()
 
     self.call(SetMute(CONSTANTS["DESKTOP_AUDIO_SOURCE"], False))
     self.call(SetMute(CONSTANTS["MIC_SOURCE"], False))

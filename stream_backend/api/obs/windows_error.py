@@ -12,13 +12,12 @@ ERROR_SOUND = models.Sound.objects.get(name="Windows XP Error")
 
 class WindowsErrorScript(BaseScript):
 
-  loop = None
-
   def execute(self):
-    self.loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(self.loop)
+    asyncio.run(self.async_execute())
+
+  async def async_execute(self):
     self.websocket_client = WebSocketClient(7004)
-    self.loop.run_until_complete(self.websocket_client.connect())
+    await self.websocket_client.connect()
 
     sleep_time = 0.8
     for j in range(8):
@@ -28,7 +27,7 @@ class WindowsErrorScript(BaseScript):
         if x < -150 or x > 1920 or y > 1080:
           continue
 
-        self.loop.run_until_complete(self.websocket_client.send({
+        await self.websocket_client.send({
           "type": "create",
           "id": f"error_{i}_{j}",
           "html": f"<img src='/assets/images/windows_error.png' />",
@@ -36,7 +35,7 @@ class WindowsErrorScript(BaseScript):
             "x": x,
             "y": y
           }
-        }))
+        })
 
         self.sound_manager.play_sound(
           ERROR_SOUND.sound_file.path,
@@ -46,34 +45,32 @@ class WindowsErrorScript(BaseScript):
           stream=True
         )
 
-        time.sleep(sleep_time)
+        await asyncio.sleep(sleep_time)
         sleep_time = max(0.01, sleep_time - SPEEDUP)
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "create",
       "id": f"blue_screen_of_death",
       "html": f"<img src='/assets/images/death.jpg' />"
-    }))
+    })
 
-    time.sleep(4)
-    self.cleanup()
+    await asyncio.sleep(4)
+    await self.cleanup()
     return
 
-  def cleanup(self):
+  async def cleanup(self):
     for i in range(20):
       for j in range(8):
-        self.loop.run_until_complete(self.websocket_client.send({
+        await self.websocket_client.send({
           "type": "delete",
           "id": f"error_{i}_{j}"
-        }))
+        })
 
-    self.loop.run_until_complete(self.websocket_client.send({
+    await self.websocket_client.send({
       "type": "delete",
       "id": f"blue_screen_of_death"
-    }))
+    })
 
-    self.loop.stop()
-    self.loop.close()
     self.thread = None
 
     return
