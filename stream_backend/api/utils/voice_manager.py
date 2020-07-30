@@ -74,7 +74,7 @@ class VoiceManager:
 
       # Match the text to our activation phrase.
       print(f"text: [{text}], ratio: {fuzz.ratio(text, ACTIVATION_PHRASE)}")
-      if fuzz.ratio(text, ACTIVATION_PHRASE) < 76:
+      if fuzz.ratio(text, ACTIVATION_PHRASE) <= 80:
         return
 
       self.tts("How can I help?")
@@ -110,7 +110,8 @@ class VoiceManager:
         self.twitch_client.clip_that()
 
       else:
-        self.tts("I'm not sure how to help with that.")
+        self.tts("Command parsing failed.")
+        self.tts(text)
     except Exception as e:
       pass
 

@@ -10,7 +10,7 @@ Barbie Horse Adventure: Wild Horse Rescue
 + The only redeeming quality, is that you can say you beat
   Barbie Horse Adventure: Wild Horse Rescue.
 
-2/10
+3/10
 
 Link: The Faces of Evil
 ========================
@@ -36,7 +36,23 @@ Link: The Faces of Evil
   chiptune thing.
 + SOME of the puzzles are actually kinda clever.
 
-3/10
+4/10
+
+Pears And Gray Witch
+=====================
+- Platforming game with terrible controls.
+- Incredibly Buggy
+- Lots of load screens
+- Technically demanding despite having terrible controls.
+- Most levels are uninteresting, and are just there to
+  waste your time.
+- Last level is impossible to complete.
+- No real story, ending cutscene is nothing.
+- Technically costs $5.
++ The dialogue can be funny because it is poorly
+  translated sometimes.
+
+1/10
 
 
 TODO

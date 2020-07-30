@@ -18,14 +18,16 @@ from obs_client import OBSClient
 from obswebsocket.requests import *
 
 COLUMN_WIDTH = 350
-BORDER = 15
-SCENE = "OneSceneToRuleThemAll"
+BORDER = 25
+# SCENE = "OneSceneToRuleThemAll"
+SCENE = "GAMER"
 
 BREAD = {
   "camera": "Shitty Webcam",
   "spotify": "Spotify!",
   "chat": "Twitch Chat",
-  "desktop": "Muh Desktop"
+  "desktop": "Muh Desktop",
+  "events": "Twitch Event List"
 }
 
 client = OBSClient()
@@ -78,6 +80,48 @@ client.call(SetSceneItemProperties(
   }
 ))
 
+events = client.call(GetSceneItemProperties(
+  BREAD["events"],
+  scene_name=SCENE
+))
+
+if events.getSourcewidth() != 0:
+  event_scale = COLUMN_WIDTH / events.getSourcewidth()
+
+  client.call(SetSceneItemProperties(
+    BREAD["events"],
+    scene_name=SCENE,
+    scale={
+      "x": event_scale,
+      "y": event_scale
+    },
+    position={
+      "x": 1920 - COLUMN_WIDTH - BORDER,
+      "y": BORDER + cam.getSourceheight() * scale + spotify.getSourceheight() * spotify_scale
+    }
+  ))
+
+gc = client.call(GetSceneItemProperties(
+  "Gamecube Controller",
+  scene_name=SCENE
+))
+
+if gc.getSourcewidth() != 0:
+  gc_scale = COLUMN_WIDTH / gc.getSourcewidth()
+
+  client.call(SetSceneItemProperties(
+    "Gamecube Controller",
+    scene_name=SCENE,
+    scale={
+      "x": gc_scale,
+      "y": gc_scale
+    },
+    position={
+      "x": 1920 - COLUMN_WIDTH - BORDER,
+      "y": BORDER + cam.getSourceheight() * scale + spotify.getSourceheight() * spotify_scale + events.getSourceheight() * event_scale
+    }
+  ))
+
 chat = client.call(GetSceneItemProperties(
   BREAD["chat"],
   scene_name=SCENE
@@ -98,17 +142,32 @@ client.call(SetSceneItemProperties(
   }
 ))
 
-for scene_name in ["Muh Desktop"]:
-  print(scene_name)
-  desktop = client.call(GetSceneItemProperties(
+scene_items = [
+  ("Muh Desktop", "full"),
+  ("Melee Game", "roi"),
+  ("PS1", "roi"),
+]
+
+for scene_name, width_type in scene_items:
+  scene_item = client.call(GetSceneItemProperties(
     scene_name,
     scene_name=SCENE
   ))
 
-  print(desktop.getSourcewidth())
-  print(desktop.getSourceheight())
-  x_scale = (1920 - 2 * BORDER) / desktop.getSourcewidth()
-  y_scale = (1080 - 2 * BORDER) / desktop.getSourceheight()
+  print(scene_item)
+
+  print(scene_item.getSourcewidth())
+  print(scene_item.getSourceheight())
+
+  if scene_item.getSourcewidth() == 0:
+    continue
+
+
+  if width_type == "full":
+    x_scale = (1920 - 2 * BORDER) / scene_item.getSourcewidth()
+  else:
+    x_scale = (1920 - 3 * BORDER - COLUMN_WIDTH) / (scene_item.getSourcewidth() - scene_item.getCrop()["left"] - scene_item.getCrop()["right"])
+  y_scale = (1080 - 2 * BORDER) / scene_item.getSourceheight()
 
   client.call(SetSceneItemProperties(
     scene_name,

@@ -8,8 +8,10 @@ import keyboard
 import obswebsocket
 
 from api.obs.obs_client import OBSClient
+from api.bot.admiral_lightning_bot import BotManager
 from api.utils.poll_manager import PollManager
 from api.utils.sound_manager import SoundManager
+from api.utils.stoppable_thread import StoppableThread
 from api.utils.voice_manager import VoiceManager
 from api.utils.twitch_client import TwitchClient
 
@@ -65,14 +67,14 @@ class ApiConfig(AppConfig):
         keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
 
       # VOICE MANAGER
-      self.voice_manager = VoiceManager(self.sound_manager)
-      self.voice_manager.start_listening()
+      # self.voice_manager = VoiceManager(self.sound_manager)
+      # self.voice_manager.start_listening()
 
       # POLLS
       self.poll_manager = PollManager()
-      # if get_value("poll_is_running"):
-      #  poll = models.Poll.objects.get(id=get_value("poll_id"))
-      #  self.poll_manager.start_poll(poll, set_timer=False)
+
+      self.bot_manager = BotManager()
+      self.bot_manager.start()
 
     def run_script(self, script_name, stop=False):
       if stop:
