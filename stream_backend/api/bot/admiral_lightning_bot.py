@@ -29,9 +29,7 @@ class BotManager:
     asyncio.set_event_loop(self.loop)
 
     self.bot = AdmiralLightningBot()
-    # This is sync and blocking, we run a long time.
-    # I really wish they had some kind of event to kill
-    # this sum' bitch.
+    # This is sync and blocking, it runs forever until we stop it.
     self.bot.run()
 
   def start(self):
@@ -39,7 +37,9 @@ class BotManager:
     self.thread.start()
 
   def stop(self):
+    self.bot.stop()
     self.thread.stop()
+    self.bot._ws.should_listen = False
 
 class AdmiralLightningBot(commands.Bot):
 
