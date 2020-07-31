@@ -1,4 +1,25 @@
-from api.utils.sound_player import SoundPlayer
+import keyboard
+
+from asgiref.sync import sync_to_async
+
+from api.audio.sound_player import SoundPlayer
+from api.models import Sound
+
+def get_keybind(index):
+  """A method for getting a keybinding for the Nth sound.
+
+  The default keybind is ctrl+shift+alt+index.
+  'z' acts as as +10 so sound 11 is ctrl+shift+alt+z+index.
+  e.t.c.
+  """
+  modifier = ""
+  if index >= 30:
+    modifier = "+z+x"
+  elif index >= 20:
+    modifier = "+x"
+  elif index >= 10:
+    modifier = "+z"
+  return f"ctrl+shift+alt+{index % 10}" + modifier
 
 class SoundManager:
   """A class for playing sounds to many different locations.
@@ -15,7 +36,19 @@ class SoundManager:
     self.headphone_player = SoundPlayer("CABLE-A Input (VB-Audio Cable A")
     self.stream_player = SoundPlayer("CABLE-B Input (VB-Audio Cable B")
 
+  @sync_to_async
+  def setup_keybindings(self):
+    """Load all keybindings for sound effects."""
+    sounds = Sound.objects.order_by("id")
+    print("SOUNDBOARD KEYBINDINGS")
+    print("======================")
+    for i, sound in enumerate(sounds):
+      print(f"{get_keybind(i)}, {sound.name}")
+      keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound.sound_file.path, sound.name, False, True, True))
+      keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound.name, True, True))
+
   def play_sound(self, sound_path, sound_name=None, play_multiple=False, mic=False, headphone=False, stream=False):
+    print(f"sound: {sound_name}, mulit: {play_multiple}, mic: {mic}, headphone: {headphone}, stream: {stream}")
     if mic:
       self.mic_player.play_sound(sound_path, sound_name=sound_name, play_multiple=play_multiple)
 

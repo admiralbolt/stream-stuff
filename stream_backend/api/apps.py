@@ -1,93 +1,54 @@
-from importlib import import_module
+import asyncio
 import os
-import threading
 
-from asgiref.sync import sync_to_async
 from django.apps import AppConfig
-import keyboard
-import obswebsocket
 
-from api.obs.obs_client import OBSClient
-from api.bot.admiral_lightning_bot import BotManager
-from api.utils.poll_manager import PollManager
-from api.utils.sound_manager import SoundManager
-from api.utils.stoppable_thread import StoppableThread
-from api.utils.voice_manager import VoiceManager
-from api.utils.twitch_client import TwitchClient
-
-def get_keybind(index):
-  modifier = ""
-  if index >= 30:
-    modifier = "+z+x"
-  elif index >= 20:
-    modifier = "+x"
-  elif index >= 10:
-    modifier = "+z"
-  return f"ctrl+shift+alt+{index % 10}" + modifier
-
-def import_script(script_path):
-  module_object = import_module(script_path)
-  script_name = script_path.split(".")[-1]
-  titleized_script = "".join([word.title() for word in script_name.split("_")])
-
-  class_name = f"{titleized_script}Script"
-  return getattr(module_object, class_name)
 
 class ApiConfig(AppConfig):
-    name = 'api'
+  """Pretty much all my system wide config stuff.
 
-    def ready(self):
-      if os.environ.get('RUN_MAIN', None) != 'true':
-        return
+  This includes a bunch of startup code because of the ready() hook.
+  """
+  name = 'api'
 
-      from api import models
-      from api.utils.key_value_utils import get_value
+  def ready(self):
+    # Don't double run.
+    if os.environ.get('RUN_MAIN', None) != 'true':
+      return
 
-      # Setup sound
-      self.sound_manager = SoundManager()
-      sounds = models.Sound.objects.order_by("id")
-      print("SOUNDBOARD KEYBINDINGS")
-      print("======================")
-      for i, sound in enumerate(sounds):
-        print(f"{get_keybind(i)}, {sound.name}")
-        keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound.name,))
-        keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound.name,))
+    asyncio.run(self.initialize())
 
+  async def initialize(self):
+    # Imports need to be here to avoid a registry error.
+    # It's technically only related to model imports but eh.
+    from api.audio.sound_manager import SoundManager
+    from api.audio.voice_manager import VoiceManager
+    from api.obs.obs_client import OBSClient
+    from api.obs.script_manager import ScriptManager
+    from api.twitch_bot.bot_manager import BotManager
+    from api.utils.poll_manager import PollManager
+    from api.utils.websocket_pool import WebSocketPool
 
-      self.scripts = {}
-      # Setup obs websocket
-      self.client = OBSClient()
-      print("SCRIPT KEYBINDINGS")
-      print("==================")
-      for i, script in enumerate(models.Script.objects.order_by("id")):
-        ScriptClass = import_script(f"api.obs.{script.script_name}")
-        self.scripts[script.script_name] = ScriptClass(self.client, self.sound_manager)
-        print(f"ctrl+alt+s+{i}: {script.script_name}")
-        keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
-        keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
+    # Setup WebSocketPool
+    self.websockets = WebSocketPool()
+    await self.websockets.initialize()
 
-      # VOICE MANAGER
-      # self.voice_manager = VoiceManager(self.sound_manager)
-      # self.voice_manager.start_listening()
+    # Setup SoundBoard
+    self.sound_manager = SoundManager()
+    await self.sound_manager.setup_keybindings()
 
-      # POLLS
-      self.poll_manager = PollManager()
+    # Setup OBSWebsocket & Scripts
+    self.obs_client = OBSClient()
+    self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
+    await self.script_manager.setup_keybindings()
 
-      self.bot_manager = BotManager()
-      self.bot_manager.start()
+    # VOICE MANAGER
+    # Fuck you admiral lightning bot
+    # self.voice_manager = VoiceManager(self.sound_manager)
+    # self.voice_manager.start_listening()
 
-    def run_script(self, script_name, stop=False):
-      if stop:
-        self.scripts[script_name].stop()
-      else:
-        self.scripts[script_name].start()
+    # POLLS
+    self.poll_manager = PollManager()
 
-
-    def play_sound(self, sound_name):
-      from api import models
-
-      sound = models.Sound.objects.get(name=sound_name)
-      self.sound_manager.play_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
-
-    def stop_sound(self, sound_name):
-      self.sound_manager.stop_sound(sound_name, mic=True, headphone=True)
+    self.bot_manager = BotManager(self.websockets)
+    self.bot_manager.start()

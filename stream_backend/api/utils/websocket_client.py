@@ -1,3 +1,4 @@
+import asyncio
 import json
 import websockets
 
@@ -10,12 +11,18 @@ class WebSocketClient:
   def __init__(self, port):
     self.address = f"ws://localhost:{port}"
 
-  async def connect(self):
+  async def connect(self, timeout=10, max_retries=3):
     """Connects to the socket!
 
     Defaults max_size to None so that I can send absurd amounts of data.
     """
-    self.socket = await websockets.connect(self.address)
+    attempt = 1
+    while not self.socket and attempt <= max_retries:
+      try:
+        self.socket = await asyncio.wait_for(websockets.connect(self.address), timeout=timeout)
+      except asyncio.TimeoutError:
+        print(f"Couldn't connect to {address} on attempt #{attempt}.")
+        attempt += 1
     self.socket.max_size = None
 
   async def close(self):

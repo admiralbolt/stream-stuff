@@ -37,10 +37,7 @@ class TwitchClient:
       }
     )
 
-    print(res)
-
     data = res.json()["data"][0]
-    print(data)
 
     clip = TwitchClip(name=data["id"], edit_url=data["edit_url"])
     clip.save()

@@ -8,8 +8,8 @@ class StoppableThread(threading.Thread):
   for checking the stop event itself.
   """
 
-  def __init__(self, target, args=()):
-    super(StoppableThread, self).__init__(target=target)
+  def __init__(self, target, args=(), daemon=None):
+    super(StoppableThread, self).__init__(target=target, daemon=daemon)
     self._args = args
     self._stop_event = threading.Event()
 

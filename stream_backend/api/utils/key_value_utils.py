@@ -1,5 +1,7 @@
 import json
 
+from asgiref.sync import sync_to_async
+
 from api.models import KeyValue
 
 def get_value(key):
@@ -13,6 +15,10 @@ def get_value(key):
   except:
     return None
 
+@sync_to_async
+def async_get_value(key):
+  return get_value(key)
+
 def set_value(key, value):
   """Tries to set a value for the given key.
 
@@ -25,3 +31,7 @@ def set_value(key, value):
     kv = KeyValue(key=key, value=value)
   kv.save()
   return
+
+@sync_to_async
+def async_set_value(key, value):
+  return set_value(key, value)

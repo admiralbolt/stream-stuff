@@ -11,8 +11,8 @@ from pydub import AudioSegment
 from fuzzywuzzy import fuzz
 import pyaudio
 
+from api.audio.sphinx_keywords import KEYWORDS
 from api.utils.stoppable_thread import StoppableThread
-from api.utils.sphinx_keywords import KEYWORDS
 
 VOICEMOD_MIC = "Microphone (Voicemod Virtual Au"
 # ACTIVATION_PHRASE = "okay admiral lightning bot"

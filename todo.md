@@ -11,7 +11,6 @@ Dev Tasks
 * Probably should migrate hard core logic to backend tasks
   -> Spotify currently playing polling
   -> Maybe chat bot?
-* Figure out pulseaudio garbage so I don't have to use command prompt and shitty windows threading apis.
 
 Memes
 ======
