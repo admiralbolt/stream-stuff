@@ -8,7 +8,7 @@ import { task } from 'ember-concurrency-decorators';
 
 
 
-let SCOPES = ['clips:edit', 'chat:edit', 'channel_editor'];
+let SCOPES = ['clips:edit', 'chat:edit', 'channel_editor', 'channel_read'];
 let scopeString = SCOPES.join(' ');
 let AUTH_URL = `https://id.twitch.tv/oauth2/authorize?client_id=${config.twitchClientId}&redirect_uri=http://localhost:4200/control-panel&response_type=code&scope=${encodeURIComponent(scopeString)}`;
 

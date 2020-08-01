@@ -40,17 +40,12 @@ Chat Integrations
 * Let chat shift the stream elements around.
 * Rock Paper Scissors?
 
-* !smallBrain
-* !bigBrain
 * !vote
 * !chess -> chess.com username maybe?
-* !discord -> Hah you wish.
-* !uptime
 * !info -> Info about me / stream
 * !watchTime (/ see what else is in context)
 * !lastSeen
 * !8ball -> Random result
-* !69 -> Just spits out nice
 * !help
 * !pasta -> Gets a random copy pasta and pastes it
 * !joke -> Gets a random joke and pastes it

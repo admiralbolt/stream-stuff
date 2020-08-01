@@ -15,6 +15,7 @@ servers.forEach(server => {
     ws.on('message', function incoming(data) {
       server.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
+          // console.log(data);
           client.send(data);
         }
       });

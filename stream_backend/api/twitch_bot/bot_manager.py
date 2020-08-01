@@ -11,14 +11,14 @@ class BotManager:
   thread = None
   bot = None
 
-  def __init__(self, websockets):
-    self.websockets = websockets
+  def __init__(self):
+    return
 
   def run(self):
     self.loop = asyncio.new_event_loop()
     asyncio.set_event_loop(self.loop)
 
-    self.bot = AdmiralLightningBot(self.websockets)
+    self.bot = AdmiralLightningBot()
     # This is sync and blocking, it runs forever until we stop it.
     self.bot.run()
 

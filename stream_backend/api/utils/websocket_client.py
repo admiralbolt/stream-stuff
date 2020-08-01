@@ -19,11 +19,16 @@ class WebSocketClient:
     attempt = 1
     while not self.socket and attempt <= max_retries:
       try:
-        self.socket = await asyncio.wait_for(websockets.connect(self.address), timeout=timeout)
-      except asyncio.TimeoutError:
+        self.socket = await websockets.connect(self.address)
+      except Exception as e:
         print(f"Couldn't connect to {address} on attempt #{attempt}.")
-        attempt += 1
-    self.socket.max_size = None
+        print(e)
+      attempt += 1
+    if self.socket:
+      self.socket.max_size = None
+      print(f"Connected succesfully to {self.address}")
+    else:
+      print(f"Could not connect to to {self.address}")
 
   async def close(self):
     await self.socket.close()

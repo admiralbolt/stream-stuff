@@ -50,5 +50,5 @@ class ApiConfig(AppConfig):
     # POLLS
     self.poll_manager = PollManager()
 
-    self.bot_manager = BotManager(self.websockets)
+    self.bot_manager = BotManager()
     self.bot_manager.start()

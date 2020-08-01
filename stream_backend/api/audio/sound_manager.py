@@ -33,7 +33,7 @@ class SoundManager:
 
   def __init__(self):
     self.mic_player = SoundPlayer("CABLE Input (VB-Audio Virtual C")
-    self.headphone_player = SoundPlayer("CABLE-A Input (VB-Audio Cable A")
+    self.headphone_player = SoundPlayer("CABLE-A Input (Voicemod Virtual")
     self.stream_player = SoundPlayer("CABLE-B Input (VB-Audio Cable B")
 
   @sync_to_async

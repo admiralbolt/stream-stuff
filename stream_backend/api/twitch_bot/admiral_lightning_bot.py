@@ -14,6 +14,7 @@ from api.utils._secrets import bot_oauth_token, client_id
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
+from api.utils.websocket_pool import WebSocketPool
 
 
 IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
@@ -23,14 +24,13 @@ EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
 
 class AdmiralLightningBot(commands.Bot):
 
-  def __init__(self, websockets):
+  def __init__(self):
     super().__init__(irc_token=bot_oauth_token,
                      client_id=client_id,
                      nick="admiral_lightning_bot",
                      prefix="!",
                      initial_channels=["admirallightningbolt"])
-    self.websockets = websockets
-
+    self.websockets = WebSocketPool()
     # Magical function command injection magic.
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
     for f in glob.glob(commands_glob):
@@ -41,9 +41,10 @@ class AdmiralLightningBot(commands.Bot):
       module_object = import_module(f"api.twitch_bot.commands.{module_name}")
       class_name = "".join([word.title() for word in module_name.split("_")])
       command_class = getattr(module_object, class_name)
-      self.add_command(command_class(websockets))
+      self.add_command(command_class(self.websockets))
 
   async def event_ready(self):
+    await self.websockets.initialize()
     pass
 
   async def send_emote(self, url):

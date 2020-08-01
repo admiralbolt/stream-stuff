@@ -1,19 +1,4 @@
 <div local-class="twitch-chat-controls">
-  <p class="basic">
-    {{#if botIsAlive}}
-      Admiral Lightning Bot is online.
-    {{else}}
-      Bot has been terminated.
-    {{/if}}
-  </p>
-  <BsButton @type="primary" @onClick={{action "toggleBot"}}>
-    {{#if botIsAlive}}
-      Stop Bot
-    {{else}}
-      Start Bot
-    {{/if}}
-  </BsButton>
-
   <Utils::ToggleButton @positiveText="Emotes Enabled" @negativeText="Emotes Disabled" @value={{emotesEnabled}} @callback={{action "toggleEmotes"}} />
 
   <br><br><br>

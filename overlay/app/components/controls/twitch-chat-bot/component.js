@@ -1,33 +1,30 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { alias } from '@ember/object/computed';
+
+let EMOTES_ENABLED = 'twitch_chat_bot_emotes_enabled';
 
 export default class TwitchChatBotComponent extends Component {
+  @service keyValue;
   @service twitchApi;
-  @service twitchChat;
 
-  @alias('twitchChat.botIsAlive') botIsAlive;
-  @alias('twitchChat.emotesEnabled') emotesEnabled;
+  @tracked emotesEnabled = false;
 
   constructor() {
     super(...arguments);
     // Initialize service so it starts... We do this by accessing any property.
     this.twitchApi.access_token;
+    this.initialize();
   }
 
-  @action
-  toggleBot() {
-    if (this.botIsAlive) {
-      this.twitchChat.stop();
-    } else {
-      this.twitchChat.start();
-    }
+  async initialize() {
+    this.emotesEnabled = await this.keyValue.getValue(EMOTES_ENABLED);
   }
 
   @action
   toggleEmotes() {
-    this.twitchChat.toggleEmotes();
+    this.keyValue.createOrUpdate(EMOTES_ENABLED, this.emotesEnabled);
   }
 
   @action
