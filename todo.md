@@ -1,7 +1,3 @@
-Titles
-======
-Stream Hacking XXII: Polling Finale
-
 ACHTUAL PROJECTS
 ================
 * STS Legacy Mod
@@ -10,13 +6,7 @@ Dev Tasks
 ==========
 * Probably should migrate hard core logic to backend tasks
   -> Spotify currently playing polling
-  -> Maybe chat bot?
 
-Memes
-======
-<div style="opacity: 0.8; display: flex; align-items: center; justify-content: center; margin-bottom: 50px;">
-<img style="width:1300px;" src="/assets/images/pears.png" />
-</div>
 
 Legitimately Good Ideas
 ========================
@@ -41,14 +31,9 @@ Chat Integrations
 * Rock Paper Scissors?
 
 * !vote
-* !help and/or !commands
-* !8ball -> Random result
-* !pasta -> Gets a random copy pasta and pastes it
-* !joke -> Gets a random joke and pastes it
 
 Sound Board
 ============
-* Dunkey Sounds?
 * Rap Horn
 
 Twitch Stuff

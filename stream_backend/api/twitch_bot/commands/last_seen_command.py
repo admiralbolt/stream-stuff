@@ -1,9 +1,11 @@
 from asgiref.sync import sync_to_async
+from datetime import timedelta
 
 from api.models import TwitchChatter
 from api.twitch_bot.commands.base_command import BaseCommand
 
 class LastSeenCommand(BaseCommand):
+  """Spits out the last time someone's been seen."""
   name = "lastSeen"
 
   @sync_to_async
@@ -24,4 +26,6 @@ class LastSeenCommand(BaseCommand):
       await context.send(f"@{context.author.name}: {username} is in the chat!")
       return
 
-    await context.send(f"@{context.author.name}: {username} last seen at {chatter.last_seen}.")
+    # Convert from UTC time to Central time
+    nice_date = (chatter.latest_part - timedelta(hours=5)).strftime("%c")
+    await context.send(f"@{context.author.name}: {username} last seen on {nice_date}")

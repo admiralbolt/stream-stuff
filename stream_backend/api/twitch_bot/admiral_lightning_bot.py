@@ -11,7 +11,7 @@ from importlib import import_module
 from twitchio.ext import commands
 
 from api.models import TwitchChatter
-from api.twitch_bot.commands import *
+from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.utils._secrets import bot_oauth_token, client_id
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
@@ -37,7 +37,7 @@ class AdmiralLightningBot(commands.Bot):
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
     for f in glob.glob(commands_glob):
       module_name = os.path.splitext(os.path.basename(f))[0]
-      if module_name == "__init__" or module_name == "base_command":
+      if module_name in ["__init__", "base_command", "commands_command"]:
         continue
 
       module_object = import_module(f"api.twitch_bot.commands.{module_name}")
@@ -45,7 +45,7 @@ class AdmiralLightningBot(commands.Bot):
       command_class = getattr(module_object, class_name)
       self.add_command(command_class(self.websockets))
 
-
+    self.add_command(CommandsCommand(self.websockets, list(self.commands.keys())))
 
   async def event_ready(self):
     await self.websockets.initialize()
