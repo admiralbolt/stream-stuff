@@ -41,12 +41,8 @@ Chat Integrations
 * Rock Paper Scissors?
 
 * !vote
-* !chess -> chess.com username maybe?
-* !info -> Info about me / stream
-* !watchTime (/ see what else is in context)
-* !lastSeen
+* !help and/or !commands
 * !8ball -> Random result
-* !help
 * !pasta -> Gets a random copy pasta and pastes it
 * !joke -> Gets a random joke and pastes it
 

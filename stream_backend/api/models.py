@@ -16,32 +16,6 @@ class CustomEmote(models.Model):
   def __str__(self):
     return self.name
 
-class Sound(models.Model):
-  """Sounds for the sound board."""
-  name = models.CharField(max_length=128, unique=True)
-  sound_file = models.FileField(upload_to="sounds/", blank=True)
-
-  def __str__(self):
-    return self.name
-
-class Script(models.Model):
-  """Scripts that do stuff, generally memes."""
-  name = models.CharField(max_length=128, unique=True)
-  script_name = models.CharField(max_length=128, unique=True)
-  auto_stop = models.BooleanField(default=True)
-
-  def __str__(self):
-    return self.name
-
-class TwitchClip(models.Model):
-  """Clips that Admiral Lightning Bot has clipped."""
-  name = models.CharField(max_length=128, unique=True)
-  edit_url = models.CharField(max_length=128, unique=True)
-  created_at = models.DateTimeField(auto_now_add=True)
-
-  def __str__(self):
-    return f"{self.name} - ({self.created_at})"
-
 class KeyValue(models.Model):
   """Generic key value store.
 
@@ -84,6 +58,41 @@ class Question(models.Model):
   def __str__(self):
     return f"[{self.poll}] {self.text}"
 
+class Sound(models.Model):
+  """Sounds for the sound board."""
+  name = models.CharField(max_length=128, unique=True)
+  sound_file = models.FileField(upload_to="sounds/", blank=True)
+
+  def __str__(self):
+    return self.name
+
+class Script(models.Model):
+  """Scripts that do stuff, generally memes."""
+  name = models.CharField(max_length=128, unique=True)
+  script_name = models.CharField(max_length=128, unique=True)
+  auto_stop = models.BooleanField(default=True)
+
+  def __str__(self):
+    return self.name
+
+class TwitchChatter(models.Model):
+  """A record of the latest join / disconnect of a twitch user."""
+  username = models.CharField(max_length=64, primary_key=True)
+  latest_join = models.DateTimeField(blank=True, null=True)
+  latest_part = models.DateTimeField(blank=True, null=True)
+
+  def __str__(self):
+    return self.username
+
+class TwitchClip(models.Model):
+  """Clips that Admiral Lightning Bot has clipped."""
+  name = models.CharField(max_length=128, unique=True)
+  edit_url = models.CharField(max_length=128, unique=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f"{self.name} - ({self.created_at})"
+
 class Vote(models.Model):
   """Votes from users on an individual poll."""
   poll = models.ForeignKey("Poll", on_delete=models.CASCADE)
@@ -103,4 +112,4 @@ class Vote(models.Model):
     return f"{self.username} - {self.question}"
 
 
-ADMIN_MODELS = [CustomEmote, KeyValue, Poll, Question, Script, Sound, TwitchClip, Vote]
+ADMIN_MODELS = [CustomEmote, KeyValue, Poll, Question, Script, Sound, TwitchClip, TwitchChatter, Vote]

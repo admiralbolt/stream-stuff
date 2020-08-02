@@ -6,9 +6,11 @@ import signal
 import time
 
 from asgiref.sync import sync_to_async
+from datetime import datetime
 from importlib import import_module
 from twitchio.ext import commands
 
+from api.models import TwitchChatter
 from api.twitch_bot.commands import *
 from api.utils._secrets import bot_oauth_token, client_id
 from api.utils.key_value_utils import async_get_value
@@ -43,6 +45,8 @@ class AdmiralLightningBot(commands.Bot):
       command_class = getattr(module_object, class_name)
       self.add_command(command_class(self.websockets))
 
+
+
   async def event_ready(self):
     await self.websockets.initialize()
     pass
@@ -56,6 +60,31 @@ class AdmiralLightningBot(commands.Bot):
       "randomPosition": True,
       "timer": 3000 + random.random() * 1000
     })
+
+  @sync_to_async
+  def update_latest_part(self, user):
+    chatter, created = TwitchChatter.objects.get_or_create(username=user.name.strip())
+    chatter.latest_part = datetime.utcnow()
+    chatter.save()
+    return
+
+  async def event_part(self, user):
+    await self.update_latest_part(user)
+
+  @sync_to_async
+  def update_latest_join(self, user):
+    chatter, created = TwitchChatter.objects.get_or_create(username=user.name.strip())
+    if created:
+      chatter.latest_join = datetime.utcnow()
+      chatter.save()
+      return
+
+    if chatter.latest_part and datetime.utcnow() > chatter.latest_part:
+      chatter.latest_join = datetime.utcnow()
+      chatter.save()
+
+  async def event_join(self, user):
+    await self.update_latest_join(user)
 
   async def event_message(self, message):
     if not await async_get_value(IS_BOT_ALIVE) and False:
@@ -81,6 +110,11 @@ class AdmiralLightningBot(commands.Bot):
           continue
 
         await self.send_emote(emote.url)
+
+    # Nice
+    if "69" in message.content:
+      context = await self.get_context(message)
+      await context.send(f"@{context.author.name} nice")
 
   @sync_to_async
   def get_bttv_emote(self, word):

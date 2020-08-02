@@ -48,6 +48,16 @@ class TwitchClient:
 
     return human_readable(stream_elapsed)
 
+  async def get_current_stream_id(self):
+    """Gets the current stream id."""
+    auth_header = await self.get_authorization_header()
+    return requests.get(
+      f"{API_BASE}/streams?user_id={THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}",
+      headers={
+        "Authorization": auth_header,
+        "Client-Id": client_id
+      }
+    ).json()["data"][0]["id"]
 
   async def clip_that(self):
     """Clips that shit."""
