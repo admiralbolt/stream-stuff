@@ -10,7 +10,6 @@ Dev Tasks
 
 Legitimately Good Ideas
 ========================
-* Players Plugin: Show player names, icons, maybe port? Support N players maybe?
 * Follower overlay thingy.
 * Upgrade he who shall not be named.
 
