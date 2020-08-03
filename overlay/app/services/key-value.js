@@ -17,15 +17,22 @@ export default class KeyValueService extends Service {
     });
   }
 
+  convertValue(value) {
+    if (!isNaN(parseFloat(value)) && !isNaN(value - 0)) return value;
+
+    return JSON.stringify(value);
+  }
+
   // Create or update a key value.
   async createOrUpdate(key, value) {
     let record = await this.getRecord(key);
+    let newValue = this.convertValue(value);
     if (!isNone(record)) {
-      record.value = JSON.stringify(value);
+      record.value = newValue;
     } else {
       record = this.store.createRecord('keyvalue', {
         key: key,
-        value: JSON.stringify(value)
+        value: newValue
       });
     }
 

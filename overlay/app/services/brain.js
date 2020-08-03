@@ -46,12 +46,4 @@ export default class BrainService extends Service {
     if (sendData) this.socket.send(sendData, true);
   }
 
-  @task({enqueue: true})
-  *atomicAdjustSize(increment) {
-    this.updateBrain({
-      size: increment ? this.brainSize + 1 : this.brainSize - 1
-    });
-  }
-
-
 }
