@@ -40,6 +40,7 @@ class ApiConfig(AppConfig):
     # Setup OBSWebsocket & Scripts
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
+    await self.script_manager.initialize()
     await self.script_manager.setup_keybindings()
 
     # VOICE MANAGER
@@ -50,5 +51,5 @@ class ApiConfig(AppConfig):
     # POLLS
     self.poll_manager = PollManager()
 
-    self.bot_manager = BotManager()
+    self.bot_manager = BotManager(self.sound_manager)
     self.bot_manager.start()

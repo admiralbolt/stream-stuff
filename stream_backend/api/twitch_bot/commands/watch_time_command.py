@@ -6,7 +6,7 @@ from api.twitch_bot.commands.base_command import BaseCommand
 from api.utils.time_utils import human_readable
 
 class WatchTimeCommand(BaseCommand):
-  name = "watchTime"
+  name = "watchtime"
 
   @sync_to_async
   def get_watch_time(self, username):

@@ -10,7 +10,8 @@ class SmallBrainCommand(BaseCommand):
   Should be used when I'm a dumbass, which happens pretty
   frequently.
   """
-  name = "smallBrain"
+  name = "smallbrain"
+  lock = asyncio.Lock()
 
   async def atomic_adjust(self):
     async with self.lock:

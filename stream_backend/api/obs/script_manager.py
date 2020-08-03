@@ -30,12 +30,16 @@ class ScriptManager:
     pass
 
   @sync_to_async
+  def initialize(self):
+    for i, script in enumerate(Script.objects.order_by("id")):
+      ScriptClass = import_script(f"api.obs.{script.script_name}")
+      self.scripts[script.script_name] = ScriptClass(self.obs_client, self.sound_manager)
+
+  @sync_to_async
   def setup_keybindings(self):
     print("SCRIPT KEYBINDINGS")
     print("==================")
     for i, script in enumerate(Script.objects.order_by("id")):
-      ScriptClass = import_script(f"api.obs.{script.script_name}")
-      self.scripts[script.script_name] = ScriptClass(self.obs_client, self.sound_manager)
       print(f"ctrl+alt+s+{i}: {script.script_name}")
       keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
       keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))

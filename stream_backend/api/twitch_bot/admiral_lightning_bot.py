@@ -1,5 +1,6 @@
 import asyncio
 import glob
+import json
 import os
 import random
 import signal
@@ -11,7 +12,10 @@ from importlib import import_module
 from twitchio.ext import commands
 
 from api.models import TwitchChatter
+from api.obs.obs_client import OBSClient
+from api.obs.script_manager import ScriptManager
 from api.twitch_bot.commands.commands_command import CommandsCommand
+from api.twitch_bot.rewards_handler import RewardsHandler
 from api.utils._secrets import bot_oauth_token, client_id
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
@@ -23,16 +27,20 @@ IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
 EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
 
 
-
 class AdmiralLightningBot(commands.Bot):
 
-  def __init__(self):
+  def __init__(self, sound_manager):
     super().__init__(irc_token=bot_oauth_token,
                      client_id=client_id,
                      nick="admiral_lightning_bot",
                      prefix="!",
                      initial_channels=["admirallightningbolt"])
     self.websockets = WebSocketPool()
+    self.sound_manager = sound_manager
+    self.obs_client = OBSClient()
+    self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
+    self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
+
     # Magical function command injection magic.
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
     for f in glob.glob(commands_glob):
@@ -49,7 +57,16 @@ class AdmiralLightningBot(commands.Bot):
 
   async def event_ready(self):
     await self.websockets.initialize()
+    await self.script_manager.initialize()
+    oauth_token = await async_get_value("twitch_oauth_token")
+    await self.pubsub_subscribe(oauth_token, "channel-points-channel-v1.83968979")
     pass
+
+  async def event_raw_pubsub(self, data):
+    if "data" not in data:
+      return
+    message_data = json.loads(data["data"]["message"])
+    await self.rewards_handler.handle_event(message_data)
 
   async def send_emote(self, url):
     await self.websockets.canvas.send({
@@ -84,14 +101,29 @@ class AdmiralLightningBot(commands.Bot):
       chatter.save()
 
   async def event_join(self, user):
+    """Event that fires when a user joins the IRC channel.
+
+    This can be very delayed, batched, and can fire if the bot
+    joins the channel after a user does.
+    """
     await self.update_latest_join(user)
 
   async def event_message(self, message):
+    """Event that fires anytime a PRIVMSG is received from twitch.
+
+    This handles:
+    1. All commands and their execution.
+    2. Sending emotes to the overlay canvas.
+    3. Other fun easter eggs.
+    """
     if not await async_get_value(IS_BOT_ALIVE) and False:
       return
 
     # Handle commands if it is a command
     await self.handle_commands(message)
+
+    # Handle rewards if it is a custom reward
+    await self.rewards_handler.handle_message(message)
 
     # Display emotes if it is an emote.
     if await async_get_value(EMOTES_ENABLED) or True:

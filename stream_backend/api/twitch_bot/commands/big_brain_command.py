@@ -9,7 +9,7 @@ class BigBrainCommand(BaseCommand):
 
   Used when I'm intelligent.
   """
-  name = "bigBrain"
+  name = "bigbrain"
   lock = asyncio.Lock()
 
   async def atomic_adjust(self):

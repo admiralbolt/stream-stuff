@@ -6,7 +6,7 @@ from api.twitch_bot.commands.base_command import BaseCommand
 
 class LastSeenCommand(BaseCommand):
   """Spits out the last time someone's been seen."""
-  name = "lastSeen"
+  name = "lastseen"
 
   @sync_to_async
   def get_chatter(self, username):
