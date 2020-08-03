@@ -47,8 +47,23 @@ class SoundManager:
       keyboard.add_hotkey(get_keybind(i), self.play_sound, args=(sound.sound_file.path, sound.name, False, True, True))
       keyboard.add_hotkey(f"{get_keybind(i)}+q", self.stop_sound, args=(sound.name, True, True))
 
+  @sync_to_async
+  def async_play_sound(self, sound_name=None, play_multiple=False, mic=False, headphone=False, stream=False):
+    try:
+      sound = Sound.objects.get(name=sound_name)
+      self.play_sound(
+        sound.sound_file.path,
+        sound_name=sound_name,
+        play_multiple=play_multiple,
+        mic=mic,
+        headphone=headphone,
+        stream=stream
+      )
+    except Exception:
+      pass
+
   def play_sound(self, sound_path, sound_name=None, play_multiple=False, mic=False, headphone=False, stream=False):
-    print(f"sound: {sound_name}, mulit: {play_multiple}, mic: {mic}, headphone: {headphone}, stream: {stream}")
+    # print(f"sound: {sound_name}, mulit: {play_multiple}, mic: {mic}, headphone: {headphone}, stream: {stream}")
     if mic:
       self.mic_player.play_sound(sound_path, sound_name=sound_name, play_multiple=play_multiple)
 

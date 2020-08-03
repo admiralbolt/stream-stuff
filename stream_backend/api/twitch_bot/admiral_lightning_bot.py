@@ -9,14 +9,18 @@ import time
 from asgiref.sync import sync_to_async
 from datetime import datetime
 from importlib import import_module
+from twitchio.enums import WebhookMode
 from twitchio.ext import commands
+from twitchio.webhook import UserFollows
 
+from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS
 from api.models import TwitchChatter
 from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
+from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.rewards_handler import RewardsHandler
-from api.utils._secrets import bot_oauth_token, client_id
+from api.utils._secrets import bot_oauth_token, client_id, client_secret, public_ip
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
@@ -26,20 +30,30 @@ from api.utils.websocket_pool import WebSocketPool
 IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
 EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
 
+TOPIC_BITS = f"channel-bits-events-v2.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
+TOPIC_POINTS = f"channel-points-channel-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
+TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
+
 
 class AdmiralLightningBot(commands.Bot):
 
   def __init__(self, sound_manager):
     super().__init__(irc_token=bot_oauth_token,
                      client_id=client_id,
+                     client_secret=client_secret,
                      nick="admiral_lightning_bot",
                      prefix="!",
-                     initial_channels=["admirallightningbolt"])
+                     initial_channels=["admirallightningbolt"],
+                     external_host=f"http://{public_ip}",
+                     port=6969,
+                     webhook_server=True,
+                     callback="611d189f08cc4e56b8d610c96fd3da08")
     self.websockets = WebSocketPool()
     self.sound_manager = sound_manager
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
     self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
+    self.alert_handler = AlertHandler(self.websockets, self.sound_manager)
 
     # Magical function command injection magic.
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
@@ -56,19 +70,51 @@ class AdmiralLightningBot(commands.Bot):
     self.add_command(CommandsCommand(self.websockets, list(self.commands.keys())))
 
   async def event_ready(self):
+    """Called when the bot is logged in.
+
+    This finializes initialization of the websockets & scripts.
+    As well as subscribes to any twitch topics.
+    """
     await self.websockets.initialize()
     await self.script_manager.initialize()
     oauth_token = await async_get_value("twitch_oauth_token")
-    await self.pubsub_subscribe(oauth_token, "channel-points-channel-v1.83968979")
-    pass
+
+    await self.pubsub_subscribe(oauth_token, TOPIC_BITS)
+    await self.pubsub_subscribe(oauth_token, TOPIC_POINTS)
+    await self.pubsub_subscribe(oauth_token, TOPIC_SUBS)
+
+    await self.modify_webhook_subscription(
+      mode=WebhookMode.subscribe,
+      topic=UserFollows(to_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS),
+      lease_seconds=300
+    )
+
+  async def event_webhook(self, data):
+    """Fires whenever we receive a webhook message."""
+    # Check for a follow event.
+    if "data" in data and len(data["data"]) > 0 and "followed_at" in data["data"][0]:
+      data["message_type"] = "follow_event"
+      await self.alert_handler.queue_alert(data)
 
   async def event_raw_pubsub(self, data):
+    """Fires whenever we receive an event from pubsub.
+
+    Currently this handles:
+    1. Channel Point Redemptions (without a message)
+    2. Subscription Events
+    3. Bit purchases
+    """
     if "data" not in data:
       return
     message_data = json.loads(data["data"]["message"])
-    await self.rewards_handler.handle_event(message_data)
+    await {
+      TOPIC_POINTS: self.rewards_handler.handle_event,
+      TOPIC_BITS: self.alert_handler.queue_alert,
+      TOPIC_SUBS: self.alert_handler.queue_alert
+    }[data["data"]["topic"]](message_data)
 
   async def send_emote(self, url):
+    """Sends an emote to a random position with a random direction to the cavnas."""
     await self.websockets.canvas.send({
       "type": "create",
       "id": f"emote_{random.random()}_{random.random()}",
@@ -90,12 +136,22 @@ class AdmiralLightningBot(commands.Bot):
 
   @sync_to_async
   def update_latest_join(self, user):
+    """Updates the DB with a twitch users latest join time.
+
+    Use UTC time for everything because I'm lazy.
+    NOTE: By lazy, I mean that there is no way of getting a
+          twitch chatters time zone, so localization is impossible.
+    """
     chatter, created = TwitchChatter.objects.get_or_create(username=user.name.strip())
     if created:
       chatter.latest_join = datetime.utcnow()
       chatter.save()
       return
 
+    # We only want to update the latest join if it's a join after
+    # a leave. We could end up in a scenario where the bot restarts
+    # and gets a duplicate join for the same person even though they
+    # never left the chatroom.
     if chatter.latest_part and datetime.utcnow() > chatter.latest_part:
       chatter.latest_join = datetime.utcnow()
       chatter.save()
