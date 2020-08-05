@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from api import models, serializers
-from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL
+from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL, TWITCH_AUTHORIZATION_CODE
 from api.utils.key_value_utils import get_value, set_value
 
 import json
@@ -111,6 +111,14 @@ def toggle_spotify_polling(request):
 def spotify_authorization(request):
   """Get spotify authorization code and put it in the db."""
   set_value(SPOTIFY_AUTHORIZATION_CODE, request.GET.get("code"))
+  return HttpResponse("Got it boss")
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def twitch_authorization(request):
+  """Gets twitch authorization code and puts it in the db."""
+  print(request.GET.get("code"))
+  set_value(TWITCH_AUTHORIZATION_CODE, request.GET.get("code"))
   return HttpResponse("Got it boss")
 
 @api_view(["POST"])

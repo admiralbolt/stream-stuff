@@ -35,8 +35,9 @@ class VoiceManager:
     self.all_sounds = [sound.name for sound in Sound.objects.all()]
     self.tts_dir = os.path.join(os.getcwd(), "tmp")
 
-    from api.utils.twitch_client import TwitchClient
-    self.twitch_client = TwitchClient()
+    # TODO migrate to twitch service.
+    # from api.utils.twitch_client import TwitchClient
+    # self.twitch_client = TwitchClient()
 
     # Load our mic input
     for i in range(self.p.get_device_count()):
@@ -107,7 +108,7 @@ class VoiceManager:
       # Fuzz match spoken text for 'clip that'
       elif fuzz.ratio(text, "clip that") >= 70:
         self.tts("Okay. Clipping that shit.")
-        self.twitch_client.clip_that()
+        # TODO migrate to twitch service self.twitch_client.clip_that()
 
       else:
         self.tts("Command parsing failed.")

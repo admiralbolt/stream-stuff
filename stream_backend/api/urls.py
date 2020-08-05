@@ -22,6 +22,7 @@ urlpatterns = [
   path("play_sound/", views.play_sound),
   path("run_script/", views.run_script),
   path("spotify_authorization/", views.spotify_authorization),
+  path("twitch_authorization/", views.twitch_authorization),
   path("toggle_spotify_polling/", views.toggle_spotify_polling),
   path("vote/", views.vote),
   path("", include(router.urls))

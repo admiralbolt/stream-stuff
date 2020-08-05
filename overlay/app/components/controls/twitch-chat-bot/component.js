@@ -14,7 +14,7 @@ export default class TwitchChatBotComponent extends Component {
   constructor() {
     super(...arguments);
     // Initialize service so it starts... We do this by accessing any property.
-    this.twitchApi.access_token;
+    this.twitchApi.streamTitle;
     this.initialize();
   }
 
@@ -25,15 +25,5 @@ export default class TwitchChatBotComponent extends Component {
   @action
   toggleEmotes() {
     this.keyValue.createOrUpdate(EMOTES_ENABLED, this.emotesEnabled);
-  }
-
-  @action
-  authorizeTwitch() {
-    this.twitchApi.authorize();
-  }
-
-  @action
-  getTokens() {
-    this.twitchApi.getTokens();
   }
 }

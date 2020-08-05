@@ -5,8 +5,8 @@ class CommandsCommand(BaseCommand):
 
   name = "commands"
 
-  def __init__(self, websockets, command_names):
-    super().__init__(websockets)
+  def __init__(self, websockets, twitch_service, command_names):
+    super().__init__(websockets, twitch_service)
     self.command_response = "Commands: !" + " !".join(sorted(command_names))
 
   async def execute(self, context):

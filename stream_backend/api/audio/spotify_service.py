@@ -56,7 +56,7 @@ class SpotifyService:
     # A thread used for polling the currently playing song and sending it to
     # the polling plugin via websocket.
     self.polling_thread = None
-    # A thread used for refreshing the auth credentials every hour.
+    # A thread used for refreshing the auth credentials every thirty minutes.
     self.refresh_thread = None
 
   def start_polling_and_refresh(self):
@@ -171,6 +171,7 @@ class SpotifyService:
     self.is_authorized = True
     data = r.json()
     set_value(SPOTIFY_ACCESS_TOKEN, data["access_token"])
+    self.access_token = data["access_token"]
     if "refresh_token" in data:
       set_value(SPOTIFY_REFRESH_TOKEN, data["refresh_token"])
     return

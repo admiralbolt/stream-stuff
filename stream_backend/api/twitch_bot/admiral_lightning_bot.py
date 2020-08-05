@@ -20,7 +20,7 @@ from api.obs.script_manager import ScriptManager
 from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.rewards_handler import RewardsHandler
-from api._secrets import BOT_OAUTH_TOKEN, CLIENT_ID, CLIENT_SECRET, PUBLIC_IP
+from api._secrets import BOT_OAUTH_TOKEN, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
@@ -37,10 +37,10 @@ TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}
 
 class AdmiralLightningBot(commands.Bot):
 
-  def __init__(self, sound_manager):
+  def __init__(self, sound_manager, twitch_service):
     super().__init__(irc_token=BOT_OAUTH_TOKEN,
-                     client_id=CLIENT_ID,
-                     client_secret=CLIENT_SECRET,
+                     client_id=TWITCH_CLIENT_ID,
+                     client_secret=TWITCH_CLIENT_SECRET,
                      nick="admiral_lightning_bot",
                      prefix="!",
                      initial_channels=["admirallightningbolt"],
@@ -50,6 +50,7 @@ class AdmiralLightningBot(commands.Bot):
                      callback="611d189f08cc4e56b8d610c96fd3da08")
     self.websockets = WebSocketPool()
     self.sound_manager = sound_manager
+    self.twitch_service = twitch_service
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
     self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
@@ -65,9 +66,9 @@ class AdmiralLightningBot(commands.Bot):
       module_object = import_module(f"api.twitch_bot.commands.{module_name}")
       class_name = "".join([word.title() for word in module_name.split("_")])
       command_class = getattr(module_object, class_name)
-      self.add_command(command_class(self.websockets))
+      self.add_command(command_class(self.websockets, self.twitch_service))
 
-    self.add_command(CommandsCommand(self.websockets, list(self.commands.keys())))
+    self.add_command(CommandsCommand(self.websockets, self.twitch_service, list(self.commands.keys())))
 
   async def event_ready(self):
     """Called when the bot is logged in.
@@ -172,9 +173,6 @@ class AdmiralLightningBot(commands.Bot):
     2. Sending emotes to the overlay canvas.
     3. Other fun easter eggs.
     """
-    if not await async_get_value(IS_BOT_ALIVE) and False:
-      return
-
     # Handle commands if it is a command
     await self.handle_commands(message)
 

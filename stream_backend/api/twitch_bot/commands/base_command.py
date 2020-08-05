@@ -1,13 +1,11 @@
 from twitchio.ext.commands import Command
 
-from api.utils.twitch_client import TwitchClient
-
 class BaseCommand(Command):
 
-  def __init__(self, websockets):
+  def __init__(self, websockets, twitch_service):
     super().__init__(self.name, self.execute)
     self.websockets = websockets
-    self.twitch_client = TwitchClient()
+    self.twitch_service = twitch_service
 
   async def execute(self, context):
     """This should be overriden in the child"""
