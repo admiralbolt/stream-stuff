@@ -20,7 +20,7 @@ from api.obs.script_manager import ScriptManager
 from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.rewards_handler import RewardsHandler
-from api.utils._secrets import bot_oauth_token, client_id, client_secret, public_ip
+from api._secrets import BOT_OAUTH_TOKEN, CLIENT_ID, CLIENT_SECRET, PUBLIC_IP
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
@@ -38,13 +38,13 @@ TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}
 class AdmiralLightningBot(commands.Bot):
 
   def __init__(self, sound_manager):
-    super().__init__(irc_token=bot_oauth_token,
-                     client_id=client_id,
-                     client_secret=client_secret,
+    super().__init__(irc_token=BOT_OAUTH_TOKEN,
+                     CLIENT_ID=CLIENT_ID,
+                     CLIENT_SECRET=CLIENT_SECRET,
                      nick="admiral_lightning_bot",
                      prefix="!",
                      initial_channels=["admirallightningbolt"],
-                     external_host=f"http://{public_ip}",
+                     external_host=f"http://{PUBLIC_IP}",
                      port=6969,
                      webhook_server=True,
                      callback="611d189f08cc4e56b8d610c96fd3da08")

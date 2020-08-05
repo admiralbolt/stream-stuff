@@ -4,7 +4,7 @@ from datetime import datetime
 
 from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS
 from api.models import TwitchClip
-from api.utils._secrets import client_id, client_secret
+from api._secrets import CLIENT_ID, CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value
 from api.utils.time_utils import human_readable
 

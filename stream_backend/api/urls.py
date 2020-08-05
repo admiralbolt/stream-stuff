@@ -21,6 +21,7 @@ urlpatterns = [
   path("sounds/upload/", views.upload_sound),
   path("play_sound/", views.play_sound),
   path("run_script/", views.run_script),
+  path("spotify_authorization/", views.spotify_authorization),
   path("vote/", views.vote),
   path("", include(router.urls))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

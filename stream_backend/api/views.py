@@ -1,7 +1,7 @@
 from django.apps import apps
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from rest_framework import viewsets
@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from api import models, serializers
+from api.const import SPOTIFY_AUTHORIZATION_CODE
 from api.utils.key_value_utils import get_value, set_value
 
 import json
@@ -94,6 +95,15 @@ def run_script(request):
     app_config.scripts[script_name].start()
 
   return JsonResponse({"status": "cool"})
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def spotify_authorization(request):
+  """Get spotify authorization code and put it in the db."""
+  print(request)
+  print(request.GET.get("code"))
+  set_value(SPOTIFY_AUTHORIZATION_CODE, request.GET.get("code"))
+  return HttpResponse("Got it boss")
 
 @api_view(["POST"])
 @permission_classes([AllowAny])

@@ -17,9 +17,9 @@ class WebSocketClient:
     Defaults max_size to None so that I can send absurd amounts of data.
     """
     attempt = 1
-    while not self.socket and attempt <= max_retries:
+    while (not self.socket or not self.socket.open) and attempt <= max_retries:
       try:
-        self.socket = await websockets.connect(self.address)
+        self.socket = await websockets.connect(self.address, ping_interval=None)
       except Exception as e:
         print(f"Couldn't connect to {address} on attempt #{attempt}.")
         print(e)
@@ -38,4 +38,9 @@ class WebSocketClient:
 
     Data is json stringified before sending.
     """
-    await self.socket.send(json.dumps(data))
+    try:
+      await self.socket.send(json.dumps(data))
+    except Exception as e:
+      print(e)
+      await self.connect()
+      await self.socket.send(json.dumps(data))

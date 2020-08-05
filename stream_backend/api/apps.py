@@ -22,6 +22,7 @@ class ApiConfig(AppConfig):
     # Imports need to be here to avoid a registry error.
     # It's technically only related to model imports but eh.
     from api.audio.sound_manager import SoundManager
+    from api.audio.spotify_service import SpotifyService
     from api.audio.voice_manager import VoiceManager
     from api.obs.obs_client import OBSClient
     from api.obs.script_manager import ScriptManager
@@ -32,6 +33,9 @@ class ApiConfig(AppConfig):
     # Setup WebSocketPool
     self.websockets = WebSocketPool()
     await self.websockets.initialize()
+
+    self.spotify_service = SpotifyService(self.websockets)
+    await self.spotify_service.initialize()
 
     # Setup SoundBoard
     self.sound_manager = SoundManager()

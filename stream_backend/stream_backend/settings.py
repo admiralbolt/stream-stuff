@@ -46,10 +46,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "garbage",
     "django.contrib.staticfiles",
-    "api",
     "rest_framework",
     "corsheaders",
-    "django_extensions"
+    "django_extensions",
+    "api",
 ]
 
 MIDDLEWARE = [

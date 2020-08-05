@@ -37,12 +37,12 @@ export default class SpotifyComponent extends SocketClientComponent {
   messageHandler(event) {
     let data = JSON.parse(event.data);
     console.log(data);
-    this.albumImageUrl = data.albumImageUrl;
+    this.albumImageUrl = data.album_image_url;
     this.artist = data.artist;
     this.album = data.album;
     this.song = data.song;
-    this.progressMs = data.progressMs;
-    this.durationMs = data.durationMs;
+    this.progressMs = data.progress_ms;
+    this.durationMs = data.duration_ms;
 
     this.playerNames = JSON.parse(event.data);
   }

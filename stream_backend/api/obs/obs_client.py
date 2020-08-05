@@ -34,10 +34,9 @@ class OBSClient:
       try:
         self.socket_client.connect()
       except Exception as e:
-        print(e)
-        print("Couldn't connect, retrying")
+        print("[obs_client.py] Couldn't connect, retrying")
         time.sleep(10)
-    print("Connected successfully!")
+    print("[obs_client.py] Connected successfully!")
 
   def call(self, request):
     return self.socket_client.call(request)
