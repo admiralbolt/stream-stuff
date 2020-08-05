@@ -1,7 +1,13 @@
 import SocketClientComponent from 'overlay/components/socket-client/component';
+import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+let IS_VISIBLE = 'spotify_is_visible';
+
 export default class SpotifyComponent extends SocketClientComponent {
+  @service keyValue;
+  @tracked isVisible = true;
+
   @tracked albumImageUrl = null;
   @tracked artist = null;
   @tracked album = null;
@@ -32,11 +38,21 @@ export default class SpotifyComponent extends SocketClientComponent {
 
   constructor() {
     super(...arguments, 7001);
+    this.initialize();
+  }
+
+  async initialize() {
+    this.isVisible = await this.keyValue.getValue(IS_VISIBLE);
   }
 
   messageHandler(event) {
     let data = JSON.parse(event.data);
     console.log(data);
+    if (data.hasOwnProperty('show')) {
+      this.isVisible = data.show;
+      return;
+    }
+
     this.albumImageUrl = data.album_image_url;
     this.artist = data.artist;
     this.album = data.album;

@@ -87,7 +87,6 @@ class SpotifyService:
       if song_request.status_code != requests.codes.ok:
         continue
 
-      print("sending data...")
       data = song_request.json()
       await socket.send({
         "album_image_url": data["item"]["album"]["images"][1]["url"],
@@ -100,10 +99,10 @@ class SpotifyService:
 
   def refresh(self):
     while not self.refresh_thread.stopped():
-      time.sleep(10)
-      print("refreshing tokens...")
+      time.sleep(120)
+      print("[spotify_service.py] refreshing tokens...")
       self.get_tokens(use_refresh=True)
-      time.sleep(1000)
+      time.sleep(60 * 30 - 120)
 
 
   def check_and_test_auth(self):

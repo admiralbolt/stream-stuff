@@ -1,20 +1,22 @@
-<div local-class="spotify-wrapper">
-  <div local-class="album-wrapper">
-    <img local-class="album-art" src={{albumImageUrl}} />
-  </div>
-  <div local-class="song-info">
-    <div local-class="song-info-block">
-      <p local-class="song-title">{{song}}</p>
-      <p local-class="artist">{{artist}}</p>
-      <p local-class="album">{{album}}</p>
+{{#if isVisible}}
+  <div local-class="spotify-wrapper">
+    <div local-class="album-wrapper">
+      <img local-class="album-art" src={{albumImageUrl}} />
     </div>
-    <div local-class="timing-info">
-      <div local-class="progress-bar">
-        <div style="width: {{progressPercent}}%;" local-class="actual-progress"></div>
+    <div local-class="song-info">
+      <div local-class="song-info-block">
+        <p local-class="song-title">{{song}}</p>
+        <p local-class="artist">{{artist}}</p>
+        <p local-class="album">{{album}}</p>
       </div>
-      <div local-class="progress-text">
-        {{progressReadable}} / {{durationReadable}}
+      <div local-class="timing-info">
+        <div local-class="progress-bar">
+          <div style="width: {{progressPercent}}%;" local-class="actual-progress"></div>
+        </div>
+        <div local-class="progress-text">
+          {{progressReadable}} / {{durationReadable}}
+        </div>
       </div>
     </div>
   </div>
-</div>
+{{/if}}

@@ -39,8 +39,8 @@ class AdmiralLightningBot(commands.Bot):
 
   def __init__(self, sound_manager):
     super().__init__(irc_token=BOT_OAUTH_TOKEN,
-                     CLIENT_ID=CLIENT_ID,
-                     CLIENT_SECRET=CLIENT_SECRET,
+                     client_id=CLIENT_ID,
+                     client_secret=CLIENT_SECRET,
                      nick="admiral_lightning_bot",
                      prefix="!",
                      initial_channels=["admirallightningbolt"],

@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from api import models, serializers
-from api.const import SPOTIFY_AUTHORIZATION_CODE
+from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL
 from api.utils.key_value_utils import get_value, set_value
 
 import json
@@ -98,10 +98,18 @@ def run_script(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
+def toggle_spotify_polling(request):
+  """Updates the polling value in both the service & key value store."""
+  app_config = apps.get_app_config("api")
+  spotify_service = app_config.spotify_service
+  set_value(SPOTIFY_SHOULD_POLL, not spotify_service.should_poll)
+  spotify_service.should_poll = not spotify_service.should_poll
+  return JsonResponse({"status": "cool"})
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
 def spotify_authorization(request):
   """Get spotify authorization code and put it in the db."""
-  print(request)
-  print(request.GET.get("code"))
   set_value(SPOTIFY_AUTHORIZATION_CODE, request.GET.get("code"))
   return HttpResponse("Got it boss")
 

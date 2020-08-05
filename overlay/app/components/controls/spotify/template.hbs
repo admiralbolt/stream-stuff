@@ -1,13 +1,7 @@
 <div local-class="spotify-controls">
-  {{#if isPolling}}
-    <p class="basic">Spotify is Polling</p>
-  {{/if}}
+  <p class="basic">Spotify is {{#unless isPolling}}not {{/unless}}polling</p>
+  <Utils::ToggleButton @positiveText="Stop Polling" @negativeText="Start Polling" @value={{isPolling}} @callback={{action "togglePolling"}} />
 
-  <BsButton @type="primary" @onClick={{action "togglePolling"}}>
-    {{#if isPolling}}
-      Stop Polling
-    {{else}}
-      Start Polling
-    {{/if}}
-  </BsButton>
+  <p class="basic">Spotify Plugin is {{#unless isVisible}}not {{/unless}}visible</p>
+  <Utils::ToggleButton @positiveText="Hide Spotify Plugin" @negativeText="Show Spotify Plugin" @value={{isVisible}} @callback={{action "toggleVisibility"}} />
 </div>
