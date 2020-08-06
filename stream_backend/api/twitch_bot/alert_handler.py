@@ -1,11 +1,34 @@
 import asyncio
 import queue
 import random
+import re
 
 from asgiref.sync import sync_to_async
+from django.template.loader import render_to_string
+from profanityfilter import ProfanityFilter
 
 from api.models import Sound
 from api.utils.stoppable_thread import StoppableThread
+
+BITS_ALERT_LENGTH = 11
+FOLLOW_ALERT_LENGTH = 5
+SUB_ALERT_LENGTH = 7
+
+CHEER_REGEX = re.compile(r"Cheer[1-9]([0-9]?)+")
+
+# Bit gif urls looks like this:
+# https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/100/1.gif
+# Where the number in the path is the amount of bits cheered, 1, 100, 1000, 5000, 10000.
+# The gif name at the end is the size, can be any of 1, 1.5, 2, 3, 4.
+BIT_GIF_BASE = "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/dark/animated/%s/%s.gif"
+BIT_THRESHOLDS = [1, 100, 1000, 5000, 10000]
+BIT_HIGHLIGHT_COLORS = [
+  "#6e6e6f",
+  "#8943e0",
+  "#43cec3",
+  "#2574d0",
+  "#fe413c"
+]
 
 class AlertHandler:
   """Handles all twitch alerts!
@@ -18,6 +41,7 @@ class AlertHandler:
     self.websockets = websockets
     self.sound_manager = sound_manager
     self.queue = queue.Queue()
+    self.filter = ProfanityFilter()
     self.start_worker()
 
   def start_worker(self):
@@ -46,7 +70,31 @@ class AlertHandler:
       "subscribe_event": self.handle_sub
     }[data["message_type"]](data)
 
-    await asyncio.sleep(3)
+    await asyncio.sleep({
+      "bits_event": BITS_ALERT_LENGTH,
+      "follow_event": FOLLOW_ALERT_LENGTH,
+      "subscribe_event": SUB_ALERT_LENGTH
+    }[data["message_type"]])
+
+  def get_bits_gif_url(self, bits_used, size):
+    """Gets a gif url for a given bit value."""
+    bit_threshold = 1
+    for thresh in BIT_THRESHOLDS:
+      if bits_used > thresh:
+        bit_threshold = thresh
+      else:
+        break
+    return BIT_GIF_BASE % (bit_threshold, size)
+
+  def get_bits_highlight_color(self, bits_used):
+    bit_index = 0
+    for index, thresh in enumerate(BIT_THRESHOLDS):
+      if bits_used > thresh:
+        bit_index = index
+      else:
+        break
+
+    return BIT_HIGHLIGHT_COLORS[bit_index]
 
   async def handle_bits(self, data):
     """Generates an alert for bits.
@@ -74,13 +122,30 @@ class AlertHandler:
     }
     """
     await self.sound_manager.async_play_sound(sound_name="Boom", mic=True, headphone=True)
+    chat_message = data["data"]["chat_message"]
+    bits_used = data["data"]["bits_used"]
+    new_words = []
+    for word in self.filter.censor(chat_message).split():
+      if not CHEER_REGEX.match(word):
+        new_words.append(word)
+        continue
+
+      new_words.append(f"<img class='lil-bit' src='{self.get_bits_gif_url(bits_used, 1)}' />")
+      new_words.append(f"<span style='color:{self.get_bits_highlight_color(bits_used)}'>{word[5:]}</span>")
+
     await self.websockets.canvas.send({
       "type": "create",
-      "id": f"emote_{random.random()}_{random.random()}",
-      "html": f"<img src='https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fentries%2Ficons%2Ffacebook%2F000%2F030%2F329%2Fcover1.jpg' />",
-      "randomVelocity": True,
-      "randomPosition": True,
-      "timer": 3000 + random.random() * 1000
+      "id": f"bits_{random.random()}",
+      "html": render_to_string("bits_alert.html", {
+        "name": data["data"]["user_name"],
+        "message": " ".join(new_words),
+        "bits_used": data["data"]["bits_used"],
+        "big_gif": self.get_bits_gif_url(data["data"]["bits_used"], 4),
+        "total_bits": data["data"]["total_bits_used"],
+        "version": random.random()
+      }),
+      "timer": BITS_ALERT_LENGTH * 1000,
+      "opacityDecay": "exponential"
     })
 
   async def handle_follow(self, data):
@@ -102,11 +167,13 @@ class AlertHandler:
     await self.sound_manager.async_play_sound(sound_name="Falcon Yes", mic=True, headphone=True)
     await self.websockets.canvas.send({
       "type": "create",
-      "id": f"emote_{random.random()}_{random.random()}",
-      "html": f"<img src='https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fentries%2Ficons%2Ffacebook%2F000%2F030%2F329%2Fcover1.jpg' />",
-      "randomVelocity": True,
-      "randomPosition": True,
-      "timer": 3000 + random.random() * 1000
+      "id": f"follow_{random.random()}",
+      "html": render_to_string("follower_alert.html", {
+        "name": data["data"][0]["from_name"],
+        "version": random.random()
+      }),
+      "timer": FOLLOW_ALERT_LENGTH * 1000,
+      "opacityDecay": "exponential"
     })
 
   async def handle_sub(self, data):

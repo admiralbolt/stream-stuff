@@ -1,0 +1,46 @@
+.alert-wrapper {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  margin: auto;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.bits-wrapper {
+  width: 400px;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.follower-wrapper {
+  width: 350px;
+}
+
+.follower-name {
+  color: #1abc9c;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.bits-message {
+  display: inline-block;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Also my rapper name, but not my wrapper name. */
+.lil-bit {
+  height: 18px;
+  width: 18px;
+}

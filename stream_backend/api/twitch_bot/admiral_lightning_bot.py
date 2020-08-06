@@ -78,7 +78,7 @@ class AdmiralLightningBot(commands.Bot):
     """
     await self.websockets.initialize()
     await self.script_manager.initialize()
-    oauth_token = await async_get_value("twitch_oauth_token")
+    oauth_token = await async_get_value("twitch_access_token")
 
     await self.pubsub_subscribe(oauth_token, TOPIC_BITS)
     await self.pubsub_subscribe(oauth_token, TOPIC_POINTS)
@@ -87,7 +87,7 @@ class AdmiralLightningBot(commands.Bot):
     await self.modify_webhook_subscription(
       mode=WebhookMode.subscribe,
       topic=UserFollows(to_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS),
-      lease_seconds=300
+      lease_seconds=60 * 60 * 24
     )
 
   async def event_webhook(self, data):
@@ -108,6 +108,7 @@ class AdmiralLightningBot(commands.Bot):
     if "data" not in data:
       return
     message_data = json.loads(data["data"]["message"])
+    print(message_data)
     await {
       TOPIC_POINTS: self.rewards_handler.handle_event,
       TOPIC_BITS: self.alert_handler.queue_alert,

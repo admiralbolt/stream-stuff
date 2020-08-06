@@ -33,6 +33,10 @@ Messages sent to the canvas have the following options:
       Give the element a random velocity upon creation.
   * timerOpacity: (Optional, default=true)
       Give a timer element opacity based on it's time remaining.
+  * opacityDecay: (Optional, default="linear", ["linear", "exponential"])
+      Controls how an element fades out. Linear means a constant
+      opacity reduction based on time remaining. Exponential means
+      no opacity reduction until approximately 2/3 through the timer.
   * deleteOnTimeout: (Optional, default=true)
       Delete an element after it's timer runs out.
 
@@ -58,19 +62,32 @@ Messages sent to the canvas have the following options:
 class ElementData {
   @tracked timer;
   @tracked timerOpacity;
+  @tracked opacityDecay;
   @tracked deleteOnTimeout;
   @tracked velocityX;
   @tracked velocityY;
   @tracked positionX;
   @tracked positionY;
+  @tracked usePosition = false;
   @tracked html;
 
   @tracked maxTimer;
+  @tracked exponentialDropoff;
 
   get cssString() {
-    let css = `position: absolute; top: ${this.positionY}px; left: ${this.positionX}px;`;
+    let css = '';
+    if (this.usePosition) {
+      css += `position: absolute; top: ${this.positionY}px; left: ${this.positionX}px;`;
+    }
     if (this.timerOpacity) {
-      css += ` opacity: ${this.timer / this.maxTimer};`
+      let opacity = 1;
+      console.log(`timer: ${this.timer}, dropoff: ${this.exponentialDropoff}`);
+      if (this.opacityDecay == 'linear') {
+        opacity = this.timer / this.maxTimer;
+      } else if (this.opacityDecay == 'exponential' && this.timer < this.exponentialDropoff) {
+        opacity = this.timer / this.exponentialDropoff;
+      }
+      css += ` opacity: ${opacity};`
     }
     return htmlSafe(css);
   }
@@ -79,11 +96,16 @@ class ElementData {
     if (randomPosition) {
       this.positionX = Math.random() * 1920;
       this.positionY = Math.random() * 1080;
+      this.usePosition = true;
       return;
     }
 
-    this.positionX = startingPosition.x || 0;
-    this.positionY = startingPosition.y || 0;
+    if (!isNone(startingPosition.x) || !isNone(startingPosition.y)) {
+      this.positionX = startingPosition.x || 0;
+      this.positionY = startingPosition.y || 0;
+      this.usePosition = true;
+      return;
+    }
   }
 
   parseVelocity(startingVelocity, randomVelocity = false) {
@@ -97,11 +119,14 @@ class ElementData {
     this.velocityY = startingVelocity.y || 0;
   }
 
-  constructor(timer, html, velocity, randomVelocity, position, randomPosition, timerOpacity, deleteOnTimeout) {
+  constructor(timer, html, velocity, randomVelocity, position, randomPosition, timerOpacity, opacityDecay, deleteOnTimeout) {
     this.timer = timer;
     this.timerOpacity = timerOpacity;
+    this.opacityDecay = opacityDecay;
+    console.log(this.opacityDecay);
     this.deleteOnTimeout = deleteOnTimeout;
     this.maxTimer = timer;
+    this.exponentialDropoff = this.maxTimer - this.maxTimer * 2 / 3;
     this.html = html;
 
     this.parseVelocity(velocity, randomVelocity);
@@ -178,6 +203,7 @@ export default class CanvasComponent extends SocketClientComponent {
   @task()
   *messageHandlerTask(event) {
     let data = JSON.parse(event.data);
+    console.log(data);
     if (isNone(data.id) || isEmpty(data.id) || isNone(data.type) || isEmpty(data.type)) return;
 
     let messageType = data.type.toLowerCase();
@@ -194,6 +220,7 @@ export default class CanvasComponent extends SocketClientComponent {
           data.position || {},
           data.randomPosition,
           isNone(data.timerOpacity) ? true : data.timerOpacity,
+          isNone(data.opacityDecay) ? 'linear' : data.opacityDecay,
           isNone(data.deleteOnTimeout) ? true : data.deleteOnTimeout
         );
         this.items = items;

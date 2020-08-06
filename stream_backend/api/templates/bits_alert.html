@@ -1,0 +1,12 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="http://localhost:8000/static/api/style.css?version={{version}}">
+
+<div class="alert-wrapper bits-wrapper flex-column">
+  {% autoescape off %}
+    <div class="flex-center"><img src="{{big_gif}}" /></div>
+    <div class="flex-center follower-name">{{name}}</div>
+    <div class="flex-center">cheered! x{{bits_used}}</div>
+    <div class="bits-message">{{message}}</div>
+  {% endautoescape %}
+</div>

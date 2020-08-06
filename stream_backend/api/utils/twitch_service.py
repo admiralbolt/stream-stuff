@@ -51,7 +51,7 @@ class TwitchService:
 
   def refresh(self):
     while not self.refresh_thread.stopped():
-      time.sleep(5)
+      time.sleep(120)
       print("[twitch_service.py] refreshing tokens...")
       self.get_tokens(use_refresh=True)
       time.sleep(60 * 30 - 120)
