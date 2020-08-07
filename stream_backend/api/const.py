@@ -1,3 +1,7 @@
+from datetime import timedelta, timezone
+
+LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
+
 BRAIN_SIZE = "brain_plugin_size"
 
 SPOTIFY_ACCESS_TOKEN = "spotify_access_token"

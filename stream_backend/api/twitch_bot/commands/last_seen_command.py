@@ -1,6 +1,6 @@
 from asgiref.sync import sync_to_async
-from datetime import timedelta
 
+from api.const import LOCAL_TIMEZONE
 from api.models import TwitchChatter
 from api.twitch_bot.commands.base_command import BaseCommand
 
@@ -27,5 +27,5 @@ class LastSeenCommand(BaseCommand):
       return
 
     # Convert from UTC time to Central time
-    nice_date = (chatter.latest_part - timedelta(hours=5)).strftime("%c")
-    await context.send(f"@{context.author.name}: {username} last seen on {nice_date}")
+    nice_date = chatter.latest_part.replace(tzinfo=LOCAL_TIMEZONE).strftime("%c")
+    await context.send(f"@{context.author.name}: {username} last seen on {nice_date} local time.")

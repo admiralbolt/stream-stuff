@@ -1,7 +1,8 @@
 from api.twitch_bot.commands.base_command import BaseCommand
 
-class TestCommand(BaseCommand):
-  name = "test"
+
+class MeleeCommand(BaseCommand):
+  name = "melee"
 
   async def execute(self, context):
-    pass
+    await context.send("ADMI#105")

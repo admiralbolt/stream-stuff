@@ -1,41 +1,14 @@
-ACHTUAL PROJECTS
-================
-* STS Legacy Mod
+TODO
+=====
+[Good Idea] Create borders for stream elements to make them look inset.
+[Good Idea] Fix the polling plugin so it actually works.
+[Good Idea] Donations Alerts
+[Good Idea] Raids / Hosts Alerts
 
-Dev Tasks
-==========
-* Probably should migrate hard core logic to backend tasks
-  -> Spotify currently playing polling
+[Maybe Board] Trivia Chat Integration
+[Maybe Board] Spotify Integration
 
-
-Legitimately Good Ideas
-========================
-* Follower overlay thingy.
-* Upgrade he who shall not be named.
-
-PURE GOLD
-==========
-
-
-Garbage?
-========
-* Write obs filters -> Will take a whole day of cpp to figure this shit out.
-* Rewrite the audio detection using ML to train it to my voice
-    (This seems useful: https://github.com/mozilla/DeepSpeech)
-
-Chat Integrations
-=================
-* A full text based adventure in the chat.
-* Let chat shift the stream elements around.
-* Rock Paper Scissors?
-
-* !vote
-
-Sound Board
-============
-* Rap Horn
-
-Twitch Stuff
-=============
-* Make a youtuber
-* Make a tweeter
+[Lots of Work] Update the voice commands
+[Garbage] Write custom obs filters
+[Cool] Full text based adventure in the chat
+[Channel Points] Shift stream elements around?

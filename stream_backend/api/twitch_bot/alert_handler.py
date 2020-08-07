@@ -245,14 +245,14 @@ class AlertHandler:
       "sub_count": current_sub_count + 1
     })
     self.script_manager.run_script("birthday_party")
-    message = self.filter.censor(data["data"]["message"]["sub_message"]["message"])
-    if data["data"]["message"]["sub_message"]["emotes"]:
+    message = self.filter.censor(data["sub_message"]["message"])
+    if data["sub_message"]["emotes"]:
       # Emotes get returned as a list of dictionaries, with three keys:
       # {"start": 23, "end": 7, "id": 2867}
       # End is actually the length of the emote itself, not its end index.
       # Before we do any processing, we need to sort our ranges based off their
       # order, that way we process replacements in order of occurence.
-      replacements = sorted(data["data"]["message"]["sub_message"]["emotes"], key=lambda x: x["start"])
+      replacements = sorted(data["sub_message"]["emotes"], key=lambda x: x["start"])
       # Now we actually replace shit.
       index_increment = 0
       for replacement in replacements:
@@ -263,11 +263,11 @@ class AlertHandler:
     # Info string should be based on the type of sub.
     # Something like Subbed!, ReSubbed for x Months!, Gifted x Subs!
     info = ""
-    context = data["data"]["message"]["context"]
+    context = data["context"]
     if context == "sub":
       info = "Subbed!"
     elif context == "resub":
-      info = f"Resubbed for {data['data']['message']['cumulative_months']} months!"
+      info = f"Resubbed for {data['cumulative_months']} months!"
     else:
       info = f"Gifted some subs!"
 
@@ -276,7 +276,7 @@ class AlertHandler:
       "id": f"sub_{random.random()}",
       "html": render_to_string("sub_alert.html", {
         "alert_gif_url": "https://i.giphy.com/media/6oMKugqovQnjW/giphy.webp",
-        "name": data["data"]["message"]["user_name"] or "Anonymous",
+        "name": data["user_name"] or "Anonymous",
         "info": info,
         "message": message,
         "version": random.random()
