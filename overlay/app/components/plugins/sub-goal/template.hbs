@@ -1,0 +1,19 @@
+<div local-class="sub-goal-wrapper">
+  <div style="width: {{progressPercent}}%;" local-class="progress-bar">
+    <div local-class="highlight">
+      <div local-class="glow"></div>
+    </div>
+  </div>
+  <div local-class="sub-info">
+    <div local-class="sub-message">
+      {{this.goalMessage}}
+    </div>
+    <div local-class="sub-fraction">
+      {{#if (eq this.mode "almost_there")}}
+        {{this.subCount}} / {{this.fakeGoal}}
+      {{else}}
+        {{this.subCount}} / {{this.subGoal}}
+      {{/if}}
+    </div>
+  </div>
+</div>

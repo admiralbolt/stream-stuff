@@ -7,8 +7,9 @@ var melee = new WebSocket.Server({port: 7000});
 var poll = new WebSocket.Server({port: 7005});
 var splash = new WebSocket.Server({port: 7002});
 var spotify = new WebSocket.Server({port: 7001});
+var sub_goal = new WebSocket.Server({port: 7006});
 
-var servers = [brain, canvas, melee, poll, splash, spotify];
+var servers = [brain, canvas, melee, poll, splash, spotify, sub_goal];
 
 servers.forEach(server => {
   server.on('connection', function connection(ws) {

@@ -13,7 +13,7 @@ from twitchio.enums import WebhookMode
 from twitchio.ext import commands
 from twitchio.webhook import UserFollows
 
-from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS
+from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN
 from api.models import TwitchChatter
 from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
@@ -54,7 +54,7 @@ class AdmiralLightningBot(commands.Bot):
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
     self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
-    self.alert_handler = AlertHandler(self.websockets, self.sound_manager)
+    self.alert_handler = AlertHandler(self.websockets, self.sound_manager, self.script_manager)
 
     # Magical function command injection magic.
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
@@ -78,7 +78,7 @@ class AdmiralLightningBot(commands.Bot):
     """
     await self.websockets.initialize()
     await self.script_manager.initialize()
-    oauth_token = await async_get_value("twitch_access_token")
+    oauth_token = await async_get_value(TWITCH_ACCESS_TOKEN)
 
     await self.pubsub_subscribe(oauth_token, TOPIC_BITS)
     await self.pubsub_subscribe(oauth_token, TOPIC_POINTS)
@@ -108,11 +108,12 @@ class AdmiralLightningBot(commands.Bot):
     if "data" not in data:
       return
     message_data = json.loads(data["data"]["message"])
+    print("event_raw_pubsub")
     print(message_data)
     await {
       TOPIC_POINTS: self.rewards_handler.handle_event,
       TOPIC_BITS: self.alert_handler.queue_alert,
-      TOPIC_SUBS: self.alert_handler.queue_alert
+      TOPIC_SUBS: self.alert_handler.queue_sub
     }[data["data"]["topic"]](message_data)
 
   async def send_emote(self, url):

@@ -1,0 +1,14 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="http://localhost:8000/static/api/style.css?version={{version}}">
+
+<div class="alert-wrapper sub-wrapper">
+  {% autoescape off %}
+    <div class="full-absolute z1"><img class="alert-gif" src="{{alert_gif_url}}" /></div>
+    <div class="full-absolute z10 flex-column tinted-background">
+      <div class="flex-center user-name z10">{{name}}</div>
+      <div class="flex-center sub-info z10">{{info}}</div>
+      <div class="user-message z10">{{message}}</div>
+    </div>
+  {% endautoescape %}
+</div>

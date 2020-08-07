@@ -36,6 +36,11 @@
           Spotify
         </a>
       </nav.item>
+      <nav.item @active={{bs-eq activeId "sub-goal"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "sub-goal"}}>
+          Sub Goal
+        </a>
+      </nav.item>
     </BsNav>
     <div class="tab-content">
       <tab.pane @id="admiral-lightning-bot" @title="Admiral Lightning Bot">
@@ -58,6 +63,9 @@
       </tab.pane>
       <tab.pane @id="spotify" @title="Spotify">
         <Controls::Spotify />
+      </tab.pane>
+      <tab.pane @id="sub-goal" @title="Sub Goal">
+        <Controls::SubGoal />
       </tab.pane>
     </div>
   </BsTab>

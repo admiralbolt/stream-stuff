@@ -6,7 +6,7 @@ import webbrowser
 from datetime import datetime
 from urllib.parse import quote
 
-from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN, TWITCH_AUTHORIZATION_CODE, TWITCH_REFRESH_TOKEN
+from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN, TWITCH_AUTHORIZATION_CODE, TWITCH_REFRESH_TOKEN, TWITCH_SUBSCRIBER_COUNT
 from api.models import TwitchClip
 from api._secrets import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value, async_set_value, get_value, set_value
@@ -19,6 +19,7 @@ SCOPES = [
   "channel_subscriptions",
   "chat:edit",
   "channel:read:redemptions",
+  "channel:read:subscriptions",
   "channel:moderate",
   "channel_editor",
   "channel_read"
@@ -45,7 +46,8 @@ class TwitchService:
     # A thread used for refreshing the auth credentials every thirty minutes.
     self.refresh_thread = None
 
-  def start_refresh(self):
+  async def on_authenticate(self):
+    await async_set_value(TWITCH_SUBSCRIBER_COUNT, self.get_subscriber_count())
     self.refresh_thread = StoppableThread(target=self.refresh)
     self.refresh_thread.start()
 
@@ -74,7 +76,7 @@ class TwitchService:
       self.get_tokens()
 
     # Finally start our refresh thread.
-    self.start_refresh()
+    asyncio.run(self.on_authenticate())
 
   async def initialize(self):
     """So,
@@ -89,7 +91,7 @@ class TwitchService:
     self.refresh_token = await async_get_value(TWITCH_REFRESH_TOKEN)
     request_code = self.get_user_id("admirallightningbolt").status_code
     if request_code == requests.codes.ok:
-      self.start_refresh()
+      await self.on_authenticate()
       return
 
     # Go through the oauth flow.
@@ -126,6 +128,22 @@ class TwitchService:
   ##################
   #### REQUESTS ####
   ##################
+
+  def get_subscribers(self, broadcaster_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS):
+    """Get the subscribers for a given broadcaster."""
+    return requests.get(
+      f"{API_BASE}/subscriptions?broadcaster_id={broadcaster_id}",
+      headers={
+        "Authorization": f"Bearer {self.access_token}",
+        "Client-Id": TWITCH_CLIENT_ID
+      }
+    )
+
+  def get_subscriber_count(self, broadcaster_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS):
+    """Gets the total number of subscribers for a given user."""
+    data = self.get_subscribers(broadcaster_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS).json()
+    # Everyone is always subscribed to themself, so subtract one.
+    return len(data["data"]) - 1
 
   def get_user_id(self, username):
     """Get a user id by username."""

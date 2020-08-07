@@ -1,41 +1,48 @@
 .alert-wrapper {
-  padding: 10px;
   background-color: rgba(0, 0, 0, 0.3);
-  margin: auto;
   color: white;
   font-size: 30px;
   font-weight: bold;
+  margin: auto;
 }
 
 .bits-wrapper {
-  width: 400px;
   max-height: 300px;
   overflow: hidden;
+  padding: 10px;
+  width: 400px;
 }
 
 .follower-wrapper {
+  padding: 10px;
   width: 350px;
 }
 
-.follower-name {
+.user-name {
   color: #1abc9c;
 }
 
 .flex-center {
+  align-items: center;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
 .flex-column {
+  align-items: center;
   display: flex;
-  align-items: center;
   flex-direction: column;
 }
 
-.bits-message {
+.user-message {
   display: inline-block;
   font-size: 13px;
+  text-align: center;
+}
+
+.sub-info {
+  display: inline-block;
+  font-size: 24px;
   text-align: center;
 }
 
@@ -43,4 +50,33 @@
 .lil-bit {
   height: 18px;
   width: 18px;
+}
+
+.sub-wrapper {
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+  width: 320px;
+}
+
+.alert-gif {
+  width: 320px;
+}
+
+.full-absolute {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.z1 {
+  z-index: 1;
+}
+
+.z10 {
+  z-index: 10;
+}
+
+.tinted-background {
+  background-color: rgba(0, 0, 0, 0.3);
 }

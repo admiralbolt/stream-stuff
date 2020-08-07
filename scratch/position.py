@@ -85,7 +85,7 @@ events = client.call(GetSceneItemProperties(
   scene_name=SCENE
 ))
 
-if events.getSourcewidth() != 0:
+if "sourceWidth" in events.datain and events.getSourcewidth() != 0:
   event_scale = COLUMN_WIDTH / events.getSourcewidth()
 
   client.call(SetSceneItemProperties(
@@ -94,6 +94,27 @@ if events.getSourcewidth() != 0:
     scale={
       "x": event_scale,
       "y": event_scale
+    },
+    position={
+      "x": 1920 - COLUMN_WIDTH - BORDER,
+      "y": BORDER + cam.getSourceheight() * scale + spotify.getSourceheight() * spotify_scale
+    }
+  ))
+
+sub_goal = client.call(GetSceneItemProperties(
+  "Sub Goal Plugin",
+  scene_name=SCENE
+))
+
+if sub_goal.getSourcewidth() != 0:
+  sub_goal_scale = COLUMN_WIDTH / sub_goal.getSourcewidth()
+
+  client.call(SetSceneItemProperties(
+    "Sub Goal Plugin",
+    scene_name=SCENE,
+    scale={
+      "x": sub_goal_scale,
+      "y": sub_goal_scale
     },
     position={
       "x": 1920 - COLUMN_WIDTH - BORDER,

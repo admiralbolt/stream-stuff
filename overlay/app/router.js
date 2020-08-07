@@ -19,5 +19,6 @@ Router.map(function() {
     this.route('spotify');
     this.route('brain');
     this.route('poll');
+    this.route('sub-goal');
   });
 });
