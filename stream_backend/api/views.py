@@ -1,19 +1,20 @@
-from django.apps import apps
+import json
+import threading
 
+from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-
+from fuzzywuzzy import fuzz
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from api import models, serializers
+from api._secrets import IFTTT_SECRET
 from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL, TWITCH_AUTHORIZATION_CODE
 from api.utils.key_value_utils import get_value, set_value
 
-import json
-import threading
 
 class CustomEmoteViewSet(viewsets.ModelViewSet):
   """Custom Emotes"""
@@ -52,6 +53,35 @@ class TwitchClipViewSet(viewsets.ModelViewSet):
   queryset = models.TwitchClip.objects.all()
   serializer_class = serializers.TwitchClipSerializer
 
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def ifttt(request):
+  """IFTTT Webhook handling."""
+  data = json.loads(request.body.decode("utf-8"))
+  if "event_type" not in data or data["secret"] != IFTTT_SECRET:
+    return JsonResponse({"status": "get out of here hacker."})
+
+  app_config = apps.get_app_config("api")
+  if data["event_type"] == "clip_that":
+    app_config.twitch_service.clip_that()
+  elif data["event_type"] == "soundboard":
+    scored_sounds = sorted(
+      models.Sound.objects.all(),
+      key=lambda sound: fuzz.ratio(data["text"], sound.name.lower()),
+      reverse=True
+    )
+    sound_model = scored_sounds[0]
+
+    app_config.sound_manager.play_sound(
+      sound_model.sound_file.path,
+      sound_name=sound_model.name,
+      mic=True,
+      headphone=True
+    )
+  elif data["event_type"] == "tts":
+    app_config.voice_manager.tts(data["text"])
+
+  return JsonResponse({"status": "hi"})
 
 @api_view(["GET"])
 @permission_classes([AllowAny])

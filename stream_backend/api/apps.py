@@ -52,9 +52,7 @@ class ApiConfig(AppConfig):
     await self.script_manager.setup_keybindings()
 
     # VOICE MANAGER
-    # Fuck you admiral lightning bot
-    # self.voice_manager = VoiceManager(self.sound_manager)
-    # self.voice_manager.start_listening()
+    self.voice_manager = VoiceManager(self.sound_manager)
 
     # POLLS
     self.poll_manager = PollManager()

@@ -17,6 +17,7 @@ router.register(r"twitch_clips", views.TwitchClipViewSet)
 
 urlpatterns = [
   path("create_and_start_poll/", views.create_and_start_poll),
+  path("ifttt/", views.ifttt),
   path("stop_poll/", views.stop_poll),
   path("sounds/upload/", views.upload_sound),
   path("play_sound/", views.play_sound),

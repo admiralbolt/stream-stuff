@@ -20,7 +20,7 @@ from api.obs.script_manager import ScriptManager
 from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.rewards_handler import RewardsHandler
-from api._secrets import BOT_OAUTH_TOKEN, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
+from api._secrets import BOT_OAUTH_TOKEN, IFTTT_SECRET, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
@@ -92,6 +92,10 @@ class AdmiralLightningBot(commands.Bot):
 
   async def event_webhook(self, data):
     """Fires whenever we receive a webhook message."""
+    # Check for a message from IFTTT
+    if "secret" in data and data["secret"] == IFTTT_SECRET:
+      print("cool")
+      print(data["event_type"])
     # Check for a follow event.
     if "data" in data and len(data["data"]) > 0 and "followed_at" in data["data"][0]:
       data["message_type"] = "follow_event"

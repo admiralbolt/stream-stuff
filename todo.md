@@ -8,7 +8,6 @@ TODO
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration
 
-[Lots of Work] Update the voice commands
 [Garbage] Write custom obs filters
 [Cool] Full text based adventure in the chat
 [Channel Points] Shift stream elements around?
