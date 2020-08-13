@@ -31,7 +31,6 @@ class ApiConfig(AppConfig):
     from api.utils.twitch_service import TwitchService
     from api.utils.websocket_pool import WebSocketPool
 
-    # Setup WebSocketPool
     self.websockets = WebSocketPool()
     await self.websockets.initialize()
 
@@ -41,20 +40,16 @@ class ApiConfig(AppConfig):
     self.twitch_service = TwitchService()
     await self.twitch_service.initialize()
 
-    # Setup SoundBoard
     self.sound_manager = SoundManager()
     await self.sound_manager.setup_keybindings()
 
-    # Setup OBSWebsocket & Scripts
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
     await self.script_manager.initialize()
     await self.script_manager.setup_keybindings()
 
-    # VOICE MANAGER
     self.voice_manager = VoiceManager(self.sound_manager)
 
-    # POLLS
     self.poll_manager = PollManager()
 
     self.bot_manager = BotManager(self.sound_manager, self.twitch_service)

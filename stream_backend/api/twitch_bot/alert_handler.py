@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import queue
 import random
 import re
@@ -11,6 +12,8 @@ from api.const import TWITCH_SUBSCRIBER_COUNT
 from api.models import Sound
 from api.utils.key_value_utils import async_get_value, async_set_value
 from api.utils.stoppable_thread import StoppableThread
+
+logger = logging.getLogger(__name__)
 
 BITS_ALERT_LENGTH = 11
 FOLLOW_ALERT_LENGTH = 5
@@ -80,8 +83,7 @@ class AlertHandler:
       handle_bits, handle_follow, or handle_sub
     Delays based on the length of the alert.
     """
-    print("handle_alert")
-    print(data)
+    logger.info(f"[handle_alert] {data}")
     await {
       "bits_event": self.handle_bits,
       "follow_event": self.handle_follow,
@@ -237,8 +239,7 @@ class AlertHandler:
     * is_gift flag marks if it's a gift, if so a whole bunch of recipient data
       is added.
     """
-    print("handle_sub")
-    print(data)
+    logger.info(f"handle_sub {data}")
     current_sub_count = await async_get_value(TWITCH_SUBSCRIBER_COUNT)
     await async_set_value(TWITCH_SUBSCRIBER_COUNT, current_sub_count + 1)
     await self.websockets.sub_goal.send({

@@ -1,6 +1,9 @@
 import asyncio
 import json
+import logging
 import websockets
+
+logger = logging.getLogger(__name__)
 
 class WebSocketClient:
   """Connects to a websocket."""
@@ -21,14 +24,14 @@ class WebSocketClient:
       try:
         self.socket = await websockets.connect(self.address, ping_interval=None)
       except Exception as e:
-        print(f"Couldn't connect to {address} on attempt #{attempt}.")
-        print(e)
+        logger.info(f"Couldn't connect to {address} on attempt #{attempt}.")
+        logger.info(e)
       attempt += 1
     if self.socket:
       self.socket.max_size = None
-      print(f"Connected succesfully to {self.address}")
+      logger.info(f"Connected succesfully to {self.address}")
     else:
-      print(f"Could not connect to to {self.address}")
+      logger.info(f"Could not connect to to {self.address}")
 
   async def close(self):
     await self.socket.close()
@@ -41,6 +44,6 @@ class WebSocketClient:
     try:
       await self.socket.send(json.dumps(data))
     except Exception as e:
-      print(e)
+      logger.info(e)
       await self.connect()
       await self.socket.send(json.dumps(data))

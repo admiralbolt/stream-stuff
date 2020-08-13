@@ -1,6 +1,7 @@
 import asyncio
 import glob
 import json
+import logging
 import os
 import random
 import signal
@@ -26,6 +27,7 @@ from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
 from api.utils.websocket_pool import WebSocketPool
 
+logger = logging.getLogger(__name__)
 
 IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
 EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
@@ -55,6 +57,8 @@ class AdmiralLightningBot(commands.Bot):
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
     self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
     self.alert_handler = AlertHandler(self.websockets, self.sound_manager, self.script_manager)
+    self.resub_thread = StoppableThread(target=self.resub)
+    self.resub_thread.start()
 
     # Magical function command injection magic.
     commands_glob = os.path.join(os.getcwd(), "api", "twitch_bot", "commands", "*.py")
@@ -69,6 +73,18 @@ class AdmiralLightningBot(commands.Bot):
       self.add_command(command_class(self.websockets, self.twitch_service))
 
     self.add_command(CommandsCommand(self.websockets, self.twitch_service, list(self.commands.keys())))
+
+  def resub(self):
+    asyncio.run(self.async_resub())
+
+  async def async_resub(self):
+    while not self.resub_thread.stopped():
+      await asyncio.sleep(60 * 45)
+      oauth_token = await async_get_value(TWITCH_ACCESS_TOKEN)
+
+      await self.pubsub_subscribe(oauth_token, TOPIC_BITS)
+      await self.pubsub_subscribe(oauth_token, TOPIC_POINTS)
+      await self.pubsub_subscribe(oauth_token, TOPIC_SUBS)
 
   async def event_ready(self):
     """Called when the bot is logged in.
@@ -94,8 +110,7 @@ class AdmiralLightningBot(commands.Bot):
     """Fires whenever we receive a webhook message."""
     # Check for a message from IFTTT
     if "secret" in data and data["secret"] == IFTTT_SECRET:
-      print("cool")
-      print(data["event_type"])
+      logger.info(data["event_type"])
     # Check for a follow event.
     if "data" in data and len(data["data"]) > 0 and "followed_at" in data["data"][0]:
       data["message_type"] = "follow_event"
@@ -112,8 +127,7 @@ class AdmiralLightningBot(commands.Bot):
     if "data" not in data:
       return
     message_data = json.loads(data["data"]["message"])
-    print("event_raw_pubsub")
-    print(message_data)
+    logger.info(f"[event_raw_pubsub] {message_data}")
     await {
       TOPIC_POINTS: self.rewards_handler.handle_event,
       TOPIC_BITS: self.alert_handler.queue_alert,

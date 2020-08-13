@@ -9,6 +9,7 @@ export default class Router extends EmberRouter {
 Router.map(function() {
   this.route('control-panel');
   this.route('layouts', function() {
+    this.route('bordered');
     this.route('melee');
     this.route('splash');
     this.route('canvas');

@@ -4,6 +4,7 @@ TODO
 [Good Idea] Fix the polling plugin so it actually works.
 [Good Idea] Donations Alerts
 [Good Idea] Raids / Hosts Alerts
+[Good Idea] Add actually logging instead of using print statements.
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration

@@ -1,6 +1,10 @@
+import logging
+
 from fuzzywuzzy import fuzz
 
 from api.models import Sound
+
+logger = logging.getLogger(__name__)
 
 class RewardsHandler:
   """A class for handling purchased rewards!"""
@@ -22,7 +26,7 @@ class RewardsHandler:
   async def handle_event(self, data):
     """Processes a pubsub message for a redeemed channel points item."""
     reward_id = data["data"]["redemption"]["reward"]["id"]
-    print(f"channel event reward_id: {reward_id}")
+    logger.info(f"channel event reward_id: {reward_id}")
     if reward_id not in self.event_rewards:
       return
 

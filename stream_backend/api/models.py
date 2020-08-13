@@ -35,6 +35,7 @@ class KeyValue(models.Model):
     return self.key
 
 class Poll(models.Model):
+  """Any poll's a goal."""
   title = models.TextField()
   timer = models.IntegerField()
   created_at = models.DateTimeField(auto_now_add=True)
@@ -43,6 +44,7 @@ class Poll(models.Model):
     return f"{self.title} - {self.created_at}"
 
 class Question(models.Model):
+  """A question in a particular poll."""
   poll = models.ForeignKey("Poll", on_delete=models.CASCADE)
   text = models.TextField()
   ordinal = models.IntegerField()

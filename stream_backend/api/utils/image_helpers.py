@@ -1,15 +1,18 @@
 import cv2
+import logging
 import os
 import glob
 import numpy as np
 
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_FOLDER = "C:\\Users\\avikn\\Videos\\"
 
 def get_latest_recording(folder=DEFAULT_FOLDER):
   if not os.path.isdir(folder):
-    print("Not a folder yo.")
+    logger.info("Not a folder yo.")
     return
 
   mkv_files = glob.glob(os.path.join(folder, "*.mkv"))
@@ -22,7 +25,7 @@ def get_latest_recording(folder=DEFAULT_FOLDER):
 
 def get_latest_frame(folder=DEFAULT_FOLDER):
   if not os.path.isdir(folder):
-    print("Still not a folder dawg.")
+    logger.info("Still not a folder dawg.")
     return
 
   latest_recording = get_latest_recording(folder=folder)

@@ -25,7 +25,11 @@ class CustomEmoteSerializer(serializers.ModelSerializer):
     fields = "__all__"
 
 class KeyValueSerializer(serializers.ModelSerializer):
-  """Serialize a key value pair."""
+  """Serialize a key value pair.
+
+  In theory we could use a json serialized field here but I've found that just
+  doing the translation by hand works better.
+  """
 
   class Meta:
     model = models.KeyValue

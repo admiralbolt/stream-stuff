@@ -1,4 +1,5 @@
 import collections
+import logging
 import os
 import random
 import time
@@ -8,6 +9,7 @@ from pydub import AudioSegment
 
 from api.utils.stoppable_thread import StoppableThread
 
+logger = logging.getLogger(__name__)
 
 class SoundPlayer():
 
@@ -46,7 +48,7 @@ class SoundPlayer():
     for i in range(self.p.get_device_count()):
       if self.p.get_device_info_by_index(i)["name"] == input_name:
         return i
-    print(f"Can't find device {input_name}, using default instead.")
+    logger.info(f"Can't find device {input_name}, using default instead.")
     return None
 
   def generate_callback(self, sound_name):

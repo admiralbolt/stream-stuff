@@ -97,6 +97,30 @@ CORS_ALLOW_HEADERS = [
   "content-type"
 ]
 
+LOGGING = {
+  "version": 1,
+  "disable_existing_loggers": False,
+  "formatters": {
+    "timestamped": {
+      "format": "{levelname} {asctime} {module} {message}",
+      "style": "{"
+    }
+  },
+  "handlers": {
+    "file": {
+      "level": "INFO",
+      "class": "logging.FileHandler",
+      "filename": "/Users/avikn/git/stream-stuff/stream_backend/info.log",
+      "formatter": "timestamped"
+    }
+  },
+  "root": {
+    "handlers": ["file"],
+    "level": "INFO",
+    "propagate": True,
+  }
+}
+
 
 ROOT_URLCONF = "stream_backend.urls"
 

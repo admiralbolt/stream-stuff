@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import logging
 import requests
 import time
 import webbrowser
@@ -11,6 +12,8 @@ from api.const import SPOTIFY_ACCESS_TOKEN, SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_
 from api.utils.key_value_utils import async_get_value, async_set_value, get_value, set_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
+
+logger = logging.getLogger(__name__)
 
 SCOPES = [
   "user-read-playback-position",
@@ -100,7 +103,7 @@ class SpotifyService:
   def refresh(self):
     while not self.refresh_thread.stopped():
       time.sleep(120)
-      print("[spotify_service.py] refreshing tokens...")
+      logger.info("[spotify_service.py] refreshing tokens...")
       self.get_tokens(use_refresh=True)
       time.sleep(60 * 30 - 120)
 

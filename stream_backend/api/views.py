@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 
 from django.apps import apps
@@ -14,6 +15,8 @@ from api import models, serializers
 from api._secrets import IFTTT_SECRET
 from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL, TWITCH_AUTHORIZATION_CODE
 from api.utils.key_value_utils import get_value, set_value
+
+logger = logging.getLogger(__name__)
 
 
 class CustomEmoteViewSet(viewsets.ModelViewSet):
@@ -56,7 +59,10 @@ class TwitchClipViewSet(viewsets.ModelViewSet):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def ifttt(request):
-  """IFTTT Webhook handling."""
+  """IFTTT Webhook handling.
+
+  See ifttt.com for config for the webhooks.
+  """
   data = json.loads(request.body.decode("utf-8"))
   if "event_type" not in data or data["secret"] != IFTTT_SECRET:
     return JsonResponse({"status": "get out of here hacker."})
@@ -65,16 +71,17 @@ def ifttt(request):
   if data["event_type"] == "clip_that":
     app_config.twitch_service.clip_that()
   elif data["event_type"] == "soundboard":
+    # So there is an option to preload here so we don't make a db request
+    # every time the soundboard is used, but that wouldn't account for uploads
+    # after the server is already started. AKA I'm lazy.
     scored_sounds = sorted(
       models.Sound.objects.all(),
       key=lambda sound: fuzz.ratio(data["text"], sound.name.lower()),
       reverse=True
     )
-    sound_model = scored_sounds[0]
-
     app_config.sound_manager.play_sound(
-      sound_model.sound_file.path,
-      sound_name=sound_model.name,
+      scored_sounds[0].sound_file.path,
+      sound_name=scored_sounds[0].name,
       mic=True,
       headphone=True
     )
@@ -147,7 +154,7 @@ def spotify_authorization(request):
 @permission_classes([AllowAny])
 def twitch_authorization(request):
   """Gets twitch authorization code and puts it in the db."""
-  print(request.GET.get("code"))
+  logger.info(request.GET.get("code"))
   set_value(TWITCH_AUTHORIZATION_CODE, request.GET.get("code"))
   return HttpResponse("Got it boss")
 
@@ -220,6 +227,6 @@ def vote(request):
     vote.question = question
     vote.save()
   except Exception as e:
-    print(e)
+    logger.info(e)
     return JsonResponse({"status": "Invalid Choice"})
   return JsonResponse({"status": "cool"})

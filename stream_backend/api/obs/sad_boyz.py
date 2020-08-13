@@ -1,4 +1,3 @@
-from pprint import pprint
 import time
 
 from obswebsocket.requests import *

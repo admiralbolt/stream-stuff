@@ -2,6 +2,8 @@
 __pycache__
 *.swp
 
+info.log
+
 # compiled output
 /overlay/dist/
 /overlay/tmp/

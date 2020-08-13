@@ -1,5 +1,6 @@
 from datetime import timedelta, timezone
 
+# Default timezone is UTC and central time is 5 hours before.
 LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
 BRAIN_SIZE = "brain_plugin_size"

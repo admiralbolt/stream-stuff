@@ -1,3 +1,4 @@
+import logging
 import threading
 import time
 
@@ -5,6 +6,8 @@ import obswebsocket
 from obswebsocket.requests import *
 
 from api.utils import image_helpers
+
+logger = logging.getLogger(__name__)
 
 class OBSClient:
   """A high level wrapper around an obs websocket client.
@@ -34,9 +37,9 @@ class OBSClient:
       try:
         self.socket_client.connect()
       except Exception as e:
-        print("[obs_client.py] Couldn't connect, retrying")
+        logger.info("[obs_client.py] Couldn't connect, retrying")
         time.sleep(10)
-    print("[obs_client.py] Connected successfully!")
+    logger.info("[obs_client.py] Connected successfully!")
 
   def call(self, request):
     return self.socket_client.call(request)
@@ -73,7 +76,7 @@ class OBSClient:
     """
     filters = self.call(GetSourceFilters(source["name"]))
     for filter in filters.getFilters():
-      print(filter)
+      logger.info(filter)
       if filter["name"] == name:
         return filter
     return None
@@ -105,7 +108,7 @@ class OBSClient:
         break
 
       if i == 19:
-        print("Recording timeout, exiting.")
+        logger.info("Recording timeout, exiting.")
         self.cleanup()
         return
 

@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import requests
 import time
 import webbrowser
@@ -12,6 +13,8 @@ from api._secrets import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value, async_set_value, get_value, set_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.time_utils import human_readable
+
+logger = logging.getLogger(__name__)
 
 SCOPES = [
   "bits:read",
@@ -54,7 +57,7 @@ class TwitchService:
   def refresh(self):
     while not self.refresh_thread.stopped():
       time.sleep(120)
-      print("[twitch_service.py] refreshing tokens...")
+      logger.info("[twitch_service.py] refreshing tokens...")
       self.get_tokens(use_refresh=True)
       time.sleep(60 * 30 - 120)
 

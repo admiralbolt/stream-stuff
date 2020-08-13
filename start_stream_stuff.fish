@@ -10,7 +10,7 @@ if test -z "$session_exists"
   # Setup the django server.
   tmux rename-window -t 0 "Django"
   tmux send-keys -t "Django" "cd stream_backend" C-m
-  tmux send-keys -t "Django" "python.exe manage.py runserver" C-m
+  tmux send-keys -t "Django" "python.exe manage.py runserver 0.0.0.0:8000" C-m
 
   # Setup the frontend stuff.
   tmux new-window -t $session:1 -n "Frontend"

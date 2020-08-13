@@ -167,6 +167,7 @@ scene_items = [
   ("Muh Desktop", "full"),
   ("Melee Game", "roi"),
   ("PS1", "roi"),
+  ("Ultimate Chicken Horse", "roi"),
 ]
 
 for scene_name, width_type in scene_items:
