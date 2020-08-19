@@ -69,8 +69,11 @@ def ifttt(request):
 
   app_config = apps.get_app_config("api")
   if data["event_type"] == "clip_that":
+    # Clip That...
     app_config.twitch_service.clip_that()
   elif data["event_type"] == "soundboard":
+    # Activate sound board sound.....
+    #
     # So there is an option to preload here so we don't make a db request
     # every time the soundboard is used, but that wouldn't account for uploads
     # after the server is already started. AKA I'm lazy.
@@ -86,6 +89,7 @@ def ifttt(request):
       headphone=True
     )
   elif data["event_type"] == "tts":
+    # Declare X, Vocalize X, Voice X...
     app_config.voice_manager.tts(data["text"])
 
   return JsonResponse({"status": "hi"})

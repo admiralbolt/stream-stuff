@@ -145,6 +145,7 @@ class TwitchService:
   def get_subscriber_count(self, broadcaster_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS):
     """Gets the total number of subscribers for a given user."""
     data = self.get_subscribers(broadcaster_id=THE_BEST_TWITCH_STREAMER_ID_NO_BIAS).json()
+    logger.info(data)
     # Everyone is always subscribed to themself, so subtract one.
     return len(data["data"]) - 1
 

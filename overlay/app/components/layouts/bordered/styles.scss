@@ -1,90 +1,144 @@
-@keyframes rotate {
-  100% {
-    transform: rotate(1turn);
+$anime-time: 12s;
+$path-width: 2px;
+$clip-distance: .03;
+$path-width: 2px;
+$main-color: #69ca62;
+
+%full-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+// Figuring this out took forever.
+@mixin keyframes($name, $height, $width, $path-width) {
+  $clip-large: $width * (1 + $clip-distance * 2);
+  $clip-small: $height * (1 + $clip-distance * 2);
+  $offset: $height * 0.01;
+  @keyframes #{$name} {
+    // Top left Box
+    0%, 100% {
+      clip: rect(0px, $clip-small / 2, $clip-small / 2, 0px);
+    }
+    // Full left side
+    12.5% {
+      clip: rect(
+        0px,
+        $path-width,
+        $clip-small + $path-width + $offset,
+        0px
+      );
+    }
+    // Bottom Left Box
+    25% {
+      clip: rect(
+        $clip-small / 2 + $path-width,
+        $clip-small / 2,
+        $clip-small + $path-width + $offset,
+        0px
+      );
+    }
+    // Full bottom
+    37.5% {
+      clip: rect(
+        $clip-small,
+        $clip-large + $path-width,
+        $clip-small + $path-width + $offset,
+        0px
+      );
+    }
+    // Bottom Right Box
+    50% {
+      clip: rect(
+        $clip-small / 2 + $path-width,
+        $clip-large,
+        $clip-small + $path-width + $offset,
+        $clip-large - ($clip-small / 2)
+      );
+    }
+    // Right Side
+    62.5% {
+      clip: rect(
+        0px,
+        $clip-large,
+        $clip-small + $path-width + $offset,
+        $clip-large - $path-width
+      );
+    }
+    // Top Right Box
+    75% {
+      clip: rect(
+        0px,
+        $clip-large + $path-width,
+        $clip-small / 2,
+        $clip-large - ($clip-small / 2)
+      );
+    }
+    // FULL TOP
+    87.5% {
+      clip: rect(
+        0px,
+        $clip-large + $path-width,
+        $path-width + 1,
+        0px
+      );
+    }
   }
 }
 
-$panel-color: rgb(25, 30, 35);
-$panel-border: rgb(36, 49, 64);
+// Named keyframes need to be created before using the @frame mixin.
+@include keyframes(cameraFrames, 200px, 250px, $path-width);
+@include keyframes(testFrames, 300px, 400px, $path-width);
 
-.rainbow-border {
-  overflow: hidden;
+@mixin frame($height, $width, $name) {
+  position: absolute;
+  width: $width;
+  height: $height;
+  margin: auto;
+  background: transparent;
+  color: $main-color;
+  box-shadow: inset 0 0 0 1px rgba($main-color, .5);
+
+  &::before,
+  &::after {
+    @extend %full-fill;
+    content: '';
+    z-index: -1;
+    margin: -1 * $clip-distance * 100%;
+    box-shadow: inset 0 0 0 $path-width;
+
+    animation-name: #{$name};
+    animation-duration: $anime-time;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
 
   &::before {
-		content: '';
-		position: absolute;
-		z-index: -2;
-		left: -150%;
-		top: -150%;
-		width: 400%;
-		height: 400%;
-		background-repeat: no-repeat;
-		background-size: 400% 400%;
-		background-position: 0 0, 150% 0, 150% 150%, 0 150%;
-    background: linear-gradient(
-      hsl(224, 85%, 55%),
-      hsl(269, 85%, 55%),
-      hsl(314, 85%, 55%),
-      hsl(359, 85%, 55%),
-      hsl(44, 85%, 55%),
-      hsl(89, 85%, 55%),
-      hsl(134, 85%, 55%),
-      hsl(179, 85%, 55%)
-    );
-		animation: rotate 20s linear infinite;
-	}
+    animation-delay: $anime-time * -.5;
+  }
 
-	&::after {
-		content: '';
-		position: absolute;
-		z-index: -1;
-		left: 5px;
-		top: 5px;
-		width: calc(100% - 10px);
-		height: calc(100% - 10px);
-		background: black;
-	}
+  // for debug
+  &:hover {
+    &::after,
+    &::before {
+      background-color: rgba(#f00, .3);
+    }
+  }
 }
 
 .main-window {
-  height: 1080px;
-  width: 1920px;
-  position: relative;
+  padding: 50px;
 
-  .window-wrapper {
-    position: absolute;
-    height: 1060px;
-    width: 1900px;
-    top: 10px;
-    left: 10px;
-
-    .panel {
-      width: 300px;
-      height: 1070px;
-      border-left: 3px solid $panel-border;
-      position: absolute;
-      right: 0px;
-      background-color: transparent;
-      display: flex;
-      flex-direction: column;
-
-      .camera {
-        width: 100%;
-        height: 225px;
-        border: 3px solid orange;
-        color: transparent;
-      }
-    }
-
-    .footer {
-      width: 1610px;
-      height: 165px;
-      // border: 5px solid orange;
-      position: absolute;
-      bottom: 0px;
-      background-color: $panel-color;
-      border-top: 3px solid $panel-border;
-    }
-
+  .camera-frame {
+    @include frame(200px, 250px, cameraFrames);
   }
+
+  .test-frame {
+    @include frame(300px, 400px, testFrames);
+    top: 500px;
+    left: 500px;
+  }
+
 }
