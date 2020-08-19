@@ -1,8 +1,9 @@
 $anime-time: 12s;
 $path-width: 2px;
 $clip-distance: .03;
-$path-width: 2px;
-$main-color: #69ca62;
+$path-width: 3px;
+$main-color: rgb(126, 126, 156);
+$highlight-color: rgba(126, 126, 126, 0.4);
 
 %full-fill {
   position: absolute;
@@ -12,11 +13,30 @@ $main-color: #69ca62;
   right: 0;
 }
 
+@keyframes glow {
+  0%, 100% {
+    box-shadow: inset 0 0 0 8px rgba($main-color, 1);
+  }
+  25% {
+    box-shadow: inset 0 0 0 8px rgba($main-color, 0.8);
+  }
+  50% {
+    box-shadow: inset 0 0 0 8px rgba($main-color, 0.6);
+  }
+  75% {
+    box-shadow: inset 0 0 0 8px rgba($main-color, 0.8);
+  }
+}
+
+@mixin animation($str) {
+  animation: #{$str};
+}
+
 // Figuring this out took forever.
-@mixin keyframes($name, $height, $width, $path-width) {
+@mixin clipframes($name, $height, $width, $path-width) {
   $clip-large: $width * (1 + $clip-distance * 2);
   $clip-small: $height * (1 + $clip-distance * 2);
-  $offset: $height * 0.01;
+  $offset: ($height / 33) - 4;
   @keyframes #{$name} {
     // Top left Box
     0%, 100% {
@@ -89,8 +109,8 @@ $main-color: #69ca62;
 }
 
 // Named keyframes need to be created before using the @frame mixin.
-@include keyframes(cameraFrames, 200px, 250px, $path-width);
-@include keyframes(testFrames, 300px, 400px, $path-width);
+@include clipframes(cameraFrames, 200px, 250px, $path-width);
+@include clipframes(testFrames, 300px, 400px, $path-width);
 
 @mixin frame($height, $width, $name) {
   position: absolute;
@@ -99,7 +119,8 @@ $main-color: #69ca62;
   margin: auto;
   background: transparent;
   color: $main-color;
-  box-shadow: inset 0 0 0 1px rgba($main-color, .5);
+  @include animation('glow 5s linear infinite');
+  box-shadow: inset 0 0 0 8px rgba($main-color, .5);
 
   &::before,
   &::after {
@@ -108,6 +129,7 @@ $main-color: #69ca62;
     z-index: -1;
     margin: -1 * $clip-distance * 100%;
     box-shadow: inset 0 0 0 $path-width;
+    color: $highlight-color;
 
     animation-name: #{$name};
     animation-duration: $anime-time;
@@ -117,14 +139,6 @@ $main-color: #69ca62;
 
   &::before {
     animation-delay: $anime-time * -.5;
-  }
-
-  // for debug
-  &:hover {
-    &::after,
-    &::before {
-      background-color: rgba(#f00, .3);
-    }
   }
 }
 
