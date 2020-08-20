@@ -1,9 +1,40 @@
 $anime-time: 12s;
 $path-width: 2px;
-$clip-distance: .03;
 $path-width: 3px;
-$main-color: rgb(126, 126, 156);
-$highlight-color: rgba(126, 126, 126, 0.4);
+
+$border-width: 4px;
+
+$max-width: 1920px;
+$max-height: 1080px;
+$panel-width: 300px;
+
+$main-color: rgb(204, 85, 0);
+$highlight-color: rgba(126, 126, 126, 0.5);
+
+// A bunch of variables need to stay in sync with position_panels.py
+$content-border: 15px;
+$content-margin: 15px;
+$panel-item-margin: 15px;
+
+
+// Main Content
+$content-width-obs: 1567px;
+$content-height-obs: 881.4375px;
+$content-width: $content-width-obs + 2 * $border-width;
+$content-height: $content-height-obs + 2 * $border-width;
+// Camera
+$camera-height: 225px;
+// Spotify Plugin
+$spotify-obs-width: 370.3606px;
+$spotify-obs-height: 137.5625px;
+$spotify-width: $spotify-obs-width + $border-width * 2;
+$spotify-height: $spotify-obs-height + $border-width * 2;
+// Twitch chat
+$twitch-chat-height: 450px;
+// Sub Goal Plugin
+$sub-goal-obs-height: 42.4727px;
+$sub-goal-height: $sub-goal-obs-height + $border-width * 2;
+
 
 %full-fill {
   position: absolute;
@@ -15,89 +46,95 @@ $highlight-color: rgba(126, 126, 126, 0.4);
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: inset 0 0 0 8px rgba($main-color, 1);
+    box-shadow: inset 0 0 0 $border-width rgba($main-color, 1);
   }
   25% {
-    box-shadow: inset 0 0 0 8px rgba($main-color, 0.8);
+    box-shadow: inset 0 0 0 $border-width rgba($main-color, 0.9);
   }
   50% {
-    box-shadow: inset 0 0 0 8px rgba($main-color, 0.6);
+    box-shadow: inset 0 0 0 $border-width rgba($main-color, 1);
   }
   75% {
-    box-shadow: inset 0 0 0 8px rgba($main-color, 0.8);
+    box-shadow: inset 0 0 0 $border-width rgba($main-color, 0.9);
   }
 }
 
 // Figuring this out took forever.
-@mixin clipframes($name, $height, $width, $path-width) {
-  $clip-large: $width * (1 + $clip-distance * 2);
-  $clip-small: $height * (1 + $clip-distance * 2);
-  $offset: ($height / 33) - 4;
+@mixin clipframes($name, $height, $width, $path-width, $clip-distance) {
+  $pseudo-height: $height + $clip-distance * 2;
+  $pseudo-width: $width + $clip-distance * 2;
+  $small: min($pseudo-height, $pseudo-width);
+  $large: max($pseudo-height, $pseudo-width);
   @keyframes #{$name} {
     // Top left Box
     0%, 100% {
-      clip: rect(0px, $clip-small / 2, $clip-small / 2, 0px);
+      clip: rect(
+        0px,
+        $small / 2,
+        $small / 2,
+        0px
+      );
     }
     // Full left side
     12.5% {
       clip: rect(
         0px,
         $path-width,
-        $clip-small + $path-width + $offset,
+        $pseudo-height,
         0px
       );
     }
     // Bottom Left Box
     25% {
       clip: rect(
-        $clip-small / 2 + $path-width,
-        $clip-small / 2,
-        $clip-small + $path-width + $offset,
+        $pseudo-height - $small / 2 - $path-width
+        $small / 2 + $path-width,
+        $pseudo-height,
         0px
       );
     }
     // Full bottom
     37.5% {
       clip: rect(
-        $clip-small,
-        $clip-large + $path-width,
-        $clip-small + $path-width + $offset,
+        $pseudo-height - $path-width,
+        $pseudo-width,
+        $pseudo-height,
         0px
       );
     }
     // Bottom Right Box
     50% {
       clip: rect(
-        $clip-small / 2 + $path-width,
-        $clip-large,
-        $clip-small + $path-width + $offset,
-        $clip-large - ($clip-small / 2)
+        $pseudo-height - $small / 2 - $path-width,
+        $pseudo-width,
+        $pseudo-height,
+        $pseudo-width - ($small / 2) - $path-width
       );
     }
     // Right Side
     62.5% {
       clip: rect(
         0px,
-        $clip-large,
-        $clip-small + $path-width + $offset,
-        $clip-large - $path-width
+        $pseudo-width,
+        $pseudo-height,
+        $pseudo-width - $path-width
       );
     }
     // Top Right Box
     75% {
       clip: rect(
         0px,
-        $clip-large + $path-width,
-        $clip-small / 2,
-        $clip-large - ($clip-small / 2)
+        $pseudo-width,
+        $small / 2 + $path-width,
+        $pseudo-width - ($small / 2) - $path-width
       );
     }
     // FULL TOP
     87.5% {
       clip: rect(
         0px,
-        $clip-large + $path-width,
-        $path-width + 1,
+        $pseudo-width,
+        $path-width,
         0px
       );
     }
@@ -105,24 +142,27 @@ $highlight-color: rgba(126, 126, 126, 0.4);
 }
 
 // Named keyframes need to be created before using the @frame mixin.
-@include clipframes(cameraFrames, 200px, 250px, $path-width);
-@include clipframes(testFrames, 300px, 400px, $path-width);
+@include clipframes(cameraFrames, $camera-height, $panel-width, $path-width, 7px);
+@include clipframes(contentFrames, $content-height, $content-width, $path-width, 7px);
+@include clipframes(spotifyFrames, $spotify-height, $spotify-width, $path-width, 7px);
+@include clipframes(twitchFrames, $twitch-chat-height, $panel-width, $path-width, 7px);
+@include clipframes(subFrames, $sub-goal-height, $panel-width, $path-width, 7px);
 
-@mixin frame($height, $width, $name) {
+@mixin frame($height, $width, $name, $clip-distance) {
   position: absolute;
   width: $width;
   height: $height;
   margin: auto;
   background: transparent;
   color: $main-color;
-  box-shadow: inset 0 0 0 8px rgba($main-color, .5);
+  box-shadow: inset 0 0 0 $border-width $main-color;
 
   &::before,
   &::after {
     @extend %full-fill;
     content: '';
     z-index: -1;
-    margin: -1 * $clip-distance * 100%;
+    margin: -1 * $clip-distance;
     box-shadow: inset 0 0 0 $path-width;
     color: $highlight-color;
 
@@ -141,15 +181,39 @@ $highlight-color: rgba(126, 126, 126, 0.4);
   padding: 50px;
 
   .camera-frame {
-    @include frame(200px, 250px, cameraFrames);
+    @include frame($camera-height, $panel-width, cameraFrames, 7px);
     animation: glow 5s linear infinite;
+    // 1920 - 15 - 300
+    left: 1605px;
+    top: 15px;
   }
 
-  .test-frame {
-    @include frame(300px, 400px, testFrames);
+  .content-frame {
+    @include frame($content-height, $content-width, contentFrames, 7px);
     animation: glow 5s linear infinite;
-    top: 500px;
-    left: 500px;
+    left: 15px;
+    top: 15px;
+  }
+
+  .spotify-frame {
+    @include frame($spotify-height, $spotify-width, spotifyFrames, 7px);
+    animation: glow 5s linear infinite;
+    left: 15px;
+    top: $content-border + $content-height + $content-margin;
+  }
+
+  .twitch-chat-frame {
+    @include frame($twitch-chat-height, $panel-width, twitchFrames, 7px);
+    animation: glow 5s linear infinite;
+    left: $max-width - $panel-width - $content-border;
+    top: $max-height - $content-border - $twitch-chat-height;
+  }
+
+  .sub-goal-frame {
+    @include frame($sub-goal-height, $panel-width, subFrames, 7px);
+    animation: glow 5s linear infinite;
+    left: $max-width - $panel-width - $content-border;
+    top: $content-border + $camera-height + $panel-item-margin;
   }
 
 }

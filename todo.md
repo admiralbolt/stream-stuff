@@ -10,6 +10,7 @@ TODO
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration
+[Maybe Board] Users input css somehow?
 
 [Cool Garbage] Write custom obs filters
 [Cool] Full text based adventure in the chat
