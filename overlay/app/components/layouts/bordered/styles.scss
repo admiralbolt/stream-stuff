@@ -64,10 +64,9 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
   $pseudo-width: $width + $clip-distance * 2;
   $circumference: 2 * ($pseudo-height + $pseudo-width);
   $small: min($pseudo-height, $pseudo-width);
-  $large: max($pseudo-height, $pseudo-width);
-  $vertical-side-percent: 100 * ($pseudo-height - $small / 2) / $circumference;
-  $horizontal-side-percent: 100 * ($pseudo-width - $small / 2) / $circumference;
   $increment: 100 * ($small / 2) / $circumference;
+  $new-vertical: 100 * ($pseudo-height - $small) / $circumference;
+  $new-horizontal: 100 * ($pseudo-width - $small) / $circumference;
   @keyframes #{$name} {
     // Top left Box
     0%, 100% {
@@ -78,17 +77,26 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
         0px
       );
     }
-    // Full left side
-    #{$vertical-side-percent}% {
+    // Left Side (top part)
+    #{$increment}% {
       clip: rect(
         0px,
+        $path-width,
+        $small,
+        0px
+      );
+    }
+    // Left side (bottom part)
+    #{$increment + $new-vertical}% {
+      clip: rect(
+        $pseudo-height - $small,
         $path-width,
         $pseudo-height,
         0px
       );
     }
-    // Bottom Left Box
-    #{$vertical-side-percent + $increment}% {
+    // Bottom left box
+    #{$new-vertical + 2 * $increment}% {
       clip: rect(
         $pseudo-height - $small / 2 - $path-width
         $small / 2 + $path-width,
@@ -96,17 +104,26 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
         0px
       );
     }
-    // Full bottom
-    #{$vertical-side-percent + $increment + $horizontal-side-percent}% {
+    // Bottom side (left part)
+    #{$new-vertical + 3 * $increment}% {
       clip: rect(
         $pseudo-height - $path-width,
-        $pseudo-width,
+        $small,
         $pseudo-height,
         0px
       );
     }
+    // Bottom side (right part)
+    #{$new-vertical + 3 * $increment + $new-horizontal}% {
+      clip: rect(
+        $pseudo-height - $path-width,
+        $pseudo-width,
+        $pseudo-height,
+        $pseudo-width - $small
+      );
+    }
     // Bottom Right Box
-    #{$vertical-side-percent + $increment * 2 + $horizontal-side-percent}% {
+    #{$new-vertical + 4 * $increment + $new-horizontal}% {
       clip: rect(
         $pseudo-height - $small / 2 - $path-width,
         $pseudo-width,
@@ -114,29 +131,47 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
         $pseudo-width - ($small / 2) - $path-width
       );
     }
-    // Right Side
-    #{$vertical-side-percent * 2 + $increment * 2 + $horizontal-side-percent}% {
+    // Right side (bottom part)
+    #{$new-vertical + 5 * $increment + $new-horizontal}% {
       clip: rect(
-        0px,
+        $pseudo-height - $small,
         $pseudo-width,
         $pseudo-height,
         $pseudo-width - $path-width
-      );
+      )
+    }
+    // Right side (top part)
+    #{2 * $new-vertical + 5 * $increment + $new-horizontal}% {
+      clip: rect(
+        0px,
+        $pseudo-width,
+        $small,
+        $pseudo-width - $path-width
+      )
     }
     // Top Right Box
-    #{$vertical-side-percent * 2 + $increment * 3 + $horizontal-side-percent}% {
+    #{2 * $new-vertical + 6 * $increment + $new-horizontal}% {
       clip: rect(
         0px,
         $pseudo-width,
-        $small / 2 + $path-width,
-        $pseudo-width - ($small / 2) - $path-width
+        $small / 2
+        $pseudo-width - ($small / 2)
       );
     }
-    // FULL TOP
-    #{$vertical-side-percent * 2 + $increment * 3 + $horizontal-side-percent * 2}% {
+    // Top side (right part)
+    #{2 * $new-vertical + 7 * $increment + $new-horizontal}% {
       clip: rect(
         0px,
         $pseudo-width,
+        $path-width,
+        $pseudo-width - $small
+      );
+    }
+    // Top side (left part)
+    #{2 * $new-vertical + 7 * $increment + 2 * $new-horizontal}% {
+      clip: rect(
+        0px,
+        $small,
         $path-width,
         0px
       );
