@@ -55,7 +55,7 @@ class AdmiralLightningBot(commands.Bot):
     self.twitch_service = twitch_service
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
-    self.rewards_handler = RewardsHandler(self.sound_manager, self.script_manager)
+    self.rewards_handler = RewardsHandler(self.websockets, self.sound_manager, self.script_manager)
     self.alert_handler = AlertHandler(self.websockets, self.sound_manager, self.script_manager)
     self.resub_thread = StoppableThread(target=self.resub)
     self.resub_thread.start()
@@ -129,7 +129,7 @@ class AdmiralLightningBot(commands.Bot):
     message_data = json.loads(data["data"]["message"])
     logger.info(f"[event_raw_pubsub] {message_data}")
     await {
-      TOPIC_POINTS: self.rewards_handler.handle_event,
+      TOPIC_POINTS: self.rewards_handler.queue_event,
       TOPIC_BITS: self.alert_handler.queue_alert,
       TOPIC_SUBS: self.alert_handler.queue_sub
     }[data["data"]["topic"]](message_data)
@@ -195,9 +195,6 @@ class AdmiralLightningBot(commands.Bot):
     """
     # Handle commands if it is a command
     await self.handle_commands(message)
-
-    # Handle rewards if it is a custom reward
-    await self.rewards_handler.handle_message(message)
 
     # Display emotes if it is an emote.
     if await async_get_value(EMOTES_ENABLED) or True:

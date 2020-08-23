@@ -34,6 +34,9 @@ $twitch-chat-height: 450px;
 // Sub Goal Plugin
 $sub-goal-obs-height: 42.4727px;
 $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
+// King of the Hill Plugin
+$king-width: 426.9181 + $border-width * 2;
+$king-height: $spotify-height;
 
 
 %full-fill {
@@ -147,6 +150,7 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
 @include clipframes(spotifyFrames, $spotify-height, $spotify-width, $path-width, 7px);
 @include clipframes(twitchFrames, $twitch-chat-height, $panel-width, $path-width, 7px);
 @include clipframes(subFrames, $sub-goal-height, $panel-width, $path-width, 7px);
+@include clipframes(kingFrames, $king-height, $king-width, $path-width, 7px);
 
 @mixin frame($height, $width, $name, $clip-distance) {
   position: absolute;
@@ -214,6 +218,13 @@ $sub-goal-height: $sub-goal-obs-height + $border-width * 2;
     animation: glow 5s linear infinite;
     left: $max-width - $panel-width - $content-border;
     top: $content-border + $camera-height + $panel-item-margin;
+  }
+
+  .king-frame {
+    @include frame($king-height, $king-width, kingFrames, 7px);
+    animation: glow 5s linear infinite;
+    left: $spotify-width + 40px;
+    top: $content-border + $content-height + $content-margin;
   }
 
 }

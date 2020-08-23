@@ -38,6 +38,7 @@ SPOODERFY = "Spotify!"
 TWITCH_CHAT = "Twitch Chat"
 SUB_GOAL = "Sub Goal Plugin"
 GC = "Gamecube Controller"
+KOTH_MESSAGE = "Koth Message"
 
 client = OBSClient()
 time.sleep(1)
@@ -78,8 +79,12 @@ footer_height = 1080 - content_height - 2 * BORDER - MARGIN - 2 * FRAME_WIDTH
 
 
 footer_y = BORDER + content_height + MARGIN + FRAME_WIDTH
-position_element(client, SPOODERFY, footer_height, use_height=True,
+spotify = position_element(client, SPOODERFY, footer_height, use_height=True,
                  x_position=BORDER + FRAME_WIDTH, y_position=footer_y)
+
+position_element(client, KOTH_MESSAGE, footer_height, use_height=True,
+                 x_position=BORDER + 3 * FRAME_WIDTH + 26 + spotify.getSourcewidth() * spotify.getScale()["x"],
+                 y_position=footer_y)
 
 chat = position_element(client, TWITCH_CHAT, PANEL_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,

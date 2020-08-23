@@ -140,6 +140,6 @@ class ShameCubeScript(BaseScript):
       "id": f"shame_cube_cube"
     })
     self.call(SetCurrentScene(self.transition_scene))
-    await asyncio.sleep(1)
+    await asyncio.sleep(0.25)
     self.thread = None
     return

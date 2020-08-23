@@ -64,6 +64,8 @@ def ifttt(request):
   See ifttt.com for config for the webhooks.
   """
   data = json.loads(request.body.decode("utf-8"))
+  # Don't view this on stream! It has sensitive data.
+  logger.info(data)
   if "event_type" not in data or data["secret"] != IFTTT_SECRET:
     return JsonResponse({"status": "get out of here hacker."})
 

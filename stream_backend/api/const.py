@@ -5,6 +5,9 @@ LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
 BRAIN_SIZE = "brain_plugin_size"
 
+KING_OF_THE_HILL_MESSAGE = "king_of_the_hill_message"
+KING_OF_THE_HILL_AUTHOR = "king_of_the_hill_author"
+
 SPOTIFY_ACCESS_TOKEN = "spotify_access_token"
 SPOTIFY_AUTHORIZATION_CODE = "spotify_authorization_code"
 SPOTIFY_REFRESH_TOKEN = "spotify_refresh_token"

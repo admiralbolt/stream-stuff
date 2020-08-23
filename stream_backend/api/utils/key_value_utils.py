@@ -28,7 +28,7 @@ def set_value(key, value):
     kv = KeyValue.objects.get(key=key)
     kv.value = json.dumps(value)
   except:
-    kv = KeyValue(key=key, value=value)
+    kv = KeyValue(key=key, value=json.dumps(value))
   kv.save()
   return
 

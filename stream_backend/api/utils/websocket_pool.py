@@ -21,6 +21,7 @@ class WebSocketPool:
     self.canvas = WebSocketClient(7004)
     self.poll = WebSocketClient(7005)
     self.sub_goal = WebSocketClient(7006)
+    self.king_of_the_hill = WebSocketClient(7007)
 
     self.all_sockets = [
       self.melee,
@@ -29,7 +30,8 @@ class WebSocketPool:
       self.brain,
       self.canvas,
       self.poll,
-      self.sub_goal
+      self.sub_goal,
+      self.king_of_the_hill
     ]
 
   async def initialize(self):

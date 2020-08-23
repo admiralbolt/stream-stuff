@@ -19,6 +19,7 @@ Router.map(function() {
   this.route('plugins', function() {
     this.route('spotify');
     this.route('brain');
+    this.route('koth-message');
     this.route('poll');
     this.route('sub-goal');
   });

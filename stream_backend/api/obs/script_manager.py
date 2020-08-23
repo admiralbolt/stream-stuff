@@ -49,3 +49,8 @@ class ScriptManager:
       self.scripts[script_name].stop()
     else:
       self.scripts[script_name].start()
+
+  def run_and_wait(self, script_name):
+    self.scripts[script_name].start()
+    self.scripts[script_name].thread.join()
+    return
