@@ -8,7 +8,7 @@ $max-height: 1080px;
 $panel-width: 300px;
 
 $main-color: rgb(204, 85, 0);
-$highlight-color: rgba(190, 70, 15, 0.4);
+$highlight-color: rgba(255, 255, 255, 0.3);
 
 // A bunch of variables need to stay in sync with position_panels.py
 $content-border: 15px;
@@ -259,7 +259,7 @@ $king-height: $spotify-height;
   }
 
   .king-frame {
-    @include frame($king-height, $king-width, kingFrames, 7px);
+    @include frame($king-height, $king-width, kingFrames, 7px, 13s);
     animation: glow 5s linear infinite;
     left: $spotify-width + 40px;
     top: $content-border + $content-height + $content-margin;
