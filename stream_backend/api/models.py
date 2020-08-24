@@ -43,6 +43,14 @@ class Script(models.Model):
   def __str__(self):
     return self.name
 
+class Sound(models.Model):
+  """Sounds for the sound board."""
+  name = models.CharField(max_length=128, unique=True)
+  sound_file = models.FileField(upload_to="sounds/", blank=True)
+
+  def __str__(self):
+    return self.name
+
 class TwitchChatter(models.Model):
   """A record of the latest join / disconnect of a twitch user."""
   username = models.CharField(max_length=64, primary_key=True)
