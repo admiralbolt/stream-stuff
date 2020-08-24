@@ -15,12 +15,17 @@ class WebSocketPool:
 
   def __init__(self):
     self.melee = WebSocketClient(7000)
+    # A websocket used to communicate spotify currently playing information.
     self.spotify = WebSocketClient(7001)
+    # Controls html displayed on the splash screen.
     self.splash = WebSocketClient(7002)
+    # Used to increase / decrease the size of the brain.
     self.brain = WebSocketClient(7003)
+    # A blank canvas that can display any input html.
     self.canvas = WebSocketClient(7004)
-    self.poll = WebSocketClient(7005)
+    # A plugin to display a sub goal!
     self.sub_goal = WebSocketClient(7006)
+    # Displays a message purchased by chat.
     self.king_of_the_hill = WebSocketClient(7007)
 
     self.all_sockets = [
@@ -29,7 +34,6 @@ class WebSocketPool:
       self.splash,
       self.brain,
       self.canvas,
-      self.poll,
       self.sub_goal,
       self.king_of_the_hill
     ]

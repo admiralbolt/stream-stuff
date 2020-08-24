@@ -6,6 +6,10 @@ All the code that powers my stream! It is written in 3 different servers:
 
 The code that's written here probably can't be reused very easily, so sorry about that. The stuff I've done so far:
 
+## Google Home Voice Commands
+I setup webhooks using [ifttt](https://ifttt.com) to use google voice processing
+without having to pay for their service (genius I know).
+
 ## Admiral Lightning Bot
 Aka he who shall not be named. A terrible bot that uses voice commands to activate different parts of my code.
 It can:
@@ -17,7 +21,7 @@ Works as intended approximately 10% of the time.
 
 ## Sound Board
 Allows for playing & uploading sounds from the front end client. Uses global
-keybindings so I can play sounds from anywhere. Easily integrates with the rest 
+keybindings so I can play sounds from anywhere. Easily integrates with the rest
 of the django server to allow for playing sounds from scripts and the like.
 
 ## Memes

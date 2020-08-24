@@ -1,8 +1,6 @@
 TODO
 =====
 [Good Idea] Purchase VIP status?
-[Good Idea] Fix the polling plugin so it actually works.
-            --> Turns out, twitch has their own polling plugin.
 [At Some Point] Rewrite alerts, in a new style.
 [Good Idea] Donations Alerts
 [Good Idea] Raids / Hosts Alerts

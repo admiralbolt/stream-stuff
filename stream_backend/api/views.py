@@ -32,12 +32,6 @@ class KeyValueViewSet(viewsets.ModelViewSet):
   queryset = models.KeyValue.objects.order_by("key")
   serializer_class = serializers.KeyValueSerializer
 
-class PollViewSet(viewsets.ModelViewSet):
-  """Poll shit"""
-  resource_name = "polls"
-  queryset = models.Poll.objects.order_by("title")
-  serializer_class = serializers.PollSerializer
-
 class ScriptViewSet(viewsets.ModelViewSet):
   """Scripts for controlling OBS"""
   resource_name = "scripts"
@@ -163,76 +157,3 @@ def twitch_authorization(request):
   logger.info(request.GET.get("code"))
   set_value(TWITCH_AUTHORIZATION_CODE, request.GET.get("code"))
   return HttpResponse("Got it boss")
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def create_and_start_poll(request):
-  """Creates a poll and starts a thread to track progress."""
-  app_config = apps.get_app_config("api")
-  if get_value("poll_is_running"):
-    return JsonResponse({"status": "already running"})
-
-  poll = models.Poll(
-    title=request.data["title"],
-    timer=int(request.data["timer"])
-  )
-  poll.save()
-
-  # Create a new questions object for each passed in question.
-  for i, question in enumerate(request.data["questions"]):
-    question = models.Question(
-      poll=poll,
-      text=question,
-      ordinal=i+1
-    )
-    question.save()
-
-  app_config.poll_manager.start_poll(poll)
-
-  return JsonResponse({"status": "cool"})
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def stop_poll(request):
-  """Finalizes the currently running poll and stops it."""
-  app_config = apps.get_app_config("api")
-  app_config.poll_manager.stop_poll()
-  return JsonResponse({"status": "cool"})
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def vote(request):
-  """Vote for an option in a currently running poll.
-
-  Should create a vote if it doesn't exist, and update
-  it if it already exists.
-  """
-  app_config = apps.get_app_config("api")
-  if not get_value("poll_is_running"):
-    return JsonResponse({"status": "Poll ain't runnin."})
-
-  if not request.data["username"] or not request.data["choice"]:
-    return JsonResponse({"status": "Bad request son."})
-
-  try:
-    vote = models.Vote.objects.get(
-      poll=app_config.poll_manager.poll,
-      username=request.data["username"]
-    )
-  except:
-    vote = models.Vote(
-      poll=app_config.poll_manager.poll,
-      username=request.data["username"]
-    )
-
-  try:
-    question = models.Question.objects.get(
-      poll=app_config.poll_manager.poll,
-      ordinal=int(request.data["choice"])
-    )
-    vote.question = question
-    vote.save()
-  except Exception as e:
-    logger.info(e)
-    return JsonResponse({"status": "Invalid Choice"})
-  return JsonResponse({"status": "cool"})

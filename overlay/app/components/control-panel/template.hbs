@@ -16,11 +16,6 @@
           OBS Scripts
         </a>
       </nav.item>
-      <nav.item @active={{bs-eq activeId "poll"}}>
-        <a class="nav-link" role="tab" onclick={{action setTab "poll"}}>
-          Poll
-        </a>
-      </nav.item>
       <nav.item @active={{bs-eq activeId "sound-board"}}>
         <a class="nav-link" role="tab" onclick={{action setTab "sound-board"}}>
           Sound Board
@@ -51,9 +46,6 @@
       </tab.pane>
       <tab.pane @id="obs-scripts" @title="OBS Scripts">
         <Controls::ObsScripts />
-      </tab.pane>
-      <tab.pane @id="poll" @title="Poll">
-        <Controls::Poll />
       </tab.pane>
       <tab.pane @id="sound-board" @title="Sound Board">
         <Controls::SoundBoard />

@@ -27,7 +27,6 @@ class ApiConfig(AppConfig):
     from api.obs.obs_client import OBSClient
     from api.obs.script_manager import ScriptManager
     from api.twitch_bot.bot_manager import BotManager
-    from api.utils.poll_manager import PollManager
     from api.utils.twitch_service import TwitchService
     from api.utils.websocket_pool import WebSocketPool
 
@@ -49,8 +48,6 @@ class ApiConfig(AppConfig):
     await self.script_manager.setup_keybindings()
 
     self.voice_manager = VoiceManager(self.sound_manager)
-
-    self.poll_manager = PollManager()
 
     self.bot_manager = BotManager(self.sound_manager, self.twitch_service)
     self.bot_manager.start()

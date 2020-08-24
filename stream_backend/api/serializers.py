@@ -36,14 +36,6 @@ class KeyValueSerializer(serializers.ModelSerializer):
     fields = "__all__"
 
 
-class PollSerializer(serializers.ModelSerializer):
-  """Serialize a poll model."""
-
-  class Meta:
-    model = models.Poll
-    fields = "__all__"
-
-
 class ScriptSerializer(serializers.ModelSerializer):
   """Serialize a script model."""
 
