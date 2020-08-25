@@ -91,7 +91,6 @@ class SpotifyService:
         continue
 
       data = song_request.json()
-      logger.info(data)
       await socket.send({
         "album_image_url": data["item"]["album"]["images"][1]["url"],
         "artist": ", ".join([artist["name"] for artist in data["item"]["artists"]]),

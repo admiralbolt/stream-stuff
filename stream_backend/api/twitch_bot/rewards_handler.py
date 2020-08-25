@@ -30,6 +30,7 @@ class RewardsHandler:
       "79dcdf6f-7166-4958-8635-ba2233772008": self.sound_reward,
       "9fca547f-266a-4416-a6fe-f7ede97e4d97": self.shame_cube_reward,
       "5d02b71f-fceb-4ea8-9cca-9da2d749ebda": self.stream_message_reward,
+      "529d7869-0bea-4503-9eba-0c59e9943782": self.scramble_camera_reward
     }
     self.start_worker()
 
@@ -65,6 +66,13 @@ class RewardsHandler:
   async def shame_cube_reward(self, data):
     """Process a purchased shame cube reward."""
     self.script_manager.run_and_wait("shame_cube")
+
+  async def scramble_camera_reward(self, data):
+    """Scrambles the camera filter settings.
+
+    Note that in this case we don't want to use the run_and_wait api.
+    """
+    self.script_manager.run_script("scramble_camera_filter")
 
   async def stream_message_reward(self, data):
     """Updates the displayed stream message.

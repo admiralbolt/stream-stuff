@@ -5,6 +5,9 @@ LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
 BRAIN_SIZE = "brain_plugin_size"
 
+CAMERA_COLOR_FILTER = "Color Correction"
+CAMERA_SOURCE = "Shitty Webcam"
+
 KING_OF_THE_HILL_MESSAGE = "king_of_the_hill_message"
 KING_OF_THE_HILL_AUTHOR = "king_of_the_hill_author"
 

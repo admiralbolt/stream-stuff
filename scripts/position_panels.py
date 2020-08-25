@@ -38,15 +38,24 @@ SPOODERFY = "Spotify!"
 TWITCH_CHAT = "Twitch Chat"
 SUB_GOAL = "Sub Goal Plugin"
 GC = "Gamecube Controller"
+PS4 = "PS4 Controller"
 KOTH_MESSAGE = "Koth Message"
 
 client = OBSClient()
 time.sleep(1)
 
-def position_element(client, name, reference_value, x_position=0, y_position=0, use_height=False):
+def position_element(client, name, reference_value, x_position=0, y_position=0, use_height=False, use_crop=False):
   element = client.call(GetSceneItemProperties(name, scene_name=SCENE))
 
   scale = reference_value / (element.getSourceheight() if use_height else element.getSourcewidth())
+  if use_crop:
+    props = client.call(GetSceneItemProperties(name, scene_name=SCENE))
+    crop = props.getCrop()
+    if use_height:
+      actual = element.getSourceheight() - crop["top"] - crop["bottom"]
+    else:
+      actual = element.getSourcewidth() - crop["left"] - crop["right"]
+    scale = reference_value / actual
 
   client.call(SetSceneItemProperties(
     name,
@@ -101,13 +110,23 @@ position_element(client, SUB_GOAL, PANEL_WIDTH - 2 * FRAME_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER + FRAME_WIDTH,
                  y_position=BORDER + cam.getSourceheight() * cam.getScale()["y"] + PANEL_ITEM_MARGIN + FRAME_WIDTH)
 
-gc = position_element(client, GC, PANEL_WIDTH,
-                 x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
-                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN)
+# gc = position_element(client, GC, PANEL_WIDTH,
+#                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+#                  y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN)
+#
+# position_element(client, GC, PANEL_WIDTH,
+#                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+#                  y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN - gc.getSourceheight() * gc.getScale()["y"])
 
-position_element(client, GC, PANEL_WIDTH,
+ps4 = position_element(client, PS4, PANEL_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
-                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN - gc.getSourceheight() * gc.getScale()["y"])
+                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN,
+                 use_crop=True)
+
+position_element(client, PS4, PANEL_WIDTH,
+                 x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN - ps4.getScale()["y"] * (ps4.getSourceheight() - ps4.getCrop()["top"] - ps4.getCrop()["bottom"]),
+                 use_crop=True)
 
 # Click that mo-fuckin transition button.
 client.transition()
