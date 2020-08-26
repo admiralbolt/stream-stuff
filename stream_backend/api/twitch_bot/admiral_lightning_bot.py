@@ -39,7 +39,7 @@ TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}
 
 class AdmiralLightningBot(commands.Bot):
 
-  def __init__(self, sound_manager, twitch_service):
+  def __init__(self, sound_manager, twitch_service, me_bot):
     super().__init__(irc_token=BOT_OAUTH_TOKEN,
                      client_id=TWITCH_CLIENT_ID,
                      client_secret=TWITCH_CLIENT_SECRET,
@@ -51,11 +51,12 @@ class AdmiralLightningBot(commands.Bot):
                      webhook_server=True,
                      callback="611d189f08cc4e56b8d610c96fd3da08")
     self.websockets = WebSocketPool()
+    self.me_bot = me_bot
     self.sound_manager = sound_manager
     self.twitch_service = twitch_service
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
-    self.rewards_handler = RewardsHandler(self.websockets, self.sound_manager, self.script_manager)
+    self.rewards_handler = RewardsHandler(self.websockets, self.sound_manager, self.script_manager, self.me_bot)
     self.alert_handler = AlertHandler(self.websockets, self.sound_manager, self.script_manager)
     self.resub_thread = StoppableThread(target=self.resub)
     self.resub_thread.start()

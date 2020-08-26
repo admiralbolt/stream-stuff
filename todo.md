@@ -1,6 +1,5 @@
 TODO
 =====
-[Good Idea] Purchase VIP status?
 [At Some Point] Rewrite alerts, in a new style.
 [Good Idea] Donations Alerts
 [Good Idea] Raids / Hosts Alerts
