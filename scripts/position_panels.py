@@ -40,6 +40,7 @@ SUB_GOAL = "Sub Goal Plugin"
 GC = "Gamecube Controller"
 PS4 = "PS4 Controller"
 KOTH_MESSAGE = "Koth Message"
+NOH_BOARD = "NohBoard"
 
 client = OBSClient()
 time.sleep(1)
@@ -109,6 +110,15 @@ position_element(client, TWITCH_CHAT, PANEL_WIDTH,
 position_element(client, SUB_GOAL, PANEL_WIDTH - 2 * FRAME_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER + FRAME_WIDTH,
                  y_position=BORDER + cam.getSourceheight() * cam.getScale()["y"] + PANEL_ITEM_MARGIN + FRAME_WIDTH)
+
+noh = position_element(client, NOH_BOARD, PANEL_WIDTH,
+                 x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN)
+
+position_element(client, NOH_BOARD, PANEL_WIDTH,
+                 x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+                 y_position=MAX_HEIGHT - chat_height - BORDER - PANEL_ITEM_MARGIN - noh.getSourceheight() * noh.getScale()["y"])
+
 
 # gc = position_element(client, GC, PANEL_WIDTH,
 #                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,

@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { timeout } from 'ember-concurrency';
+import { rawTimeout, timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 import { alias } from '@ember/object/computed';
 
@@ -103,15 +103,27 @@ export default class SplashComponent extends Component {
   *runTimer() {
     let prev_date = new Date();
     while (this.timer > 0) {
-      prev_date = new Date();
-      this.keyValue.createOrUpdate(TIMER, --this.timer);
-      this.socket.send({
+      yield this.keyValue.createOrUpdate(TIMER, --this.timer);
+      yield this.socket.send({
         info: {
           timer: this.timer
         }
       }, true);
 
-      yield timeout(1000 - (new Date() - prev_date));
+      // So. For some reason, when you aren't focused on the tab in which the
+      // timer is running, timeout & rawTimeout take twice as long. I *think*
+      // this has something to do with chrome throttling setTimeout / ember
+      // runloop shenanigans. But, allegedly chrome only throttles up to 1/sec
+      // which is what we are doing here.
+      //
+      // This is a MASSIVE hack, that detects if the current tab is focused or
+      // not, and adjusts the base delay between 1000 milliseconds and 500
+      // milliseconds so that the actual delay is consistent.
+      //
+      // What the actual fuck.
+      let delay = (document.hidden ? 500 : 1000) - (new Date() - prev_date) - 1;
+      yield rawTimeout(delay);
+      prev_date = new Date();
     }
     this.timerRunning = false;
     this.stopTimer();
