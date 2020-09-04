@@ -40,6 +40,9 @@ class MeBot(commands.Bot):
                      prefix="!",
                      initial_channels=["admirallightningbolt"])
 
+  async def handle_commands(self, message, ctx=None):
+    pass
+
   async def send_message(self, message):
     """Sends a message to the chat as ME!
 

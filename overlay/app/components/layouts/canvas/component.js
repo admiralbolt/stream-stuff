@@ -110,8 +110,8 @@ class ElementData {
 
   parseVelocity(startingVelocity, randomVelocity = false) {
     if (randomVelocity) {
-      this.velocityX = (Math.random() * 6) - 3;
-      this.velocityY = (Math.random() * 6) - 3;
+      this.velocityX = (Math.random() * 8) - 4;
+      this.velocityY = (Math.random() * 8) - 4;
       return;
     }
 

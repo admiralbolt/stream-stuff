@@ -111,7 +111,7 @@ export default class SplashComponent extends Component {
       }, true);
 
       // So. For some reason, when you aren't focused on the tab in which the
-      // timer is running, timeout & rawTimeout take twice as long. I *think*
+      // timer is running, timeout & rawTimeout take ~twice as long. I *think*
       // this has something to do with chrome throttling setTimeout / ember
       // runloop shenanigans. But, allegedly chrome only throttles up to 1/sec
       // which is what we are doing here.

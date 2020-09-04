@@ -130,7 +130,7 @@ class AdmiralLightningBot(commands.Bot):
     message_data = json.loads(data["data"]["message"])
     logger.info(f"[event_raw_pubsub] {message_data}")
     await {
-      TOPIC_POINTS: self.rewards_handler.queue_event,
+      TOPIC_POINTS: self.rewards_handler.queue_from_pubsub,
       TOPIC_BITS: self.alert_handler.queue_alert,
       TOPIC_SUBS: self.alert_handler.queue_sub
     }[data["data"]["topic"]](message_data)
@@ -143,7 +143,7 @@ class AdmiralLightningBot(commands.Bot):
       "html": f"<img src='{url}' />",
       "randomVelocity": True,
       "randomPosition": True,
-      "timer": 3000 + random.random() * 1000
+      "timer": 3500 + random.random() * 1000
     })
 
   @sync_to_async
@@ -197,6 +197,11 @@ class AdmiralLightningBot(commands.Bot):
     # Handle commands if it is a command
     await self.handle_commands(message)
 
+    # Handle custom rewards. We do this specifically to get the emotes out of
+    # the message.
+    if message.tags and "custom-reward-id" in message.tags:
+      await self.rewards_handler.queue_from_message(message)
+
     # Display emotes if it is an emote.
     if await async_get_value(EMOTES_ENABLED) or True:
       if message.tags and "emotes" in message.tags and message.tags["emotes"]:
@@ -205,7 +210,7 @@ class AdmiralLightningBot(commands.Bot):
         for emote_string in message.tags["emotes"].split("/"):
           emote_id, _ = emote_string.split(":")
           for _ in range(len(emote_string.split(","))):
-            await self.send_emote(f"https://static-cdn.jtvnw.net/emoticons/v1/{emote_id}/1.0")
+            await self.send_emote(f"https://static-cdn.jtvnw.net/emoticons/v1/{emote_id}/2.0")
 
       # BTTV Emotes
       for word in message.content.split():

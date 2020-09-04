@@ -2,15 +2,32 @@ import asyncio
 import logging
 import queue
 
+from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 from profanityfilter import ProfanityFilter
 
 from api.const import KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR
 from api.models import Sound
+from api.twitch_bot.emote_utils import replace_emotes_in_message
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.key_value_utils import async_set_value
 
 logger = logging.getLogger(__name__)
+
+class Reward:
+  """A data wrapper class for holding stuff we care about for rewards.
+
+  This is to make handling pubsub messages vs. chat message rewards streamlined.
+  """
+
+  def __init__(self, reward_id, message=None, author=None, emotes=None):
+    self.reward_id = reward_id
+    self.message = message
+    self.author = author
+    self.emotes = emotes
+
+  def __repr__(self):
+    return f"{self.reward_id}: (message: {self.message}, author: {self.author}, emotes: {self.emotes}"
 
 class RewardsHandler:
   """A class for handling purchased rewards!"""
@@ -53,45 +70,43 @@ class RewardsHandler:
     """Processes message from our alert queue."""
 
     while not self.worker_thread.stopped():
-      data = self.queue.get()
-      await self.handle_reward(data)
+      reward = self.queue.get()
+      await self.handle_reward(reward)
       self.queue.task_done()
       await asyncio.sleep(0.01)
 
-  async def handle_reward(self, data):
-    """Process an individual reward.
+  async def handle_reward(self, reward):
+    """Process an individual reward."""
+    await self.rewards[reward.reward_id](reward)
 
-    Rewards can come from either a pubsub message or a chat message, so we route
-    by type accordingly.
-    """
-    await self.rewards[data["data"]["redemption"]["reward"]["id"]](data)
-
-  async def shame_cube_reward(self, data):
+  async def shame_cube_reward(self, reward):
     """Process a purchased shame cube reward."""
     self.script_manager.run_and_wait("shame_cube")
 
-  async def scramble_camera_reward(self, data):
+  async def scramble_camera_reward(self, reward):
     """Scrambles the camera filter settings.
 
     Note that in this case we don't want to use the run_and_wait api.
     """
     self.script_manager.run_script("scramble_camera_filter")
 
-  async def stream_message_reward(self, data):
+  async def stream_message_reward(self, reward):
     """Updates the displayed stream message.
 
     Updates both the key value store and sends data over the websocket.
     """
-    message = self.filter.censor(data["data"]["redemption"]["user_input"])
-    author = data["data"]["redemption"]["user"]["login"]
+    soup = BeautifulSoup(reward.message, features="html.parser")
+    stripped = soup.get_text()
+    message = replace_emotes_in_message(self.filter.censor(stripped), reward.emotes, size=1.0)
     await async_set_value(KING_OF_THE_HILL_MESSAGE, message)
-    await async_set_value(KING_OF_THE_HILL_AUTHOR, author)
+    await async_set_value(KING_OF_THE_HILL_AUTHOR, reward.author)
+
     await self.websockets.king_of_the_hill.send({
-      "author": author,
+      "author": reward.author,
       "message": message
     })
 
-  async def sound_reward(self, data):
+  async def sound_reward(self, reward):
     """Plays a custom sound.
 
     The sound selected matches the input message as best as possible.
@@ -99,7 +114,7 @@ class RewardsHandler:
     """
     sound_name = sorted(
       self.all_sounds.keys(),
-      key=lambda sound: fuzz.ratio(data["data"]["redemption"]["user_input"].lower(), sound.lower()),
+      key=lambda sound: fuzz.ratio(reward.message.lower(), sound.lower()),
       reverse=True
     )[0]
 
@@ -110,19 +125,44 @@ class RewardsHandler:
       headphone=True
     )
 
-  async def grant_vip_reward(self, data):
-    author = data["data"]["redemption"]["user"]["login"]
-    await self.me_bot.send_message(f"/vip {author}")
+  async def grant_vip_reward(self, reward):
+    """Give 'em VIP."""
+    await self.me_bot.send_message(f"/vip {reward.author}")
 
-  async def revoke_vip_reward(self, data):
-    target = data["data"]["redemption"]["user_input"].lower()
-    await self.me_bot.send_message(f"/unvip {target}")
+  async def revoke_vip_reward(self, reward):
+    """Take their VIP away."""
+    await self.me_bot.send_message(f"/unvip {reward.message.lower()}")
 
-  async def queue_event(self, data):
-    reward_id = data["data"]["redemption"]["reward"]["id"]
-    logger.info(f"channel event reward_id: {reward_id}")
-    if reward_id not in self.rewards:
+  async def queue_from_pubsub(self, data):
+    """Queue a reward from pubsub.
+
+    If the reward has user_input associated with it, skip it. That will be
+    handled by queue_from_message.
+    """
+    if "user_input" in data["data"]["redemption"]:
       return
 
-    self.queue.put_nowait(data)
+    reward = Reward(
+      data["data"]["redemption"]["reward"]["id"],
+      author=data["data"]["redemption"]["user"]["login"]
+    )
+    logger.info(reward)
+    if reward.reward_id not in self.rewards:
+      return
+
+    self.queue.put_nowait(reward)
+    return
+
+  async def queue_from_message(self, message):
+    """Queues a reward from a message.
+
+    This is handled separately so we have easy access to emotes.
+    """
+    reward = Reward(
+      message.tags["custom-reward-id"],
+      author=message.author.name,
+      message=message.content,
+      emotes=message.tags.get("emotes")
+    )
+    self.queue.put_nowait(reward)
     return
