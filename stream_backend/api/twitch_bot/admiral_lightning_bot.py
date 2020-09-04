@@ -20,6 +20,7 @@ from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
 from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
+from api.twitch_bot.emote_utils import emote_generator, get_emote_url
 from api.twitch_bot.rewards_handler import RewardsHandler
 from api._secrets import BOT_OAUTH_TOKEN, IFTTT_SECRET, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
 from api.utils.key_value_utils import async_get_value
@@ -205,12 +206,8 @@ class AdmiralLightningBot(commands.Bot):
     # Display emotes if it is an emote.
     if await async_get_value(EMOTES_ENABLED) or True:
       if message.tags and "emotes" in message.tags and message.tags["emotes"]:
-        # Emotes get returned in the format
-        # ID1:start-end,start-end/ID2:start-end...
-        for emote_string in message.tags["emotes"].split("/"):
-          emote_id, _ = emote_string.split(":")
-          for _ in range(len(emote_string.split(","))):
-            await self.send_emote(f"https://static-cdn.jtvnw.net/emoticons/v1/{emote_id}/2.0")
+        for emote_id, start, end in emote_generator(message.tags["emotes"]):
+          await self.send_emote(get_emote_url(emote_id, size=2.0))
 
       # BTTV Emotes
       for word in message.content.split():
