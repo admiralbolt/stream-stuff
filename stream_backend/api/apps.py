@@ -24,6 +24,7 @@ class ApiConfig(AppConfig):
     from api.audio.sound_manager import SoundManager
     from api.audio.spotify_service import SpotifyService
     from api.audio.voice_manager import VoiceManager
+    from api.hardware.light_manager import LightManager
     from api.obs.obs_client import OBSClient
     from api.obs.script_manager import ScriptManager
     from api.twitch_bot.bot_manager import BotManager
@@ -42,12 +43,14 @@ class ApiConfig(AppConfig):
     self.sound_manager = SoundManager()
     await self.sound_manager.setup_keybindings()
 
+    self.light_manager = LightManager()
+
     self.obs_client = OBSClient()
-    self.script_manager = ScriptManager(self.obs_client, self.sound_manager)
+    self.script_manager = ScriptManager(self.obs_client, self.sound_manager, self.light_manager)
     await self.script_manager.initialize()
     await self.script_manager.setup_keybindings()
 
     self.voice_manager = VoiceManager(self.sound_manager)
 
-    self.bot_manager = BotManager(self.sound_manager, self.twitch_service)
+    self.bot_manager = BotManager(self.sound_manager, self.twitch_service, self.light_manager)
     self.bot_manager.start()

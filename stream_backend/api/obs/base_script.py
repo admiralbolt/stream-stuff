@@ -20,9 +20,10 @@ class BaseScript:
   mic_player = None
   headphone_player = None
 
-  def __init__(self, client, sound_manager):
+  def __init__(self, client, sound_manager, light_manager):
     self.client = client
     self.sound_manager = sound_manager
+    self.light_manager = light_manager
     pass
 
   def call(self, request):

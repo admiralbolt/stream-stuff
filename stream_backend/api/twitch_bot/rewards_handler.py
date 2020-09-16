@@ -32,11 +32,12 @@ class Reward:
 class RewardsHandler:
   """A class for handling purchased rewards!"""
 
-  def __init__(self, websockets, sound_manager, script_manager, me_bot):
+  def __init__(self, websockets, sound_manager, script_manager, light_manager, me_bot):
     self.queue = queue.Queue()
     self.websockets = websockets
     self.sound_manager = sound_manager
     self.script_manager = script_manager
+    self.light_manager = light_manager
     self.me_bot = me_bot
     self.worker_thread = None
     self.filter = ProfanityFilter()
@@ -50,7 +51,9 @@ class RewardsHandler:
       "5d02b71f-fceb-4ea8-9cca-9da2d749ebda": self.stream_message_reward,
       "529d7869-0bea-4503-9eba-0c59e9943782": self.scramble_camera_reward,
       "63438f03-3cea-4461-b7f3-dce44ba5c7da": self.grant_vip_reward,
-      "ba256777-1cbc-4730-9b5c-0e16a1fd1086": self.revoke_vip_reward
+      "ba256777-1cbc-4730-9b5c-0e16a1fd1086": self.revoke_vip_reward,
+      "173af3e8-2bc0-4a52-adff-91c47c3e891a": self.change_light_color_reward,
+      "53bf2ef4-0cbb-4cd6-b4e8-55c1c731c31a": self.light_wave_reward,
     }
     self.start_worker()
 
@@ -89,6 +92,14 @@ class RewardsHandler:
     Note that in this case we don't want to use the run_and_wait api.
     """
     self.script_manager.run_script("scramble_camera_filter")
+
+  async def change_light_color_reward(self, reward):
+    """Changes the light color of my smart lights."""
+    self.light_manager.set_color_fuzzy(reward.message)
+
+  async def light_wave_reward(self, reward):
+    """L I G H T W A V E."""
+    self.light_manager.set_waveform_fuzzy(reward.message)
 
   async def stream_message_reward(self, reward):
     """Updates the displayed stream message.

@@ -23,17 +23,17 @@ class ScriptManager:
   from getting absurd.
   """
 
-  def __init__(self, obs_client, sound_manager):
+  def __init__(self, obs_client, sound_manager, light_manager):
     self.scripts = {}
     self.obs_client = obs_client
     self.sound_manager = sound_manager
-    pass
+    self.light_manager = light_manager
 
   @sync_to_async
   def initialize(self):
     for i, script in enumerate(Script.objects.order_by("id")):
       ScriptClass = import_script(f"api.obs.{script.script_name}")
-      self.scripts[script.script_name] = ScriptClass(self.obs_client, self.sound_manager)
+      self.scripts[script.script_name] = ScriptClass(self.obs_client, self.sound_manager, self.light_manager)
 
   @sync_to_async
   def setup_keybindings(self):

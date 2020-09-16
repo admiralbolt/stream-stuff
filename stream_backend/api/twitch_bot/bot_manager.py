@@ -14,16 +14,17 @@ class BotManager:
   me_thread = None
   bot = None
 
-  def __init__(self, sound_manager, twitch_service):
+  def __init__(self, sound_manager, twitch_service, light_manager):
     self.sound_manager = sound_manager
     self.twitch_service = twitch_service
+    self.light_manager = light_manager
     return
 
   def run(self):
     self.loop = asyncio.new_event_loop()
     asyncio.set_event_loop(self.loop)
 
-    self.bot = AdmiralLightningBot(self.sound_manager, self.twitch_service, self.me_bot)
+    self.bot = AdmiralLightningBot(self.sound_manager, self.twitch_service, self.light_manager, self.me_bot)
     # This is sync and blocking, it runs forever until we stop it.
     self.bot.run()
 

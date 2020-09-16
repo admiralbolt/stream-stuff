@@ -1,8 +1,9 @@
 TODO
 =====
-[At Some Point] Rewrite alerts, in a new style.
-[Good Idea] Donations Alerts
-[Good Idea] Raids / Hosts Alerts
+* Just use streamlabs alerts ya fucking goon.
+* Differentiate between public & private sounds.
+* Green screen background control?
+* Heart rate monitor stuff?
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration:
