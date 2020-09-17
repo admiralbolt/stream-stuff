@@ -93,10 +93,19 @@ class SoundPlayer():
     )
     self.data[sound_name]["thread"].start()
 
+  def sound_is_playing(self, sound_name):
+    if sound_name not in self.data:
+      return False
+
+    if "stream" not in self.data[sound_name]:
+      return False
+
+    return self.data[sound_name]["stream"].is_active() and not self.data[sound_name]["thread"].stopped()
+
   def play_sound_threaded(self, sound_name):
     self.data[sound_name]["stream"].start_stream()
 
-    while self.data[sound_name]["stream"].is_active() and not self.data[sound_name]["thread"].stopped():
+    while self.sound_is_playing(sound_name):
       time.sleep(0.1)
 
     self.data[sound_name]["stream"].stop_stream()

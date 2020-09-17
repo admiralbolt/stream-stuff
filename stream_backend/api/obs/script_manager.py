@@ -4,7 +4,9 @@ import os
 from asgiref.sync import sync_to_async
 from importlib import import_module
 
+from api.const import SCRIPT_PAGE
 from api.models import Script
+from api.utils.key_value_utils import get_value, set_value
 
 def import_script(script_path):
   """Dynamically import a script class from a path."""
@@ -37,12 +39,41 @@ class ScriptManager:
 
   @sync_to_async
   def setup_keybindings(self):
-    print("SCRIPT KEYBINDINGS")
-    print("==================")
-    for i, script in enumerate(Script.objects.order_by("id")):
-      print(f"ctrl+alt+s+{i}: {script.script_name}")
-      keyboard.add_hotkey(f"ctrl+alt+s+{i}", self.run_script, args=(script.script_name, False))
-      keyboard.add_hotkey(f"ctrl+alt+s+q+{i}", self.run_script, args=(script.script_name, True))
+    keyboard.add_hotkey("ctrl+alt+shift+\"", self.increment_page, args=(True,))
+    keyboard.add_hotkey("ctrl+alt+shift+:", self.increment_page, args=(False,))
+
+    for i in range(9):
+      keyboard.add_hotkey(f"ctrl+alt+shift+s+{i}", self.run_paginated_script, args=(i,))
+
+  def increment_page(self, positive=True):
+    """Increments the current page value.
+
+    We need to make sure to reset to 0 when we have no valid keybindings anymore.
+    I.e. We have 37 keybindings and the page is set to 4. A page set to 4 implies
+    a +40 to the index value aka we would never hit a valid keybinding.
+    """
+    max_page = (Script.objects.count() - 1) // 9
+    page = get_value(SCRIPT_PAGE) + (1 if positive else -1)
+    if page < 0:
+      page = max_page
+    elif page > max_page:
+      page = 0
+    set_value(SCRIPT_PAGE, page)
+
+  def run_paginated_script(self, base_index):
+    page = get_value(SCRIPT_PAGE)
+    index = page * 9 + base_index
+    if index >= Script.objects.count():
+      return
+
+    script = Script.objects.order_by("id")[index]
+    self.run_or_stop_script(script.script_name)
+
+  def run_or_stop_script(self, script_name):
+    if self.scripts[script_name].thread is None:
+      self.scripts[script_name].start()
+    else:
+      self.scripts[script_name].stop()
 
   def run_script(self, script_name, stop=False):
     if stop:

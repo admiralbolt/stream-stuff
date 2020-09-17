@@ -8,8 +8,16 @@ BRAIN_SIZE = "brain_plugin_size"
 CAMERA_COLOR_FILTER = "Color Correction"
 CAMERA_SOURCE = "Shitty Webcam"
 
+# The current 'page' for playing sounds from my keybindings.
+# This is really complex and I already don't understand it, so good luck future
+# me. I'm sorry this broke.
+KEYBINDING_PAGE = "keybinding_page"
+
 KING_OF_THE_HILL_MESSAGE = "king_of_the_hill_message"
 KING_OF_THE_HILL_AUTHOR = "king_of_the_hill_author"
+
+# The current 'page' for running scripts from my keybindings.
+SCRIPT_PAGE = "script_page"
 
 SPOTIFY_ACCESS_TOKEN = "spotify_access_token"
 SPOTIFY_AUTHORIZATION_CODE = "spotify_authorization_code"

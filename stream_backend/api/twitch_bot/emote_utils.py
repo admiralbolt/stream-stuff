@@ -21,6 +21,8 @@ def replace_emotes_in_message(message, emotes, size=1.0):
 
   This requires some garbage math.
   """
+  if not emotes:
+    return message
   replacements = []
   for emote_id, start, end in emote_generator(emotes):
     replacements.append({"emote_id": emote_id, "start": start, "end": end})
