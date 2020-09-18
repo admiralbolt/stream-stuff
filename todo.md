@@ -2,8 +2,7 @@ TODO
 =====
 * Just use streamlabs alerts ya fucking goon.
 * Differentiate between public & private sounds.
-* Green screen background control?
-* Heart rate monitor stuff?
+* Heart rate monitor stuff? Need to adjust / position elements correctly.
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration:

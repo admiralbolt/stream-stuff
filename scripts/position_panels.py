@@ -41,6 +41,7 @@ GC = "Gamecube Controller"
 PS4 = "PS4 Controller"
 KOTH_MESSAGE = "Koth Message"
 NOH_BOARD = "NohBoard"
+BACKGROUND_IMAGE = "Background Image Plugin"
 
 client = OBSClient()
 time.sleep(1)
@@ -76,6 +77,10 @@ def position_element(client, name, reference_value, x_position=0, y_position=0, 
 
 
 cam = position_element(client, WEBCAM, PANEL_WIDTH,
+                 x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
+                 y_position=BORDER)
+
+background_image = position_element(client, BACKGROUND_IMAGE, PANEL_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,
                  y_position=BORDER)
 

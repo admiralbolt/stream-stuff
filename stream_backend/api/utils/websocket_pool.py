@@ -27,6 +27,8 @@ class WebSocketPool:
     self.sub_goal = WebSocketClient(7006)
     # Displays a message purchased by chat.
     self.king_of_the_hill = WebSocketClient(7007)
+    # Changes my background image
+    self.background_image = WebSocketClient(7008)
 
     self.all_sockets = [
       self.melee,
@@ -35,7 +37,8 @@ class WebSocketPool:
       self.brain,
       self.canvas,
       self.sub_goal,
-      self.king_of_the_hill
+      self.king_of_the_hill,
+      self.background_image
     ]
 
   async def initialize(self):

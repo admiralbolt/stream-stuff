@@ -1,0 +1,6 @@
+
+<BsForm @model={{this}} as |form|>
+  <form.element @controlType="text" @label="New Background Image" @property="newImageUrl" />
+
+  <BsButton @type="primary" @onClick={{action "updateImage"}}>Update Image</BsButton>
+</BsForm>

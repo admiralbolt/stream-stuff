@@ -6,6 +6,11 @@
           Admiral Lightning Bot
         </a>
       </nav.item>
+      <nav.item @active={{bs-eq activeId "background-image"}}>
+        <a class="nav-link" role="tab" onclick={{action setTab "background-image"}}>
+          Background Image
+        </a>
+      </nav.item>
       <nav.item @active={{bs-eq activeId "brain"}}>
         <a class="nav-link" role="tab" onclick={{action setTab "brain"}}>
           Brain
@@ -40,6 +45,9 @@
     <div class="tab-content">
       <tab.pane @id="admiral-lightning-bot" @title="Admiral Lightning Bot">
         <Controls::TwitchChatBot />
+      </tab.pane>
+      <tab.pane @id="background-image" @title="Background Image">
+        <Controls::BackgroundImage />
       </tab.pane>
       <tab.pane @id="brain" @title="Brain">
         <Controls::Brain />

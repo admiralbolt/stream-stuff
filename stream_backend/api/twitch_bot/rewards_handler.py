@@ -6,9 +6,10 @@ from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 from profanityfilter import ProfanityFilter
 
-from api.const import KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR
+from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR
 from api.models import Sound
 from api.twitch_bot.emote_utils import replace_emotes_in_message
+from api.utils.unsplash import get_random_photo_url
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.key_value_utils import async_set_value
 
@@ -54,6 +55,7 @@ class RewardsHandler:
       "ba256777-1cbc-4730-9b5c-0e16a1fd1086": self.revoke_vip_reward,
       "173af3e8-2bc0-4a52-adff-91c47c3e891a": self.change_light_color_reward,
       "53bf2ef4-0cbb-4cd6-b4e8-55c1c731c31a": self.light_wave_reward,
+      "ac385b50-5be0-49da-bb6a-c95b9d18d9b2": self.change_background_image_reward
     }
     self.start_worker()
 
@@ -92,6 +94,16 @@ class RewardsHandler:
     Note that in this case we don't want to use the run_and_wait api.
     """
     self.script_manager.run_script("scramble_camera_filter")
+
+  async def change_background_image_reward(self, reward):
+    """Changes the background image."""
+    url = get_random_photo_url(reward.message)
+    if not url:
+      return
+
+    await async_set_value(BACKGROUND_IMAGE_URL, url)
+    await self.websockets.background_image.send({"imageUrl": url})
+
 
   async def change_light_color_reward(self, reward):
     """Changes the light color of my smart lights."""
