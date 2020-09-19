@@ -43,6 +43,8 @@ KOTH_MESSAGE = "Koth Message"
 NOH_BOARD = "NohBoard"
 BACKGROUND_IMAGE = "Background Image Plugin"
 ALERT_BOX = "Streamlabs Alerts"
+HR_HEART = "Heart Rate Heart"
+HR_NUMBER = "Heart Rate Number"
 
 client = OBSClient()
 time.sleep(1)
@@ -117,9 +119,20 @@ position_element(client, TWITCH_CHAT, PANEL_WIDTH,
                  y_position=MAX_HEIGHT - BORDER - chat_height)
 
 
-position_element(client, SUB_GOAL, PANEL_WIDTH - 2 * FRAME_WIDTH,
+sub_goal = position_element(client, SUB_GOAL, PANEL_WIDTH - 2 * FRAME_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER + FRAME_WIDTH,
                  y_position=BORDER + cam.getSourceheight() * cam.getScale()["y"] + PANEL_ITEM_MARGIN + FRAME_WIDTH)
+
+HR_HEIGHT = 100
+hr_heart = client.call(GetSceneItemProperties(HR_HEART, scene_name=SCENE))
+hr_heart = position_element(client, HR_HEART, HR_HEIGHT, use_height=True, use_crop=True,
+                x_position=MAX_WIDTH - PANEL_WIDTH - BORDER + FRAME_WIDTH + 30,
+                y_position=BORDER + cam.getSourceheight() * cam.getScale()["y"] + 2 * PANEL_ITEM_MARGIN + 2 * FRAME_WIDTH + sub_goal.getSourceheight() * sub_goal.getScale()["y"] + 2)
+
+hr_number = client.call(GetSceneItemProperties(HR_NUMBER, scene_name=SCENE))
+hr_number = position_element(client, HR_NUMBER, HR_HEIGHT, use_height=True, use_crop=True,
+                x_position=MAX_WIDTH - PANEL_WIDTH - BORDER + FRAME_WIDTH + 130,
+                y_position=BORDER + cam.getSourceheight() * cam.getScale()["y"] + 2 * PANEL_ITEM_MARGIN + 2 * FRAME_WIDTH + sub_goal.getSourceheight() * sub_goal.getScale()["y"])
 
 noh = position_element(client, NOH_BOARD, PANEL_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,

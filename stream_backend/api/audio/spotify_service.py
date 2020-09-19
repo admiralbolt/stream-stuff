@@ -114,7 +114,7 @@ class SpotifyService:
       data["item"]["name"]
       data["progress_ms"]
       data["item"]["duration_ms"]
-    except KeyError:
+    except Exception:
       return False
 
     return True

@@ -1,6 +1,5 @@
 TODO
 =====
-* Heart rate monitor stuff? Need to adjust / position elements correctly.
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 
 [Maybe Board] Trivia Chat Integration
