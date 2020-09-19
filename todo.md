@@ -1,7 +1,6 @@
 TODO
 =====
 * Just use streamlabs alerts ya fucking goon.
-* Differentiate between public & private sounds.
 * Heart rate monitor stuff? Need to adjust / position elements correctly.
 
 [Maybe Board] Trivia Chat Integration

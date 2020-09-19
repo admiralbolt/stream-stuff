@@ -8,7 +8,7 @@ class SoundBoardCommand(BaseCommand):
 
   @sync_to_async
   def get_formatted_sounds(self):
-    return " | ".join([sound.name for sound in Sound.objects.order_by("name")])
+    return " | ".join([sound.name for sound in Sound.objects.filter(private=False).order_by("name")])
 
   async def execute(self, context):
     formatted_sounds = await self.get_formatted_sounds()

@@ -1,0 +1,25 @@
+<div local-class="hotkey-container">
+  <div local-class="hotkey-row">
+    {{#each soundRow1 as |sound|}}
+      <div {{action "playOrStopSound" sound.id}} local-class="hotkey-box sound">{{sound.name}}</div>
+    {{/each}}
+  </div>
+  <div local-class="hotkey-row">
+    {{#each soundRow2 as |sound|}}
+      <div {{action "playOrStopSound" sound.id}} local-class="hotkey-box sound">{{sound.name}}</div>
+    {{/each}}
+  </div>
+</div>
+
+<div local-class="hotkey-container">
+  <div local-class="hotkey-row">
+    {{#each scriptRow1 as |script|}}
+      <div {{action "startOrStopScript" script.id}} local-class="hotkey-box script">{{script.name}}</div>
+    {{/each}}
+  </div>
+  <div local-class="hotkey-row">
+    {{#each scriptRow2 as |script|}}
+      <div {{action "startOrStopScript" script.id}} local-class="hotkey-box script">{{script.name}}</div>
+    {{/each}}
+  </div>
+</div>

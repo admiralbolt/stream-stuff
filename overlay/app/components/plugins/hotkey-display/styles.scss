@@ -1,0 +1,36 @@
+.hotkey-container {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  padding: 20px;
+  width: 1200px;
+
+  .hotkey-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .hotkey-box {
+      align-items: center;
+      background-color: #222222;
+      color: #bbbbbb;
+      cursor: pointer;
+      display: flex;
+      font-size: 35px;
+      font-weight: bold;
+      height: 220px;
+      justify-content: center;
+      margin: 5px;
+      text-align: center;
+      width: 220px;
+
+      &.sound {
+        border: 2px solid cyan;
+      }
+
+      &.script {
+        border: 2px solid magenta;
+      }
+    }
+  }
+}

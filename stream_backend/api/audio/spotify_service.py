@@ -91,6 +91,9 @@ class SpotifyService:
         continue
 
       data = song_request.json()
+      if not self.data_is_valid(data):
+        logger.info(f"SPOTIFY ERROR: {data}")
+
       await socket.send({
         "album_image_url": data["item"]["album"]["images"][1]["url"],
         "artist": ", ".join([artist["name"] for artist in data["item"]["artists"]]),
@@ -99,6 +102,22 @@ class SpotifyService:
         "progress_ms": data["progress_ms"],
         "duration_ms": data["item"]["duration_ms"]
       })
+
+  def data_is_valid(self, data):
+    if not data:
+      return False
+
+    try:
+      data["item"]["album"]["images"][1]["url"]
+      data["item"]["artists"]
+      data["item"]["album"]["name"]
+      data["item"]["name"]
+      data["progress_ms"]
+      data["item"]["duration_ms"]
+    except KeyError:
+      return False
+
+    return True
 
   def refresh(self):
     while not self.refresh_thread.stopped():

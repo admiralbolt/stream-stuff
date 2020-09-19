@@ -1,7 +1,7 @@
 import keyboard
 import os
 
-from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync, sync_to_async
 from importlib import import_module
 
 from api.const import SCRIPT_PAGE
@@ -59,6 +59,14 @@ class ScriptManager:
     elif page > max_page:
       page = 0
     set_value(SCRIPT_PAGE, page)
+    self.notify_socket(page)
+
+  @async_to_sync
+  async def notify_socket(self, page):
+    socket = WebSocketClient(7009)
+    await socket.connect()
+    await socket.send({"script_page": page})
+    await socket.close()
 
   def run_paginated_script(self, base_index):
     page = get_value(SCRIPT_PAGE)

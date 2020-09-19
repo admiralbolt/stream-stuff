@@ -44,7 +44,7 @@ class RewardsHandler:
     self.filter = ProfanityFilter()
     self.all_sounds = {
       sound.name: sound.sound_file.path
-      for sound in Sound.objects.all()
+      for sound in Sound.objects.filter(private=False)
     }
     self.rewards = {
       "79dcdf6f-7166-4958-8635-ba2233772008": self.sound_reward,

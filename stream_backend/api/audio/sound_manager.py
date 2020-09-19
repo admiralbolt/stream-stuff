@@ -1,11 +1,13 @@
 import keyboard
+import time
 
-from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync, sync_to_async
 
 from api.audio.sound_player import SoundPlayer
 from api.const import KEYBINDING_PAGE
 from api.models import Sound
 from api.utils.key_value_utils import get_value, set_value
+from api.utils.websocket_client import WebSocketClient
 
 class SoundManager:
   """A class for playing sounds to many different locations.
@@ -53,7 +55,14 @@ class SoundManager:
     elif page > max_page:
       page = 0
     set_value(KEYBINDING_PAGE, page)
+    self.notify_socket(page)
 
+  @async_to_sync
+  async def notify_socket(self, page):
+    socket = WebSocketClient(7009)
+    await socket.connect()
+    await socket.send({"sound_page": page})
+    await socket.close()
 
   def play_paginated_sound(self, base_index):
     """Play a sound from a keybinding based on the current paged value."""

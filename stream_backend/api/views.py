@@ -14,6 +14,7 @@ from rest_framework.permissions import AllowAny
 from api import models, serializers
 from api._secrets import IFTTT_SECRET
 from api.const import SPOTIFY_AUTHORIZATION_CODE, SPOTIFY_SHOULD_POLL, TWITCH_AUTHORIZATION_CODE
+from api.models import Script, Sound
 from api.utils.key_value_utils import get_value, set_value
 
 logger = logging.getLogger(__name__)
@@ -35,13 +36,13 @@ class KeyValueViewSet(viewsets.ModelViewSet):
 class ScriptViewSet(viewsets.ModelViewSet):
   """Scripts for controlling OBS"""
   resource_name = "scripts"
-  queryset = models.Script.objects.order_by("name")
+  queryset = Script.objects.order_by("name")
   serializer_class = serializers.ScriptSerializer
 
 class SoundViewSet(viewsets.ModelViewSet):
   """S O U N D"""
   resource_name = "sounds"
-  queryset = models.Sound.objects.order_by("name")
+  queryset = Sound.objects.order_by("name")
   serializer_class = serializers.SoundSerializer
 
 class TwitchClipViewSet(viewsets.ModelViewSet):
@@ -74,7 +75,7 @@ def ifttt(request):
     # every time the soundboard is used, but that wouldn't account for uploads
     # after the server is already started. AKA I'm lazy.
     scored_sounds = sorted(
-      models.Sound.objects.all(),
+      Sound.objects.all(),
       key=lambda sound: fuzz.ratio(data["text"], sound.name.lower()),
       reverse=True
     )
@@ -95,7 +96,7 @@ def ifttt(request):
 def play_sound(request):
   """Play a sound."""
   try:
-    sound = models.Sound.objects.get(id=request.GET.get("sound_id"))
+    sound = Sound.objects.get(id=request.GET.get("sound_id"))
   except ObjectDoesNotExist:
     return JsonResponse({"status": ":("})
 
@@ -103,13 +104,13 @@ def play_sound(request):
   if request.GET.get("stop"):
     app_config.sound_manager.stop_sound(sound.name, mic=True, headphone=True)
   else:
-    app_config.sound_manager.play_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
+    app_config.sound_manager.play_or_stop_sound(sound.sound_file.path, sound_name=sound.name, mic=True, headphone=True)
   return JsonResponse({"status": "cool"})
 
 @api_view(["POST"])
 def upload_sound(request):
   try:
-    sound = models.Sound.objects.get(id=request.GET.get("id"))
+    sound = Sound.objects.get(id=request.GET.get("id"))
   except ObjectDoesNotExist:
     return JsonResponse({"status": ":("})
 
@@ -123,13 +124,13 @@ def run_script(request):
   """Run a script."""
   app_config = apps.get_app_config("api")
   script_name = request.GET.get("script_name")
-  if script_name not in app_config.scripts:
+  if script_name not in app_config.script_manager.scripts:
     return JsonResponse({"status": ":("})
 
   if request.GET.get("stop"):
-    app_config.scripts[script_name].stop()
+    app_config.script_manager.run_script(script_name, stop=True)
   else:
-    app_config.scripts[script_name].start()
+    app_config.script_manager.run_or_stop_script(script_name)
 
   return JsonResponse({"status": "cool"})
 
@@ -157,3 +158,35 @@ def twitch_authorization(request):
   logger.info(request.GET.get("code"))
   set_value(TWITCH_AUTHORIZATION_CODE, request.GET.get("code"))
   return HttpResponse("Got it boss")
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_sounds_by_page(request):
+  """Gets the 10 sounds associated with the passed in page."""
+  string_page = request.GET.get("page")
+  page = 0 if not string_page else int(string_page)
+  max_page = (Sound.objects.count() - 1) // 10
+  if page < 0:
+    page = max_page
+  elif page > max_page:
+    page = 0
+
+  sounds = Sound.objects.order_by("id")[page * 10:(page + 1) * 10]
+  serializer = serializers.SoundSerializer(sounds, many=True)
+  return JsonResponse(serializer.data, safe=False)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_scripts_by_page(request):
+  """Gets the 9 scripts associated with the passed in page."""
+  string_page = request.GET.get("page")
+  page = 0 if not string_page else int(string_page)
+  max_page = (Sound.objects.count() - 1) // 9
+  if page < 0:
+    page = max_page
+  elif page > max_page:
+    page = 0
+
+  scripts = Script.objects.order_by("id")[page * 9:(page + 1) * 9]
+  serializer = serializers.ScriptSerializer(scripts, many=True)
+  return JsonResponse(serializer.data, safe=False)

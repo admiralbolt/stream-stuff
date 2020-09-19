@@ -16,6 +16,8 @@ router.register(r"twitch_clips", views.TwitchClipViewSet)
 
 urlpatterns = [
   path("ifttt/", views.ifttt),
+  path("get_sounds_by_page/", views.get_sounds_by_page),
+  path("get_scripts_by_page/", views.get_scripts_by_page),
   path("sounds/upload/", views.upload_sound),
   path("play_sound/", views.play_sound),
   path("run_script/", views.run_script),

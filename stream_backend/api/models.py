@@ -47,6 +47,12 @@ class Sound(models.Model):
   """Sounds for the sound board."""
   name = models.CharField(max_length=128, unique=True)
   sound_file = models.FileField(upload_to="sounds/", blank=True)
+  private = models.BooleanField(default=False)
+
+  class Meta:
+    indexes = [
+      models.Index(fields=["private"])
+    ]
 
   def __str__(self):
     return self.name

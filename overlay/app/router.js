@@ -19,6 +19,7 @@ Router.map(function() {
   this.route('plugins', function() {
     this.route('background-image');
     this.route('brain');
+    this.route('hotkey-display');
     this.route('koth-message');
     this.route('spotify');
     this.route('sub-goal');
