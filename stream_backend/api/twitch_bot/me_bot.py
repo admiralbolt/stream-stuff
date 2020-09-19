@@ -18,7 +18,6 @@ from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN
 from api.models import TwitchChatter
 from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
-from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.rewards_handler import RewardsHandler
 from api._secrets import ME_OAUTH_TOKEN, IFTTT_SECRET, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET

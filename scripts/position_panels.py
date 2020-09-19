@@ -42,6 +42,7 @@ PS4 = "PS4 Controller"
 KOTH_MESSAGE = "Koth Message"
 NOH_BOARD = "NohBoard"
 BACKGROUND_IMAGE = "Background Image Plugin"
+ALERT_BOX = "Streamlabs Alerts"
 
 client = OBSClient()
 time.sleep(1)
@@ -97,9 +98,13 @@ footer_y = BORDER + content_height + MARGIN + FRAME_WIDTH
 spotify = position_element(client, SPOODERFY, footer_height, use_height=True,
                  x_position=BORDER + FRAME_WIDTH, y_position=footer_y)
 
-position_element(client, KOTH_MESSAGE, footer_height, use_height=True,
+koth = position_element(client, KOTH_MESSAGE, footer_height, use_height=True,
                  x_position=BORDER + 3 * FRAME_WIDTH + 26 + spotify.getSourcewidth() * spotify.getScale()["x"],
                  y_position=footer_y)
+
+alerts = position_element(client, ALERT_BOX, footer_height + 2 * FRAME_WIDTH, use_height=True,
+                x_position=BORDER + 5 * FRAME_WIDTH + 26 + spotify.getSourcewidth() * spotify.getScale()["x"] + koth.getSourcewidth() * koth.getScale()["x"],
+                y_position=footer_y - FRAME_WIDTH)
 
 chat = position_element(client, TWITCH_CHAT, PANEL_WIDTH,
                  x_position=MAX_WIDTH - PANEL_WIDTH - BORDER,

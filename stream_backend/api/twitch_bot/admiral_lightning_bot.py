@@ -18,7 +18,6 @@ from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN
 from api.models import TwitchChatter
 from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
-from api.twitch_bot.alert_handler import AlertHandler
 from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.emote_utils import emote_generator, get_emote_url
 from api.twitch_bot.rewards_handler import RewardsHandler
@@ -33,8 +32,10 @@ logger = logging.getLogger(__name__)
 IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
 EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
 
-TOPIC_BITS = f"channel-bits-events-v2.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
 TOPIC_POINTS = f"channel-points-channel-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
+# Currently these are unused. I've decided to use streamlabs alerts instead of
+# my own clone.
+TOPIC_BITS = f"channel-bits-events-v2.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
 TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
 
 
@@ -59,7 +60,6 @@ class AdmiralLightningBot(commands.Bot):
     self.obs_client = OBSClient()
     self.script_manager = ScriptManager(self.obs_client, self.sound_manager, self.light_manager)
     self.rewards_handler = RewardsHandler(self.websockets, self.sound_manager, self.script_manager, self.light_manager, self.me_bot)
-    self.alert_handler = AlertHandler(self.websockets, self.sound_manager, self.script_manager)
     self.resub_thread = StoppableThread(target=self.resub)
     self.resub_thread.start()
 
@@ -117,7 +117,6 @@ class AdmiralLightningBot(commands.Bot):
     # Check for a follow event.
     if "data" in data and len(data["data"]) > 0 and "followed_at" in data["data"][0]:
       data["message_type"] = "follow_event"
-      await self.alert_handler.queue_alert(data)
 
   async def event_raw_pubsub(self, data):
     """Fires whenever we receive an event from pubsub.
@@ -132,9 +131,7 @@ class AdmiralLightningBot(commands.Bot):
     message_data = json.loads(data["data"]["message"])
     logger.info(f"[event_raw_pubsub] {message_data}")
     await {
-      TOPIC_POINTS: self.rewards_handler.queue_from_pubsub,
-      TOPIC_BITS: self.alert_handler.queue_alert,
-      TOPIC_SUBS: self.alert_handler.queue_sub
+      TOPIC_POINTS: self.rewards_handler.queue_from_pubsub
     }[data["data"]["topic"]](message_data)
 
   async def send_emote(self, url):
