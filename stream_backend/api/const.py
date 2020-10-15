@@ -5,6 +5,8 @@ LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
 BRAIN_SIZE = "brain_plugin_size"
 
+BRACKET_LINK = "bracket_link"
+
 BACKGROUND_IMAGE_URL = "background_image_url"
 
 CAMERA_COLOR_FILTER = "Color Correction"

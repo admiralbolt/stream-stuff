@@ -192,6 +192,12 @@ class TwitchService:
       }
     )
 
+    logger.info("TWITCH CLIP:")
+    logger.info(res.json())
+    logger.info(f"access: {self.access_token}, client_id: {TWITCH_CLIENT_ID}")
+    if "status" in res.json() and res.json()["status"] != 200:
+      return
+
     data = res.json()["data"][0]
 
     clip = TwitchClip(name=data["id"], edit_url=data["edit_url"])
