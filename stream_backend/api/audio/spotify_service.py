@@ -93,6 +93,7 @@ class SpotifyService:
       data = song_request.json()
       if not self.data_is_valid(data):
         logger.info(f"SPOTIFY ERROR: {data}")
+        continue
 
       await socket.send({
         "album_image_url": data["item"]["album"]["images"][1]["url"],
@@ -115,6 +116,7 @@ class SpotifyService:
       data["progress_ms"]
       data["item"]["duration_ms"]
     except Exception:
+      logger.info(f"SPOTIFY ERROR {data}")
       return False
 
     return True

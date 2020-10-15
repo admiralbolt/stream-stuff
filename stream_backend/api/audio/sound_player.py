@@ -108,7 +108,8 @@ class SoundPlayer():
     while self.sound_is_playing(sound_name):
       time.sleep(0.1)
 
-    self.data[sound_name]["stream"].stop_stream()
+    if "stream" in self.data[sound_name]:
+      self.data[sound_name]["stream"].stop_stream()
     del self.data[sound_name]
 
   def stop_sound(self, sound_name):
