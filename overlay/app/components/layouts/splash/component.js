@@ -11,6 +11,7 @@ let MAX_ANGLE = (-Math.PI / 2.0) + Math.PI / 8.0;
 let TITLE = 'splash_screen_title';
 let PREVIEW = 'splash_screen_preview';
 let TIMER = 'splash_screen_timer';
+let SHOW_CONTENT = 'splash_screen_show_content';
 
 // Credit where it's due:
 // https://codepen.io/jlong64/pen/jwJpc
@@ -23,6 +24,7 @@ export default class SplashComponent extends SocketClientComponent {
   @tracked preview;
   @tracked timer;
   @tracked showTimer = false;
+  @tracked showContent = true;
 
   @tracked frontRain = [];
   @tracked midRain = [];
@@ -53,6 +55,7 @@ export default class SplashComponent extends SocketClientComponent {
     this.title = await this.keyValue.getValue(TITLE);
     this.preview = await this.keyValue.getValue(PREVIEW);
     this.timer = await this.keyValue.getValue(TIMER);
+    this.showContent = await this.keyValue.getValue(SHOW_CONTENT);
   }
 
   get readableTimer() {
@@ -70,6 +73,7 @@ export default class SplashComponent extends SocketClientComponent {
 
     if (data.info.title) this.title = data.info.title;
     if (data.info.preview) this.preview = data.info.preview;
+    if (data.info.hasOwnProperty('showContent')) this.showContent = data.info.showContent;
     if (data.info.hasOwnProperty('timer')) this.timer = data.info.timer;
     if (data.info.hasOwnProperty('showTimer')) this.showTimer = data.info.showTimer;
   }

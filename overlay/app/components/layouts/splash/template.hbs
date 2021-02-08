@@ -51,7 +51,9 @@
       {{/if}}
     </div>
     <div local-class="stream-preview">
-      {{{preview}}}
+      {{#if showContent}}
+        {{{preview}}}
+      {{/if}}
     </div>
   </div>
 </div>

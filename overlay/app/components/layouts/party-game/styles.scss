@@ -1,7 +1,7 @@
 .swooshy-background {
-  background: linear-gradient(-45deg, #00acac, #008cac, #006c8c, #003c6c);
+  background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(25, 25, 25), rgb(50, 50, 50), rgb(70, 70, 70));
 	background-size: 400% 400%;
-	animation: gradient 40s linear infinite;
+	animation: gradient 60s linear infinite;
 }
 
 @keyframes gradient {

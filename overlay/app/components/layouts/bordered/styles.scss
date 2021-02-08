@@ -8,7 +8,14 @@ $max-height: 1080px;
 $panel-width: 300px;
 
 $main-color: rgb(204, 85, 0);
-$highlight-color: rgba(255, 255, 255, 0.3);
+$highlight-color: rgba(255, 255, 255, 0.35);
+
+$border-blue: rgb(29, 80, 145);
+
+// Blue / Teal gradient.
+$blue: rgb(20, 48, 195);
+$teal: rgb(28, 117, 158);
+$light-blue: rgb(19, 153, 165);
 
 // A bunch of variables need to stay in sync with position_panels.py
 $content-border: 15px;
@@ -48,16 +55,16 @@ $king-height: $spotify-height;
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: inset 0 0 0 $border-width rgba($main-color, 1);
+    box-shadow: inset 0 0 0 $border-width $blue;
   }
   25% {
-    box-shadow: inset 0 0 0 $border-width rgba($main-color, 0.9);
+    box-shadow: inset 0 0 0 $border-width $teal;
   }
   50% {
-    box-shadow: inset 0 0 0 $border-width rgba($main-color, 1);
+    box-shadow: inset 0 0 0 $border-width $light-blue;
   }
   75% {
-    box-shadow: inset 0 0 0 $border-width rgba($main-color, 0.9);
+    box-shadow: inset 0 0 0 $border-width $teal;
   }
 }
 
@@ -196,8 +203,6 @@ $king-height: $spotify-height;
   height: $height;
   margin: auto;
   background: transparent;
-  color: $main-color;
-  box-shadow: inset 0 0 0 $border-width $main-color;
 
   &::before,
   &::after {
@@ -224,7 +229,7 @@ $king-height: $spotify-height;
 
   .camera-frame {
     @include frame($camera-height, $panel-width, cameraFrames, 7px, 12s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     // 1920 - 15 - 300
     left: 1605px;
     top: 15px;
@@ -232,35 +237,35 @@ $king-height: $spotify-height;
 
   .content-frame {
     @include frame($content-height, $content-width, contentFrames, 7px, 28s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     left: 15px;
     top: 15px;
   }
 
   .spotify-frame {
     @include frame($spotify-height, $spotify-width, spotifyFrames, 7px, 12s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     left: 15px;
     top: $content-border + $content-height + $content-margin;
   }
 
   .twitch-chat-frame {
     @include frame($twitch-chat-height, $panel-width, twitchFrames, 7px, 14s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     left: $max-width - $panel-width - $content-border;
     top: $max-height - $content-border - $twitch-chat-height;
   }
 
   .sub-goal-frame {
     @include frame($sub-goal-height, $panel-width, subFrames, 7px, 8s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     left: $max-width - $panel-width - $content-border;
     top: $content-border + $camera-height + $panel-item-margin;
   }
 
   .king-frame {
     @include frame($king-height, $king-width, kingFrames, 7px, 13s);
-    animation: glow 5s linear infinite;
+    animation: glow 60s linear infinite;
     left: $spotify-width + 40px;
     top: $content-border + $content-height + $content-margin;
   }

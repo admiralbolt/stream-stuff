@@ -14,7 +14,7 @@ from twitchio.enums import WebhookMode
 from twitchio.ext import commands
 from twitchio.webhook import UserFollows
 
-from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN
+from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN, TWITCH_SUBSCRIBER_COUNT
 from api.models import TwitchChatter
 from api.obs.obs_client import OBSClient
 from api.obs.script_manager import ScriptManager
@@ -22,7 +22,7 @@ from api.twitch_bot.commands.commands_command import CommandsCommand
 from api.twitch_bot.emote_utils import emote_generator, get_emote_url
 from api.twitch_bot.rewards_handler import RewardsHandler
 from api._secrets import BOT_OAUTH_TOKEN, IFTTT_SECRET, PUBLIC_IP, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
-from api.utils.key_value_utils import async_get_value
+from api.utils.key_value_utils import async_get_value, async_set_value
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.websocket_client import WebSocketClient
 from api.utils.websocket_pool import WebSocketPool
@@ -33,10 +33,10 @@ IS_BOT_ALIVE = "twitch_chat_bot_is_alive"
 EMOTES_ENABLED = "twitch_chat_bot_emotes_enabled"
 
 TOPIC_POINTS = f"channel-points-channel-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
+TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
 # Currently these are unused. I've decided to use streamlabs alerts instead of
 # my own clone.
 TOPIC_BITS = f"channel-bits-events-v2.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
-TOPIC_SUBS = f"channel-subscribe-events-v1.{THE_BEST_TWITCH_STREAMER_ID_NO_BIAS}"
 
 
 class AdmiralLightningBot(commands.Bot):
@@ -118,6 +118,14 @@ class AdmiralLightningBot(commands.Bot):
     if "data" in data and len(data["data"]) > 0 and "followed_at" in data["data"][0]:
       data["message_type"] = "follow_event"
 
+  async def update_sub_plugin(self, data):
+    """Send a message over the websocket to the sub plugin to update count."""
+    current_sub_count = await async_get_value(TWITCH_SUBSCRIBER_COUNT)
+    await async_set_value(TWITCH_SUBSCRIBER_COUNT, current_sub_count + 1)
+    await self.websockets.sub_goal.send({
+      "sub_count": current_sub_count + 1
+    })
+
   async def event_raw_pubsub(self, data):
     """Fires whenever we receive an event from pubsub.
 
@@ -126,12 +134,14 @@ class AdmiralLightningBot(commands.Bot):
     2. Subscription Events
     3. Bit purchases
     """
+    logger.info(f"[event_raw_pubsub] {data}")
     if "data" not in data:
       return
     message_data = json.loads(data["data"]["message"])
     logger.info(f"[event_raw_pubsub] {message_data}")
     await {
-      TOPIC_POINTS: self.rewards_handler.queue_from_pubsub
+      TOPIC_POINTS: self.rewards_handler.queue_from_pubsub,
+      TOPIC_SUBS: self.update_sub_plugin
     }[data["data"]["topic"]](message_data)
 
   async def send_emote(self, url):

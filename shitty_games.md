@@ -44,24 +44,10 @@ Pears And Gray Witch
 - Incredibly Buggy
 - Lots of load screens
 - Technically demanding despite having terrible controls.
-- Most levels are uninteresting, and are just there to
-  waste your time.
+- Most levels are uninteresting, and are just there to waste your time.
 - Last level is impossible to complete.
 - No real story, ending cutscene is nothing.
 - Technically costs $5.
-+ The dialogue can be funny because it is poorly
-  translated sometimes.
++ The dialogue can be funny because it is poorly translated sometimes.
 
 1/10
-
-
-TODO
-=====
-* Pajama Sam
-* Putt Putt
-* Freddi Fish
-* Zoombinis
-* Treasure Planet
-* Spy Fox
-* SNES toy story
-* GEX enter the gecko

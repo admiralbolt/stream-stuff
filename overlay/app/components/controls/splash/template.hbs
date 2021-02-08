@@ -25,6 +25,10 @@
     <div class="flex-row">
       <BsButton @type="primary" @onClick={{action "startStream"}}>Start Stream</BsButton>
       <BsButton @type="primary" @onClick={{action "endStream"}}>End Stream</BsButton>
+    </div>
+    <br>
+    <div class="flex-row">
+      <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
       <BsButton @type="primary" @onClick={{action "updateStream"}}>Update Stream Info</BsButton>
     </div>
     <br>
@@ -34,12 +38,12 @@
     </div>
     <br>
     <div class="flex-row">
-      <BsButton @type="primary" @onClick={{action "updateInfo"}}>Update Info</BsButton>
       {{#if timerRunning}}
         <BsButton @type="primary" @onClick={{action "stopTimer"}}>Stop Timer</BsButton>
       {{else}}
         <BsButton @type="primary" @onClick={{action "startTimer"}}>Start Timer</BsButton>
       {{/if}}
+      <Utils::ToggleButton @positiveText="Hide Content" @negativeText="Show Content" @value={{showContent}} @callback={{action "toggleShowContent"}} />
     </div>
   </div>
 </div>

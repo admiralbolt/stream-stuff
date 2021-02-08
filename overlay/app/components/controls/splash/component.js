@@ -10,6 +10,7 @@ let TITLE = 'splash_screen_title';
 let PREVIEW = 'splash_screen_preview';
 let TIMER = 'splash_screen_timer';
 let TIMER_RUNNING = 'splash_screen_timer_running';
+let SHOW_CONTENT = 'splash_screen_show_content';
 
 let END_TIMER = 'splash_screen_end_timer';
 let TRANSITION_TO_SCENE = 'splash_screen_transition_to_scene';
@@ -22,6 +23,7 @@ export default class SplashComponent extends Component {
 
   socket = null;
 
+  @tracked showContent;
   @tracked title;
   @tracked preview;
   // Timer for the preview
@@ -44,6 +46,7 @@ export default class SplashComponent extends Component {
   async initialize() {
     this.title = await this.keyValue.getValue(TITLE);
     this.preview = await this.keyValue.getValue(PREVIEW);
+    this.showContent = await this.keyValue.getValue(SHOW_CONTENT);
     this.timer = await this.keyValue.getValue(TIMER);
     this.timerRunning = await this.keyValue.getValue(TIMER_RUNNING);
     this.endTimer = await this.keyValue.getValue(END_TIMER);
@@ -66,7 +69,8 @@ export default class SplashComponent extends Component {
       info: {
         title: this.title,
         preview: this.preview,
-        timer: this.timer
+        timer: this.timer,
+        showContent: this.showContent
       }
     }, true);
 
@@ -137,6 +141,8 @@ export default class SplashComponent extends Component {
       'source': this.obs.MIC_SOURCE,
       'mute': false
     });
+    this.showContent = false;
+    this.updateInfo();
   }
 
   @action
@@ -146,6 +152,7 @@ export default class SplashComponent extends Component {
 
   @action
   async startStream() {
+    this.showContent = true;
     this.updateInfo();
     await this.updateStream();
     this.obs.send('SetCurrentScene', {
@@ -161,6 +168,7 @@ export default class SplashComponent extends Component {
 
   @action
   endStream() {
+    this.showContent = true;
     this.updateInfo();
     this.runEndTimer.perform();
     this.endTimerRunning = true;
@@ -212,6 +220,12 @@ export default class SplashComponent extends Component {
     this.title = 'Stream Has Ended!';
     this.preview = 'Thanks for tuning in!';
     this.endTimer = 120;
+  }
+
+  @action
+  toggleShowContent() {
+    this.showContent = !this.showContent;
+    this.updateInfo();
   }
 
 }
