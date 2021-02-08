@@ -40,13 +40,15 @@
 
   <div local-class="info">
     <div local-class="title">
-      {{title}}
+      {{#if showContent}}
+        {{title}}
+      {{/if}}
     </div>
   </div>
   <div local-class="info">
     <div local-class="spacer"></div>
     <div local-class="timer">
-      {{#if showTimer}}
+      {{#if (and showTimer showContent)}}
         {{readableTimer}}
       {{/if}}
     </div>

@@ -77,6 +77,7 @@ export default class SplashComponent extends Component {
     this.keyValue.createOrUpdate(TITLE, this.title);
     this.keyValue.createOrUpdate(PREVIEW, this.preview);
     this.keyValue.createOrUpdate(TIMER, this.timer);
+    this.keyValue.createOrUpdate(SHOW_CONTENT, this.showContent);
   }
 
   @action
