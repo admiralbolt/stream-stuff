@@ -55,7 +55,8 @@ class RewardsHandler:
       "ba256777-1cbc-4730-9b5c-0e16a1fd1086": self.revoke_vip_reward,
       "173af3e8-2bc0-4a52-adff-91c47c3e891a": self.change_light_color_reward,
       "53bf2ef4-0cbb-4cd6-b4e8-55c1c731c31a": self.light_wave_reward,
-      "ac385b50-5be0-49da-bb6a-c95b9d18d9b2": self.change_background_image_reward
+      "ac385b50-5be0-49da-bb6a-c95b9d18d9b2": self.change_background_image_reward,
+      "00e8bfd4-d44d-4e85-8d45-088e2e09c639": self.birthday_reward
     }
     self.start_worker()
 
@@ -87,6 +88,15 @@ class RewardsHandler:
   async def shame_cube_reward(self, reward):
     """Process a purchased shame cube reward."""
     self.script_manager.run_and_wait("shame_cube")
+
+  async def birthday_reward(self, reward):
+    """Process a purchased confetti reward.
+
+    I couldn't decide between calling it grunt birthday party and confetti but
+    I think that more people will understand what confetti is, hence the double
+    naming.
+    """
+    self.script_manager.run_and_wait("birthday_party")
 
   async def scramble_camera_reward(self, reward):
     """Scrambles the camera filter settings.

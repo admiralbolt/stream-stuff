@@ -2,7 +2,6 @@ TODO
 =====
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 * Add controls for disabling channel point redemptions.
-* Add channel point redemption for Grunt Birthday Party.
 
 [Scripts] Brain math meme thingy
 
