@@ -192,7 +192,8 @@ export default class SplashComponent extends Component {
   *runEndTimer() {
     while (this.endTimer > 0) {
       this.keyValue.createOrUpdate(END_TIMER, --this.endTimer);
-      yield timeout(1000);
+      let delay = (document.hidden ? 500 : 1000) - (new Date() - prev_date) - 1;
+      yield timeout(delay);
     }
 
     this.endTimerRunning = false;
@@ -220,7 +221,7 @@ export default class SplashComponent extends Component {
   setDefaultPost() {
     this.title = 'Stream Has Ended!';
     this.preview = 'Thanks for tuning in!';
-    this.endTimer = 120;
+    this.endTimer = 180;
   }
 
   @action
