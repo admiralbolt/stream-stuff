@@ -39,3 +39,5 @@ TWITCH_SUBSCRIBER_COUNT = "twitch_subscriber_count"
 TWITCH_SUBSCRIBER_GOAL_COUNT = "twitch_subscriber_goal_count"
 TWITCH_SUBSCRIBER_GOAL_MESSAGE = "twitch_subscriber_goal_message"
 TWITCH_SUBSCRIBER_PLUGIN_MODE = "twitch_subscriber_plugin_mode"
+
+TWITCH_CHAT_REDEMPTIONS_ENABLED = "twitch_chat_redemptions_enabled"

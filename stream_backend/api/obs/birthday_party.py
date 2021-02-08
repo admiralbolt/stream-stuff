@@ -64,7 +64,7 @@ class BirthdayPartyScript(BaseScript):
       await asyncio.sleep(0.015)
 
 
-    await asyncio.sleep(3)
+    await asyncio.sleep(2.5)
     await self.cleanup()
     return
 
@@ -75,6 +75,6 @@ class BirthdayPartyScript(BaseScript):
       stream=True
     )
 
-    await asyncio.sleep(1)
+    await asyncio.sleep(0.1)
     self.thread = None
     return

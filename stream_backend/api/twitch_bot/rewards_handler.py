@@ -6,12 +6,12 @@ from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 from profanityfilter import ProfanityFilter
 
-from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR
+from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR, TWITCH_CHAT_REDEMPTIONS_ENABLED
 from api.models import Sound
 from api.twitch_bot.emote_utils import replace_emotes_in_message
 from api.utils.unsplash import get_random_photo_url
 from api.utils.stoppable_thread import StoppableThread
-from api.utils.key_value_utils import async_set_value
+from api.utils.key_value_utils import async_get_value, async_set_value
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +76,11 @@ class RewardsHandler:
     """Processes message from our alert queue."""
 
     while not self.worker_thread.stopped():
+      # If redemptions aren't enabled, sleep and wait.
+      if not await async_get_value(TWITCH_CHAT_REDEMPTIONS_ENABLED):
+        await asyncio.sleep(5)
+        continue
+
       reward = self.queue.get()
       await self.handle_reward(reward)
       self.queue.task_done()

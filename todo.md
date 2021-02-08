@@ -1,11 +1,8 @@
 TODO
 =====
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
-* Add controls for disabling channel point redemptions.
 
 [Scripts] Brain math meme thingy
-
-[EzPz] Allow twitch chat to trigger Birthday Party
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration:
