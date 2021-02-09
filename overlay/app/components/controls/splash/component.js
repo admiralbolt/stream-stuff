@@ -190,10 +190,12 @@ export default class SplashComponent extends Component {
 
   @task
   *runEndTimer() {
+    let prev_date = new Date();
     while (this.endTimer > 0) {
       this.keyValue.createOrUpdate(END_TIMER, --this.endTimer);
       let delay = (document.hidden ? 500 : 1000) - (new Date() - prev_date) - 1;
       yield timeout(delay);
+      prev_date = new Date();
     }
 
     this.endTimerRunning = false;
