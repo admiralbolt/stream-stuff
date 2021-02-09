@@ -7,6 +7,7 @@ from importlib import import_module
 from api.const import SCRIPT_PAGE
 from api.models import Script
 from api.utils.key_value_utils import get_value, set_value
+from api.utils.websocket_client import WebSocketClient
 
 def import_script(script_path):
   """Dynamically import a script class from a path."""

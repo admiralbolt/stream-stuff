@@ -25,7 +25,7 @@ export default class SpotifyComponent extends SocketClientComponent {
 
   @tracked script_page;
   // Scripts to display in the plugin. Broken up into rows to make iterating
-  // easier since handelbars doesn't support indexed for loops.
+  // easier since handlebars doesn't support indexed for loops.
   @tracked scriptRow1;
   @tracked scriptRow2;
 
@@ -79,11 +79,14 @@ export default class SpotifyComponent extends SocketClientComponent {
 
   messageHandler(event) {
     let data = JSON.parse(event.data);
-    console.log(data);
-    if (!data.hasOwnProperty("sound_page")) return;
-
-    this.sound_page = data.sound_page;
-    this.loadSounds();
+    if (data.hasOwnProperty("sound_page")) {
+      this.sound_page = data.sound_page;
+      this.loadSounds();
+    }
+    if (data.hasOwnProperty("script_page")) {
+      this.script_page = data.script_page;
+      this.loadScripts();
+    }
   }
 
 }
