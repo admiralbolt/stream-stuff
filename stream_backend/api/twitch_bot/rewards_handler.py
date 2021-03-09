@@ -9,6 +9,7 @@ from profanityfilter import ProfanityFilter
 from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR, TWITCH_CHAT_REDEMPTIONS_ENABLED
 from api.models import Sound
 from api.twitch_bot.emote_utils import replace_emotes_in_message
+from api.twitch_bot.voicemod_manager import VoicemodManager
 from api.utils.unsplash import get_random_photo_url
 from api.utils.stoppable_thread import StoppableThread
 from api.utils.key_value_utils import async_get_value, async_set_value
@@ -39,6 +40,7 @@ class RewardsHandler:
     self.sound_manager = sound_manager
     self.script_manager = script_manager
     self.light_manager = light_manager
+    self.voicemod_manager = VoicemodManager()
     self.me_bot = me_bot
     self.worker_thread = None
     self.filter = ProfanityFilter()
@@ -56,7 +58,8 @@ class RewardsHandler:
       "173af3e8-2bc0-4a52-adff-91c47c3e891a": self.change_light_color_reward,
       "53bf2ef4-0cbb-4cd6-b4e8-55c1c731c31a": self.light_wave_reward,
       "ac385b50-5be0-49da-bb6a-c95b9d18d9b2": self.change_background_image_reward,
-      "00e8bfd4-d44d-4e85-8d45-088e2e09c639": self.birthday_reward
+      "00e8bfd4-d44d-4e85-8d45-088e2e09c639": self.birthday_reward,
+      "259cdb66-6f68-4647-9671-9b1bb81b483d": self.voicemod_reward
     }
     self.start_worker()
 
@@ -93,6 +96,16 @@ class RewardsHandler:
   async def shame_cube_reward(self, reward):
     """Process a purchased shame cube reward."""
     self.script_manager.run_and_wait("shame_cube")
+
+  async def voicemod_reward(self, reward):
+    """Processes a voicemod reward."""
+    # If a thread is already active, we want to requeue the reward until the
+    # 10 second timer is up.
+    if self.voicemod_manager.thread_active:
+      self.queue.put_nowait(reward)
+      return
+
+    self.voicemod_manager.change_voice()
 
   async def birthday_reward(self, reward):
     """Process a purchased confetti reward.

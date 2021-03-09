@@ -14,5 +14,6 @@ Voicemeter (see screenshot):
   3. A1 should be set to Speakers (Realtek High Definition)
 
 Windows Sound Settings:
-  * Mic should be set as input in properties set playback through CABLE INPUT
+  * Yeti should NOT be listend to anymore.
   * Voicemeter Input should be for playback
+  * Voicemod Input should be set as input in properties set playback through CABLE INPUT
