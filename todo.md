@@ -2,6 +2,9 @@ TODO
 =====
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 
+* DVD bouncy thingy
+* Filthy Frank fuck you splash
+
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration:
   Hey future me, here's this:
