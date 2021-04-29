@@ -39,6 +39,7 @@ class ApiConfig(AppConfig):
 
     self.twitch_service = TwitchService()
     await self.twitch_service.initialize()
+    await self.twitch_service.setup_keybindings()
 
     self.sound_manager = SoundManager()
     await self.sound_manager.setup_keybindings()

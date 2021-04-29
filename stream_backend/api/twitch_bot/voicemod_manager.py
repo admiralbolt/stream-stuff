@@ -28,7 +28,7 @@ class VoicemodManager:
     self.thread_active = True
     keyboard.press(VOICEMOD_RANDOM)
     keyboard.release(VOICEMOD_RANDOM)
-    time.sleep(10)
+    time.sleep(15)
     keyboard.press(VOICEMOD_CLEAN)
     keyboard.release(VOICEMOD_CLEAN)
     time.sleep(0.5)

@@ -1,4 +1,5 @@
 import asyncio
+import keyboard
 import logging
 import requests
 import time
@@ -7,6 +8,7 @@ import webbrowser
 from datetime import datetime
 from urllib.parse import quote
 
+from asgiref.sync import sync_to_async
 from api.const import THE_BEST_TWITCH_STREAMER_ID_NO_BIAS, TWITCH_ACCESS_TOKEN, TWITCH_AUTHORIZATION_CODE, TWITCH_REFRESH_TOKEN, TWITCH_SUBSCRIBER_COUNT
 from api.models import TwitchClip
 from api._secrets import TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET
@@ -203,3 +205,8 @@ class TwitchService:
     clip = TwitchClip(name=data["id"], edit_url=data["edit_url"])
     clip.save()
     return
+
+  @sync_to_async
+  def setup_keybindings(self):
+    """Sets up keybindings for clipping that shit."""
+    keyboard.add_hotkey("shift+alt+f5", self.clip_that)

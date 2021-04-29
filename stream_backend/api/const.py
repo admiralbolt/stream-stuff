@@ -3,6 +3,7 @@ from datetime import timedelta, timezone
 # Default timezone is UTC and central time is 5 hours before.
 LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
+BRAIN_SHOW = "brain_plugin_show"
 BRAIN_SIZE = "brain_plugin_size"
 
 BRACKET_LINK = "bracket_link"
@@ -42,5 +43,5 @@ TWITCH_SUBSCRIBER_PLUGIN_MODE = "twitch_subscriber_plugin_mode"
 
 TWITCH_CHAT_REDEMPTIONS_ENABLED = "twitch_chat_redemptions_enabled"
 
-VOICEMOD_RANDOM = "shift+alt+f9"
-VOICEMOD_CLEAN = "shift+alt+f10"
+VOICEMOD_RANDOM = "ctrl+shift+alt+a+'"
+VOICEMOD_CLEAN = "ctrl+shift+alt+a+;"

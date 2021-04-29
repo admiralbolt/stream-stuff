@@ -4,6 +4,10 @@ TODO
 
 * DVD bouncy thingy
 * Filthy Frank fuck you splash
+* Add !hidebrain / !showbrain
+* Add text overlay splash thingy
+* Add on/off switch for stream integrations.
+* Add queue plugin to debug / monitor rewards handler.
 
 [Maybe Board] Trivia Chat Integration
 [Maybe Board] Spotify Integration:
