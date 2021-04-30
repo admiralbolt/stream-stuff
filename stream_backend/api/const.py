@@ -3,6 +3,9 @@ from datetime import timedelta, timezone
 # Default timezone is UTC and central time is 5 hours before.
 LOCAL_TIMEZONE = timezone(timedelta(hours=-5))
 
+TWITCH_META_SCENE = "Just Chatting"
+MAIN_SCENE = "The New New"
+
 BRAIN_SHOW = "brain_plugin_show"
 BRAIN_SIZE = "brain_plugin_size"
 

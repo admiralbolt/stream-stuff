@@ -2,6 +2,7 @@ from api.utils.stoppable_thread import StoppableThread
 
 CONSTANTS = {
   "CAMERA_SOURCE": "Shitty Webcam",
+  "BACKGROUND_IMAGE_SOURCE": "Background Image Plugin",
   "MIC_SOURCE": "Mic/Aux",
   "DESKTOP_AUDIO_SOURCE": "Mic/Aux 2",
   "CANVAS_TICK": 25

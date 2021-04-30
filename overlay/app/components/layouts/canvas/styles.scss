@@ -1,0 +1,72 @@
+@font-face {
+  font-family: "Snell";
+  src: url(/assets/fonts/SnellBT-Regular.otf);
+}
+
+@keyframes left-to-right {
+  0% {
+		width: 0px;
+	}
+	50% {
+	  width: 275px;
+	}
+	100% {
+		width: 550px;
+	}
+}
+
+:global(.header) {
+  color: white;
+  font-family: "Snell";
+  font-size: 140px;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  animation: left-to-right 0.5s linear;
+  overflow: hidden;
+  text-overflow: hidden;
+  position: absolute;
+  top: 425px;
+  left: 660px;
+  white-space: nowrap;
+  padding-left: 10px;
+}
+
+:global(.shine) {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-image: url(/assets/images/star.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  overflow: hidden;
+  z-index: 2;
+  color: tansparent;
+  -moz-opacity: 0.0;
+  opacity: 0.0;
+  animation: glitter 1.5s linear 0s normal;
+  width: 200px;
+  height: 200px;
+}
+
+/*CSS3 keyframes for glittering effect*/
+@keyframes glitter {
+  0% {
+    -webkit-transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  25% {
+    -webkit-transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+  50% {
+    -webkit-transform: scale(0.3) rotate(720deg);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+}
