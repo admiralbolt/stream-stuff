@@ -31,6 +31,8 @@ class WebSocketPool:
     self.background_image = WebSocketClient(7008)
     # Displays keybinding info
     self.keybind_display = WebSocketClient(7009)
+    # Used to control the dvd bounce plugin.
+    self.dvd_bounce = WebSocketClient(7010)
 
     self.all_sockets = [
       self.melee,
@@ -41,7 +43,8 @@ class WebSocketPool:
       self.sub_goal,
       self.king_of_the_hill,
       self.background_image,
-      self.keybind_display
+      self.keybind_display,
+      self.dvd_bounce
     ]
 
   async def initialize(self):

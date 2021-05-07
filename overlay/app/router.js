@@ -23,5 +23,6 @@ Router.map(function() {
     this.route('koth-message');
     this.route('spotify');
     this.route('sub-goal');
+    this.route('dvd-bounce');
   });
 });

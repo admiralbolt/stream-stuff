@@ -16,6 +16,8 @@ BACKGROUND_IMAGE_URL = "background_image_url"
 CAMERA_COLOR_FILTER = "Color Correction"
 CAMERA_SOURCE = "Shitty Webcam"
 
+DVD_SHOW = "dvd_bounce_show"
+
 # The current 'page' for playing sounds from my keybindings.
 # This is really complex and I already don't understand it, so good luck future
 # me. I'm sorry this broke.

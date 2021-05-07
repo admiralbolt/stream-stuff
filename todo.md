@@ -3,6 +3,7 @@ TODO
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 
 * Add text overlay splash thingy
+  * Credit to Revebla, Black background, Green Text, Chroma Key.
 * DVD bouncy thingy
 
 * [Housekeeping] Add on/off switch for stream integrations.

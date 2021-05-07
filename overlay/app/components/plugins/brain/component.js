@@ -2,9 +2,9 @@ import SocketClientComponent from 'overlay/components/socket-client/component';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-export default class SpotifyComponent extends SocketClientComponent {
+export default class BrainComponent extends SocketClientComponent {
   @service keyValue;
-  
+
   @tracked brainSize;
   @tracked showBrain = true;
 
