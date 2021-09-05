@@ -15,7 +15,7 @@ DURATION = 4
 TICK = 0.1
 MAX_TICK = int(DURATION / TICK)
 
-ONSET_DELAY = 7
+ONSET_DELAY = 4
 
 def get_random(minmax):
   return minmax[0] + random.random() * (minmax[1] - minmax[0])

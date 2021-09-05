@@ -1,10 +1,14 @@
 TODO
 =====
+* Maybe make the background zoom in for the Sad Boyz also.
+* Really strange bug with retries involving something fucky with twitch
+  authentication and the chat bot. Current working theory is that chat bot
+  doesn't work without alright having twitch creds but :shrug:?
+* Activate Windows you fucking cheapo
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 
 * Add text overlay splash thingy
   * Credit to Revebla, Black background, Green Text, Chroma Key.
-* DVD bouncy thingy
 
 * [Housekeeping] Add on/off switch for stream integrations.
 * [Housekeeping] Add queue plugin to debug / monitor rewards handler.

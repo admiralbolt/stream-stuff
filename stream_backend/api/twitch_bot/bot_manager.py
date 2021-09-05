@@ -47,8 +47,5 @@ class BotManager:
     self.thread.start()
 
   def stop(self):
-    if self.bot:
-      self.bot.stop()
-
     if self.thread:
       self.thread.stop()

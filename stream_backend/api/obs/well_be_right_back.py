@@ -1,16 +1,19 @@
 import asyncio
 import base64
+import cv2
 import json
+import logging
 import os
 import time
 
-import cv2
-from api import models
 from obswebsocket.requests import *
 
+from api import models
 from api.obs.base_script import BaseScript, CONSTANTS
 from api.utils import image_helpers
 from api.utils.websocket_client import WebSocketClient
+
+logger = logging.getLogger(__name__)
 
 SOUND_MODEL = models.Sound.objects.get(name="We'll Be Right Back")
 
@@ -38,7 +41,6 @@ class WellBeRightBackScript(BaseScript):
 
   async def async_execute(self):
     latest_frame = self.client.get_latest_frame()
-
     sepia_frame = image_helpers.sepia_filter(latest_frame)
     mixed_frame = cv2.addWeighted(latest_frame, 0.4, sepia_frame, 0.6, 0)
     blurred_frame = image_helpers.blur(mixed_frame, kernel_size=21)

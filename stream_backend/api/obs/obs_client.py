@@ -1,11 +1,15 @@
+import base64
+import cv2
+import io
 import logging
+import obswebsocket
 import threading
 import time
 
-import obswebsocket
+from imageio import imread
 from obswebsocket.requests import *
 
-from api.utils import image_helpers
+from api.const import MAIN_SCENE
 
 logger = logging.getLogger(__name__)
 
@@ -91,31 +95,18 @@ class OBSClient:
   def get_latest_frame(self):
     """Gets the latest frame from obs.
 
-    This is done by starting & stopping the recording, then reading
-    the written file.
-
-    It's hacky, but the best way I've found of actually doing it.
+    This is done by taking a screenshot and black magic converting back into
+    an actual fucking array, fuck you opencv2.
     """
-    latest_recording = image_helpers.get_latest_recording()
-    self.call(StartRecording())
-    result = self.call(StopRecording())
-    while not result.status:
-      result = self.call(StopRecording())
-
-    # Wait until latest recording file gets written.
-    for i in range(20):
-      if image_helpers.get_latest_recording() != latest_recording:
-        break
-
-      if i == 19:
-        logger.info("Recording timeout, exiting.")
-        self.cleanup()
-        return
-
-      time.sleep(0.025)
-
-    latest_frame = image_helpers.get_latest_frame()
-    while latest_frame is None:
-      latest_frame = image_helpers.get_latest_frame()
-
+    image_response = self.call(TakeSourceScreenshot(
+      sourceName=MAIN_SCENE,
+      embedPictureFormat="png"
+    ))
+    # The decoded image data from the screenshot comes as an image uri which
+    # includes the prefix data:image/png;base64,. This prefix needs to be
+    # stripped in order for the binary image data to be handled correctly.
+    fuck_this_prefix = "data:image/png;base64,"
+    image_data = base64.b64decode(image_response.getImg()[len(fuck_this_prefix):], "-_")
+    img = imread(io.BytesIO(image_data))
+    latest_frame = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     return latest_frame

@@ -1,3 +1,11 @@
+"""
+Hey you
+
+If the math meme script is broken, make sure to check that your obs camera
+settings aren't broke-ass. If there is any crop settings on the camera already
+the zoom effect looks bad.
+"""
+
 import asyncio
 import random
 
