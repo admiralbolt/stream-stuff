@@ -26,6 +26,9 @@ KEYBINDING_PAGE = "soundboard_keybind_page"
 KING_OF_THE_HILL_MESSAGE = "king_of_the_hill_message"
 KING_OF_THE_HILL_AUTHOR = "king_of_the_hill_author"
 
+# URL of the flask server running on the raspberry pi.
+PI_SERVER = "192.168.0.104:5000"
+
 # The current 'page' for running scripts from my keybindings.
 SCRIPT_PAGE = "script_keybind_page"
 

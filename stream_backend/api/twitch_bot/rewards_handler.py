@@ -1,12 +1,13 @@
 import asyncio
 import logging
 import queue
+import requests
 
 from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 from profanityfilter import ProfanityFilter
 
-from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR, TWITCH_CHAT_REDEMPTIONS_ENABLED
+from api.const import BACKGROUND_IMAGE_URL, KING_OF_THE_HILL_MESSAGE, KING_OF_THE_HILL_AUTHOR, PI_SERVER, TWITCH_CHAT_REDEMPTIONS_ENABLED
 from api.models import Sound
 from api.twitch_bot.emote_utils import replace_emotes_in_message
 from api.twitch_bot.voicemod_manager import VoicemodManager
@@ -59,7 +60,8 @@ class RewardsHandler:
       "53bf2ef4-0cbb-4cd6-b4e8-55c1c731c31a": self.light_wave_reward,
       "ac385b50-5be0-49da-bb6a-c95b9d18d9b2": self.change_background_image_reward,
       "00e8bfd4-d44d-4e85-8d45-088e2e09c639": self.birthday_reward,
-      "259cdb66-6f68-4647-9671-9b1bb81b483d": self.voicemod_reward
+      "259cdb66-6f68-4647-9671-9b1bb81b483d": self.voicemod_reward,
+      "adf4db9a-24c8-45a1-b8d3-e437f130f5da": self.led_matrix_reward
     }
     self.start_worker()
 
@@ -96,6 +98,9 @@ class RewardsHandler:
   async def shame_cube_reward(self, reward):
     """Process a purchased shame cube reward."""
     self.script_manager.run_and_wait("shame_cube")
+
+  async def led_matrix_reward(self, reward):
+    requests.get(f"http://{PI_SERVER}/draw-image?url={reward.message}")
 
   async def voicemod_reward(self, reward):
     """Processes a voicemod reward."""
