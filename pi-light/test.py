@@ -4,8 +4,10 @@ import time
 from light_matrix import LightMatrix
 
 matrix = LightMatrix()
-matrix.DrawImageFromUrl("https://i.imgflip.com/5mrh9m.jpg")
-# matrix.DrawImageFromUrl("https://i.imgflip.com/5mrh5i.jpg")
-# matrix.DrawImageFromUrl("https://static2.srcdn.com/wordpress/wp-content/uploads/2020/12/Breaking-Bad-Walter-White-memes.jpg")
+frames = matrix.DrawImageFromUrl("https://cdn.betterttv.net/emote/6085387f39b5010444d05e0d/3x")
 
-time.sleep(15)
+while True:
+  for frame in frames:
+    matrix.DrawMatrix(frame)
+    time.sleep(0.1)
+
