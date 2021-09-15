@@ -1,4 +1,3 @@
-import magic
 import os
 import requests
 import sqlite3
@@ -51,36 +50,6 @@ def get_latest_image():
   cursor = get_db().execute(query)
   return cursor.fetchone()[3]
 
-# Copy pasting from stoppable_thread, I"m sure there"s a better way.
-# But I"m lazy.
-class StoppableThread(threading.Thread):
-  """A thread that can be stopped via the stop() call.
-
-  Note that this doesn"t kill the thread but sets a
-  flag on the thread. The actual execution is responsible
-  for checking the stop event itself.
-  """
-
-  def __init__(self, target, args=(), daemon=True):
-    super(StoppableThread, self).__init__(target=target, daemon=daemon)
-    self._args = args
-    self._stop_event = threading.Event()
-
-  def stop(self):
-    """Signals the thread to stop."""
-    self._stop_event.set()
-
-  def stopped(self):
-    """Whether or not the thread is stopped.
-
-    This condition should be checked within a thread execution
-    instead of using something like while True.
-    """
-    return self._stop_event.is_set()
-
-
-gif_thread = None
-
 def pretty_name(url, content_type):
   name = os.path.basename(url)
   fname, ext = os.path.splitext(name)
@@ -115,40 +84,14 @@ def download_image(url, requester):
   insert_image(requester, file_path)  
   return file_path
 
-def render_gif(frames):
-  global gif_thread
-  global m
-  while not gif_thread.stopped():
-    for frame in frames:
-      if gif_thread.stopped():
-        break
-      m.DrawMatrix(frame)
-      time.sleep(0.09)
-
-def display_image(file_path):
-  global gif_thread
-  if gif_thread:
-    gif_thread.stop()
-    time.sleep(0.1)
-  image_type = magic.from_file(file_path, mime=True)
-  if image_type == "image/gif":
-    frames = m.GetGifFrames(file_path)
-    gif_thread = StoppableThread(target=render_gif, args=(frames,), daemon=True)
-    gif_thread.start()
-    return     
- 
-  # Otherwise, it ain"t no giffy.
-  m.DrawImage(file_path)
- 
 with app.app_context():
-  display_image(get_latest_image())
+  m.DrawImage(get_latest_image())
 
 
 @app.route("/draw-image")
 def draw_image():
   url = request.args.get('url')
   requester = request.args.get('requester')
-  print(requester)
   file_path = download_image(url, requester)
-  display_image(file_path)
+  m.DrawImage(file_path)
   return "OK"
