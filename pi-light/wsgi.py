@@ -97,7 +97,7 @@ VALID_CONTENT_TYPES = [
   "image/png"
 ]
 
-def download_image(url):
+def download_image(url, requester):
   """Downloads an image from the interwebs.
 
   Also identifies the type of the image.
@@ -112,7 +112,7 @@ def download_image(url):
   with open(file_path, "wb") as wh:
     wh.write(response.content)
 
-  insert_image("asdf", file_path)  
+  insert_image(requester, file_path)  
   return file_path
 
 def render_gif(frames):
@@ -147,6 +147,8 @@ with app.app_context():
 @app.route("/draw-image")
 def draw_image():
   url = request.args.get('url')
-  file_path = download_image(url)
+  requester = request.args.get('requester')
+  print(requester)
+  file_path = download_image(url, requester)
   display_image(file_path)
   return "OK"
