@@ -42,21 +42,3 @@ class LightMatrix:
     """Takes a path to a gif and draws it to the led matrix."""
     gif = imageio.mimread(path)
     return [cv2.resize(cv2.cvtColor(image, cv2.COLOR_RGB2BGR), (64, 64)) for image in gif]
-
-  def DrawImageFromUrl(self, url):
-    """Downloads an image from the interwebs, and draws it.
-
-    This function is potentially dangerous :)
-    """
-    file_path = os.path.join("/home/pi/git/stream-stuff/pi-light/images", os.path.basename(url))
-    response = requests.get(url)
-    with open(file_path, "wb") as wh:
-      wh.write(response.content)
-
-    # If the image is a gif, we can't render directly, as we 
-    # need to do the rendering via a stoppable thread.
-    content_type = response.headers["content-type"]
-    if content_type == "image/gif":
-      return True, self.GetGifFrames(file_path)
-    self.DrawImage(file_path)
-    return False, None
