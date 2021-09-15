@@ -100,7 +100,7 @@ class RewardsHandler:
     self.script_manager.run_and_wait("shame_cube")
 
   async def led_matrix_reward(self, reward):
-    requests.get(f"http://{PI_SERVER}/draw-image?url={reward.message}")
+    requests.get(f"http://{PI_SERVER}/draw-image?requester={reward.author}&url={reward.message}")
 
   async def voicemod_reward(self, reward):
     """Processes a voicemod reward."""
