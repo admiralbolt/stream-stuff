@@ -4,7 +4,6 @@ TODO
 * Really strange bug with retries involving something fucky with twitch
   authentication and the chat bot. Current working theory is that chat bot
   doesn't work without alright having twitch creds but :shrug:?
-* Activate Windows you fucking cheapo
 * Update the streamlabs alert settings to have custom sounds & custom giffys.
 
 * Add text overlay splash thingy

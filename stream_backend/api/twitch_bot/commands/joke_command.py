@@ -3,7 +3,7 @@ import requests
 
 from api.twitch_bot.commands.base_command import BaseCommand
 
-JOKE_URL = "https://official-joke-api.appspot.com/random_joke"
+JOKE_URL = "https://v2.jokeapi.dev/joke/Any"
 
 class JokeCommand(BaseCommand):
   """My funniest command yet.
@@ -15,5 +15,8 @@ class JokeCommand(BaseCommand):
   async def execute(self, context):
     data = requests.get(JOKE_URL).json()
 
-    await context.send(f"{data['setup']}")
-    await context.send(f"{data['punchline']}")
+    if data["type"] == "twopart":
+      await context.send(f"{data['setup']}")
+      await context.send(f"{data['delivery']}")
+    else:
+      await context.send(f"{data['joke']}")
